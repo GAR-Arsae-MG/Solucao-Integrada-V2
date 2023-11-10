@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+
+{% block extrastyle %}
+<style>
+    .custom-link {
+        padding: 10px;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Adicione um link para o frontend no topo da página de administração -->
+<a href="/" class="custom-link">Back to Main Page</a>
+
+<!-- Mantenha o conteúdo padrão do admin -->
+{{ block.super }}
+{% endblock %}
