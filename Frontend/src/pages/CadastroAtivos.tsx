@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -14,6 +14,8 @@ import {
   Input,
   Checkbox
 } from "@chakra-ui/react";
+
+
 
 import { ChevronRightIcon } from "@chakra-ui/icons";
 
@@ -76,7 +78,7 @@ function CadastroAtivos() {
   return (
     <>
       <TopNav />
-      <Grid
+      <grid
         templateAreas={`"nav main"`}
         gridTemplateRows={'100%'}
         gridTemplateColumns={'1px 1fr'}

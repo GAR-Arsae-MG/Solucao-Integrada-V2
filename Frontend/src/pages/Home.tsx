@@ -65,7 +65,7 @@ function Home() {
             // bgGradient="linear(to right, whatsapp.500,green.500,green.500)"
             backgroundImage={Wallpaper}
             backgroundSize="cover"
-            width="296%"
+            width="100%"
             height="100vh"
             display="flex"
             flexDirection="column"

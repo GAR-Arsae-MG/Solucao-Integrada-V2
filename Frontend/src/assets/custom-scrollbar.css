@@ -1,0 +1,23 @@
+/* styles.css */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px; /* Largura da barra de rolagem */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Cor de fundo da trilha da barra de rolagem */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888; /* Cor de fundo do controle deslizante da barra de rolagem */
+  border-radius: 5px; /* Arredondamento das bordas do controle deslizante */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Cor de fundo do controle deslizante da barra de rolagem ao passar o mouse */
+}
+
+/* Para suportar outros navegadores como Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}

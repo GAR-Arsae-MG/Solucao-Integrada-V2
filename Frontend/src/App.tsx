@@ -1,5 +1,5 @@
 import './App.css'
-import CadastroAtivos from './pages/CadastroAtivos'
+import CadastroAtivo from './pages/CadastroAtivosn2'
 import Home from './pages/Home'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
 
@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' Component={Home} />
-        <Route path='/cadastroAtivos' Component={CadastroAtivos} />
+        <Route path='/cadastroAtivos' Component={CadastroAtivo} />
       </Routes>
     </BrowserRouter>
     </>
