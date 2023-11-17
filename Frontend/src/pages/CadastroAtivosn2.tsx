@@ -1,11 +1,11 @@
 
 import TopNav from '../components/ui/TopNav';
-import { ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon, ChevronLeftIcon, PlusSquareIcon, CheckIcon, EditIcon } from '@chakra-ui/icons';
 import 'leaflet/dist/leaflet.css'
 import MapCadastro from '../components/MapCadatro';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {Tabs, Tab, Input, Button, Card, CardBody, Checkbox, CheckboxGroup} from "@nextui-org/react";
+import {Tabs, Tab, Input, Button, Card, CardBody, Checkbox, CheckboxGroup, Divider} from "@nextui-org/react";
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 function CadastroAtivo() {
@@ -22,17 +22,14 @@ function CadastroAtivo() {
   const Navigate = useNavigate()
 
   const [AssetInfo, setAssetInfo] = useState({
-    selectedSistema: '',
-    selectedTipoAtivo: '',
-    selectedLocalidade: '',
     nomeCampo: '',
     dataOp: '',
     dataObra: '',
     dataProj: '',
     proprietario: '',
     recebidoDoacao: '',
-    vidaUtil: 0,
-    valorOriginal: 0,
+    vidaUtil: '',
+    valorOriginal: '',
   })
 
   //useStates do Select
@@ -53,7 +50,13 @@ function CadastroAtivo() {
 
   const [etapaServ, setEtapaServ] = useState([""]);
 
-  const [situacao, setSituacao] = useState("");
+  const [situacao, setSituacao] = useState([""]);
+
+  const [selectedSistema, setSelectedSistema] = useState(['']);
+
+  const [selectedTipoAtivo, setSelectedTipoAtivo] = useState(['']);
+
+  const [selectedLocalidade, setSelectedLocalidade] = useState(['']);
 
   //UseStates para form
 
@@ -273,6 +276,56 @@ function CadastroAtivo() {
                       <Checkbox value="etapaServ2">Etapa 2</Checkbox>
                     </CheckboxGroup>
 
+                    <CheckboxGroup
+                      isRequired
+                      label="Situação do item"
+                      defaultValue={situacao}
+                      onChange={(values) => {
+                        if(Array.isArray(values)) {
+                          setSituacao(values)
+                        }
+                      }}
+                    >
+                      <Checkbox value="Situacao1">Situação 1</Checkbox>
+                      <Checkbox value="situacao2">Situação 2</Checkbox>
+                    </CheckboxGroup>
+
+                    <Input 
+                      isRequired
+                      label="Proprietário"
+                      placeholder='Nome do Proprietário'
+                      value={AssetInfo.proprietario}
+                      onChange={(event) => setAssetInfo({...AssetInfo,proprietario: event.target.value})}
+                    />
+
+                    <Input 
+                      isRequired
+                      label="Recebido em Doação"
+                      placeholder='insira a quantia'
+                      className='border-spacing-2'
+                      type='number'
+                      value={AssetInfo.recebidoDoacao}
+                      onChange={(event) => setAssetInfo({...AssetInfo,recebidoDoacao: event.target.value})}
+                    />
+
+                    <Input 
+                      isRequired
+                      label="Vida Util Regulatória"
+                      placeholder='Quanto tempo de vida util o ativo tem em meses'
+                      type='number'
+                      value={AssetInfo.vidaUtil}
+                      onChange={(event) => setAssetInfo({...AssetInfo,vidaUtil: event.target.value})}
+                    />
+
+                    <Input 
+                      isRequired
+                      label="Valor Original"
+                      placeholder='Informe o Valor Original do Ativo'
+                      type='number'
+                      value={AssetInfo.valorOriginal}
+                      onChange={(event) => setAssetInfo({...AssetInfo,valorOriginal: event.target.value})}
+                    />
+
                     <div className='flex justify-between gap-96'>
                       <Button
                         color='secondary'
@@ -292,6 +345,107 @@ function CadastroAtivo() {
                         Próximo
                       </Button>
                     </div>
+                  </form>
+                </Tab>
+              )}
+
+              {step === 4 && (
+                <Tab
+                  key="Cadastro de Ativo - Parte 4" title="Cadastro de Ativo - Quarta Etapa"
+                >
+                  <form
+                    className='flex flex-col gap-60 items-center p-10'
+                  >
+                    <div>
+                      <h1>filtros</h1>
+                      <Divider className='my-4' />
+                      <div className='flex justify-between gap-4'>
+                        <CheckboxGroup
+                          isRequired
+                          label='Sistema'
+                          defaultValue={selectedSistema}
+                          onChange={(values) => {
+                            if(Array.isArray(values)) {
+                              setSelectedSistema(values)
+                            }
+                          }}
+                        >
+                          <Checkbox value="agua">Água</Checkbox>
+                          <Checkbox value="esgoto">Esgoto</Checkbox>
+                          <Checkbox value="outro">Outro</Checkbox>
+                        </CheckboxGroup>
+
+                        <CheckboxGroup
+                          isRequired
+                          label="Tipo de Ativo"
+                          defaultValue={selectedTipoAtivo}
+                          onChange={(values) => {
+                            if(Array.isArray(values)) {
+                              setSelectedTipoAtivo(values)
+                            }
+                          }}
+                        >
+                          <Checkbox value="visivel">Visível</Checkbox>
+                          <Checkbox value="enterrado">Enterrado</Checkbox>
+                        </CheckboxGroup>
+
+                        <CheckboxGroup
+                          isRequired
+                          label="Localidade"
+                          defaultValue={selectedLocalidade}
+                          onChange={(values) => {
+                            if(Array.isArray(values)) {
+                              setSelectedLocalidade(values)
+                            }
+                          }}
+                        >
+                          <Checkbox value="localidade1">Localidade 1</Checkbox>
+                          <Checkbox value="localidade2">Localidade 2</Checkbox>
+                          <Checkbox value="localidade3">Localidade 3</Checkbox>
+                        </CheckboxGroup>
+                      </div>
+                      
+                    </div>
+
+                    <div className='flex justify-between gap-4 p-4 '>
+                      <Button
+                        color='secondary'
+                        startContent={<ChevronLeftIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={voltarParaStepAnterior}
+                      >
+                        Anterior
+                      </Button>
+
+                      <Button
+                        color='primary'
+                        startContent={<PlusSquareIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={handleButtonESRI}
+                      >
+                        ESRI(Satelite)
+                      </Button>
+
+                      <Button
+                        color='warning'
+                        startContent={<EditIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={handleButtonOSM}
+                      >
+                        OSM(Cartográfico)
+                      </Button>
+
+                      <Button
+                        color='success'
+                        startContent={<CheckIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={onSubmit}
+                      >
+                        Cadastrar
+                      </Button>
+                    </div>
+
+                    <MapCadastro selectedLayer={selectedLayer} />
                   </form>
                 </Tab>
               )}
