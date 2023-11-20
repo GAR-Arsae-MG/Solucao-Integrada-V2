@@ -39,6 +39,7 @@ function TopNav() {
                     <DropdownItem
                         key="Unities_register"
                         description="Registro de Unidades"
+                        href="/cadastroUnidades"
                     >
                         Cadastro Unidades
                     </DropdownItem>
@@ -46,13 +47,14 @@ function TopNav() {
                     <DropdownItem
                         key="Ativos_Register"
                         description="Cadastramento de futuros ativos de saneamento."
+                        href="/cadastroAtivos"
                     >
                         Cadastro Ativos
                     </DropdownItem>
 
                     <DropdownItem
                         key="Ativos_list"
-                        href="/listagem_ativos"
+                        href="/listagemAtivos"
                         description="Uma lista dos ativos atuais"
                     >
                         Lista de Ativos
@@ -68,7 +70,7 @@ function TopNav() {
                 </NavbarItem>
 
                 <NavbarItem>
-                    <Link color="success" href="/listagem_usuarios">
+                    <Link color="success" href="/listagemUsuarios">
                     Usuários
                     </Link>
                 </NavbarItem>

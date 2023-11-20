@@ -1,54 +1,87 @@
-import { useState } from 'react'
-import { useNavigate } from "react-router-dom";
-
-import {
-  Box,
-  Text,
-  Flex,
-  Grid, 
-  GridItem,
-  Select, 
-  Button, 
-  FormControl,
-  FormLabel,
-  Input,
-  Checkbox
-} from "@chakra-ui/react";
-
-
-
-import { ChevronRightIcon } from "@chakra-ui/icons";
-
-import "../assets/CadastroAtivos.css";
-import "leaflet/dist/leaflet.css";
 
 import TopNav from '../components/ui/TopNav';
+import { ChevronRightIcon, ChevronLeftIcon, PlusSquareIcon, CheckIcon, EditIcon } from '@chakra-ui/icons';
+import 'leaflet/dist/leaflet.css'
 import MapCadastro from '../components/MapCadatro';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {Tabs, Tab, Input, Button, Card, CardBody, Checkbox, CheckboxGroup, Divider, RadioGroup, Radio} from "@nextui-org/react";
+import { useForm, SubmitHandler } from 'react-hook-form';
 
-function CadastroAtivos() {
-  const [selectedSistema, setSelectedSistema] = useState(''); // useState('agua')
-  const [selectedTipoAtivo, setSelectedTipoAtivo] = useState('');
-  const [selectedLocalidade, setSelectedLocalidade] = useState('');
+function CadastroAtivo() {
 
-  const navigate = useNavigate();
+  type CadastroAtivoForm = {
+    nomeCampo: string,
+    nomeUnidade: string,
+    especie: string,
+    classe: string,
+    fase: string,
+    dataOp: string,
+    dataObra: string,
+    dataProj: string,
+    proprietario: string,
+    tipoInv: string,
+    etapaServ: string,
+    recebidoDoacao: string,
+    vidaUtil: string,
+    situacao: string,
+    selectedSistema: string,
+    selectedTipoAtivo: string,
+    valorOriginal: string,
+    itemPrincipalBool: boolean,
+    selectedLocalidade: string,
+  }
 
-  const [nomeUnidade, setNomeUnidade] = useState("");
-  const [itemPrincipalBool, setItemPrincipalBool] = useState(true);
-  const [nomeCampo, setNomeCampo] = useState("");
-  const [especie, setEspecie] = useState("");
-  const [classe, setClasse] = useState("");
-  const [fase, setFase] = useState("");
-  //const [itemPrincipalVinc, setItemPrincipalVinc] = useState("");
-  const [dataOp, setDataOp] = useState("");
-  const [dataObra, setDataObra] = useState("");
-  const [dataProj, setDataProj] = useState("");
-  const [tipoInv, setTipoInv] = useState("");
-  const [etapaServ, setEtapaServ] = useState("");
-  const [situacao, setSituacao] = useState("");
-  const [proprietario, setProprietario] = useState("");
-  const [recebidoDoacao, setRecebidoDoacao] = useState("");
-  const [vidaUtil, setVidaUtil] = useState(0);
-  const [valorOriginal, setValorOriginal]= useState(0);
+  const {register, watch,handleSubmit, formState:{ errors } } = useForm<CadastroAtivoForm>()
+
+  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+
+  const Navigate = useNavigate()
+
+  const onSubmit:SubmitHandler<CadastroAtivoForm>  = async data => {
+    alert(JSON.stringify(data));
+    console.log(data)
+    Navigate('/painel')
+  }
+  
+  const [AssetInfo, setAssetInfo] = useState({
+    nomeCampo: '',
+    dataOp: '',
+    dataObra: '',
+    dataProj: '',
+    proprietario: '',
+    recebidoDoacao: '',
+    vidaUtil: '',
+    valorOriginal: '',
+  })
+
+  //useStates do Select
+
+  const [nomeUnidade, setNomeUnidade] = useState('')
+
+  const [itemPrincipalBool, setItemPrincipalBool] = useState(["Sim", "Não"]);
+
+  const [selectedTab, setSelectedTab] = useState("Cadastro de Ativo")
+
+  const [especie, setEspecie] = useState<string[]>([])
+
+  const [classe, setClasse] = useState([""])
+
+  const [fase, setFase] = useState([""]);
+
+  const [tipoInv, setTipoInv] = useState([""]);
+
+  const [etapaServ, setEtapaServ] = useState([""]);
+
+  const [situacao, setSituacao] = useState([""]);
+
+  const [selectedSistema, setSelectedSistema] = useState(['']);
+
+  const [selectedTipoAtivo, setSelectedTipoAtivo] = useState(['']);
+
+  const [selectedLocalidade, setSelectedLocalidade] = useState(['']);
+
+  //UseStates para form
 
   const [step, setStep] = useState(1);
 
@@ -58,11 +91,6 @@ function CadastroAtivos() {
 
   const voltarParaStepAnterior = () => {
     setStep(step - 1);
-  };
-
-  const handleFormSubmit = () => {
-    // Lógica de submissão do formulário
-    navigate("/painel");
   };
 
   const [selectedLayer, setSelectedLayer] = useState(0);
@@ -75,418 +103,375 @@ function CadastroAtivos() {
       setSelectedLayer(1);
   }
 
-  return (
+  return(
     <>
       <TopNav />
-      <grid
-        templateAreas={`"nav main"`}
-        gridTemplateRows={'100%'}
-        gridTemplateColumns={'1px 1fr'}
-        height="calc(100vh - 70px)"
-        mt={1}
-      >
-        <GridItem bg="#1A202C" area={'nav'} />
-        <GridItem bg="#1A202C" area={'main'}>
-          {step === 1 && (
-            <Box maxW="600px" mx="auto" p="8" bg="#C4C4C4" height='100%'>
-              <Box mb="4">
-              <Box as="h1" fontSize="xl" fontWeight="bold" color="#1C1C1C" mb="2">
-                Cadastro de Ativos
-              </Box>
-              <FormControl mb="4">
-                <FormLabel color="#1C1C1C">Unidade de Vinculação</FormLabel>
-                <Select 
-                  isRequired 
-                  placeholder="Selecione a unidade" 
-                  bg="#E7E7E7" 
-                  border="2px" 
-                  borderColor="#5c1a1040" 
-                  value={nomeUnidade}
-                  onChange={(event) => setNomeUnidade(event.target.value)}
-                >
-                  <option value="unidade1">Unidade José</option>
-                  <option value="unidade2">Unidade Maria</option>
-                </ Select>
-                <FormLabel color="#1C1C1C" mt={3}>Ativo Principal?</FormLabel>
-                <Checkbox 
-                  isRequired 
-                  bg="#E7E7E7" 
-                  border="2px" 
-                  borderColor="#5c1a1040" 
-                  value={itemPrincipalBool}
-                  onChange={(event) => setItemPrincipalBool(event.target.value)}
-                />
-                <FormLabel color="#1C1C1C" mt={3}>Nome da Unidade</FormLabel>
-                <Input 
-                  isRequired 
-                  placeholder="Insira como o ativo é chamado em campo" 
-                  bg="#E7E7E7" 
-                  border="2px" 
-                  borderColor="#5c1a1040"
-                  value={nomeCampo}
-                  onChange={(event) => setNomeCampo(event.target.value)}
-                />
-                <FormLabel color="#1C1C1C" mt={3}>Espécie</FormLabel>
-                <Select 
-                  isRequired 
-                  placeholder="Selecione a espécie" 
-                  bg="#E7E7E7" 
-                  border="2px" 
-                  borderColor="#5c1a1040" 
-                  value={especie}
-                  onChange={(event) => setEspecie(event.target.value)}
-                >
-                  <option value="especie1">Espécie 1</option>
-                  <option value="especie2">Espécie 2</option>
-                </ Select>
-                <FormLabel color="#1C1C1C" mt={3}>Classe</FormLabel>
-                <Select 
-                  isRequired 
-                  placeholder="Selecione a classe" 
-                  bg="#E7E7E7" 
-                  border="2px" 
-                  borderColor="#5c1a1040" 
-                  value={classe}
-                  onChange={(event) => setClasse(event.target.value)}
-                >
-                  <option value="classe1">Classe 1</option>
-                  <option value="classe2">Classe 2</option>
-                </ Select>
-                <FormLabel color="#1C1C1C" mt={3}>Fase de operação</FormLabel>
-                <Select 
-                  isRequired 
-                  placeholder="Selecione a fase" 
-                  bg="#E7E7E7" 
-                  border="2px" 
-                  borderColor="#5c1a1040" 
-                  value={fase}
-                  onChange={(event) => setFase(event.target.value)}
-                >
-                  <option value="fase1">Fase 1</option>
-                  <option value="fase2">Fase 2</option>
-                </ Select>
-              </FormControl>
-            </Box>
+      
+      <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-br'>
+        <Card className='max-w-full w-[750px] h-[680px]'>
+          <CardBody className='overflow-auto scrollbar-hide' >
+            <Tabs
+              fullWidth
+              size='md'
+              aria-label='Tabs form'
+              selectedKey={selectedTab}
+            >
+              {step === 1 && (
+                <Tab key="Cadastro de Ativo" title="Cadastro de Ativo">
+                  <form className='flex flex-col gap-4 items-center' onSubmit={handleSubmit(onSubmit)}>
+                    <RadioGroup 
+                      isRequired
+                      label="Unidade de Vinculação"
+                      placeholder='Nomeie a Unidade'
+                      name='nomeUnidade'
+                    >
+                      <Radio value="unidade1" {...register('nomeUnidade')}>Unidade Maria</Radio>
+                      <Radio value="Unidade2" {...register('nomeUnidade')}>Unidade josé</Radio>
+                    </RadioGroup>
 
-              <Button colorScheme="blue"
-                rightIcon={<ChevronRightIcon />}
-                size="lg"
-                w="100%"
-                mb="4" 
-                onClick={avancarParaProximoStep}
-              >
-                Próximo
-              </Button>
-            </Box>
-          )}
-          {step === 2 && (
-            <Box maxW="600px" mx="auto" p="8" bg="#C4C4C4" height='100%'>
-              <Box mb="4">
-              <Box as="h1" fontSize="xl" fontWeight="bold" color="#1C1C1C" mb="2">
-                Cadastro de Ativos
-              </Box>
-                <FormControl mb="4">
-                  <FormLabel color="#1C1C1C" mt={3}>Data de Início Operação</FormLabel>
-                  <Input 
-                    isRequired 
-                    placeholder="Selecione a data" 
-                    bg="#E7E7E7" 
-                    border="2px" 
-                    borderColor="#5c1a1040" 
-                    type='date'
-                    value={dataOp}
-                    onChange={(event) => setDataOp(event.target.value)}
-                  />
-                  <FormLabel color="#1C1C1C" mt={3}>Data de Início de Obra</FormLabel>
-                  <Input  
-                    placeholder="Selecione a data" 
-                    bg="#E7E7E7" 
-                    border="2px" 
-                    borderColor="#5c1a1040" 
-                    type='date'
-                    value={dataObra}
-                    onChange={(event) => setDataObra(event.target.value)}
-                  />
-                  <FormLabel color="#1C1C1C" mt={3}>Data de Início de Projeto</FormLabel>
-                  <Input  
-                    placeholder="Selecione a data" 
-                    bg="#E7E7E7" 
-                    border="2px" 
-                    borderColor="#5c1a1040" 
-                    type='date'
-                    value={dataProj}
-                    onChange={(event) => setDataProj(event.target.value)}
-                  />
-                </FormControl>
-              </Box>
-              <Button colorScheme="blue"
-                rightIcon={<ChevronRightIcon />}
-                size="lg"
-                w="100%"
-                mb="4" 
-                onClick={avancarParaProximoStep}
-              >
-                Próximo
-              </Button>
-              <Button colorScheme="blue"
-                variant="outline"
-                size="lg"
-                w="100%"
-                onClick={voltarParaStepAnterior}
-              >
-                Voltar
-              </Button>
-            </Box>
-          )}
-          {step === 3 && (
-            <Box maxW="600px" mx="auto" p="8" bg="#C4C4C4" height='100%'>
-              <Box mb="4">
-                <Box as="h1" fontSize="xl" fontWeight="bold" color="#1C1C1C" mb="2">
-                  Cadastro de Ativos
-                </Box>
-                <FormControl mb="4">
+                    <CheckboxGroup
+                      label="Ativo principal?"
+                      placeholder='Determina se o ativo é principal ou secundário'
+                    >
+                      <Checkbox
+                        isRequired
+                        type='checkbox'
+                        value={itemPrincipalBool[0]}
+                        onChange={(event) => setItemPrincipalBool(event.target.checked ? ['Sim']:['Não'])}
+                      />
+                    </CheckboxGroup>
 
-                  <FormLabel color="#1C1C1C">Tipo de Investimento</FormLabel>
-                  <Select 
-                    isRequired 
-                    placeholder="Selecione o tipo" 
-                    bg="#E7E7E7" 
-                    border="2px" 
-                    borderColor="#5c1a1040" 
-                    value={tipoInv}
-                    onChange={(event) => setTipoInv(event.target.value)}
-                  >
-                    <option value="tipoinv1">Tipo Inv 1</option>
-                    <option value="tipoinv2">Tipo Inv 2</option>
-                  </ Select>
-
-                  <FormLabel color="#1C1C1C">Etapa do serviço</FormLabel>
-                  <Select 
-                    isRequired 
-                    placeholder="Selecione a etapa" 
-                    bg="#E7E7E7" 
-                    border="2px" 
-                    borderColor="#5c1a1040" 
-                    value={etapaServ}
-                    onChange={(event) => setEtapaServ(event.target.value)}
-                  >
-                    <option value="etapa 1">Etapa 1</option>
-                    <option value="etapa 2">Etapa 2</option>
-                  </ Select>
-
-                  <FormLabel color="#1C1C1C" mt={3}>Situação do item</FormLabel>
-                  <Select 
-                    isRequired 
-                    placeholder="Selecione a situação" 
-                    bg="#E7E7E7" 
-                    border="2px" 
-                    borderColor="#5c1a1040" 
-                    value={situacao}
-                    onChange={(event) => setSituacao(event.target.value)}
-                  >
-                    <option value="situacao1">Situacao 1</option>
-                    <option value="situacao2">Situacao 2</option>
-                  </ Select>
-  
-                  <FormLabel color="#1C1C1C" mt={3}>Proprietário</FormLabel>
-                  <Flex>
                     <Input 
-                      isRequired 
-                      placeholder="Proprietário do Ativo" 
-                      bg="#E7E7E7" 
-                      border="2px" 
-                      borderColor="#5c1a1040"
-                      value={proprietario}
-                      onChange={(event) => setProprietario(event.target.value)}
+                      isRequired
+                      label="Nome da Unidade"
+                      placeholder='Insira como o ativo é chamado em campo'
+                      value={AssetInfo.nomeCampo}
+                      onChange={(event) => setAssetInfo({...AssetInfo,nomeCampo: event.target.value})}
                     />
-                    <FormLabel color="#1C1C1C" mt={3}>Recebido em Doação?</FormLabel>
-                    <Checkbox 
-                      isRequired 
-                      bg="#E7E7E7" 
-                      border="2px" 
-                      borderColor="#5c1a1040" 
-                      value={recebidoDoacao}
-                      onChange={(event) => setRecebidoDoacao(event.target.value)}
+
+                    <CheckboxGroup
+                      isRequired
+                      label="Espécie"
+                      placeholder='Selecione a Espécie'
+                      defaultValue={especie}
+                      onChange={(values) => {
+                        if( Array.isArray(values)) {
+                          setEspecie(values)
+                        }
+                      }}
+                    >
+                      <Checkbox value="espécie1">Espécie 1</Checkbox>
+                      <Checkbox value="espécie2">Espécie 2</Checkbox>
+                    </CheckboxGroup>
+
+                    <CheckboxGroup
+                      isRequired
+                      label="Classe"
+                      placeholder='Selecione a Classe'
+                      defaultValue={classe}
+                      onChange={(values) => {
+                        if(Array.isArray(values)) {
+                          setClasse(values)
+                        }
+                      }}
+                    >
+                        <Checkbox value="classe1">Classe 1</Checkbox>
+                        <Checkbox value="classe2">Classe 2</Checkbox>
+                    </CheckboxGroup>
+
+                    <CheckboxGroup
+                      isRequired
+                      label="Fase de Operação"
+                      placeholder='Selecione a fase'
+                      defaultValue={fase}
+                      onChange={(values) => {
+                        if(Array.isArray(values)) {
+                          setFase(values)
+                        }
+                      }}
+                    >
+                      <Checkbox value="fase1">Fase 1</Checkbox>
+                      <Checkbox value="fase2">Fase 2</Checkbox>
+                    </CheckboxGroup>
+
+                    <Button 
+                      className='rounded-xl'
+                      color='primary'
+                      startContent={<ChevronRightIcon className={iconClasses} />}
+                      onClick={avancarParaProximoStep}
+                    >
+                      Próximo
+                    </Button>
+                  </form>
+                </Tab>
+              )}
+              
+              {step === 2 && (
+                <Tab key="Cadastro de Ativo - Parte 2" title="Cadastro de Ativo - Segunda Etapa">
+                  <form className='flex flex-col gap-4 items-center'>
+                    <Input 
+                      isRequired
+                      label="Data de início da Operação"
+                      placeholder='Insira a data'
+                      value={AssetInfo.dataOp}
+                      type='date'
+                      onChange={(event) => setAssetInfo({...AssetInfo,dataOp: event.target.value})}
                     />
-                  </Flex>
-                  <FormLabel color="#1C1C1C" mt={3}>Vida útil regulatória</FormLabel>
-                  <Input 
-                    isRequired 
-                    placeholder="Informe a vida útil" 
-                    bg="#E7E7E7" 
-                    border="2px" 
-                    borderColor="#5c1a1040" 
-                    value={vidaUtil}
-                    onChange={(event) => setVidaUtil(event.target.value)}
-                  />
 
-                  <FormLabel color="#1C1C1C" mt={3}>Valor Original</FormLabel>
-                  <Input 
-                    isRequired 
-                    placeholder="Informe o valor original do ativo" 
-                    bg="#E7E7E7" 
-                    border="2px" 
-                    borderColor="#5c1a1040" 
-                    value={valorOriginal}
-                    onChange={(event) => setValorOriginal(event.target.value)}
-                  />
+                    <Input 
+                       isRequired
+                       label="Data de início da Obra"
+                       placeholder='Insira a data'
+                       value={AssetInfo.dataObra}
+                       type='date'
+                       onChange={(event) => setAssetInfo({...AssetInfo,dataObra: event.target.value})}
+                    />
 
-                </FormControl>
-              </Box>
+                    <Input 
+                       isRequired
+                       label="Data de início de Projeto"
+                       placeholder='Insira a data'
+                       value={AssetInfo.dataProj}
+                       type='date'
+                       onChange={(event) => setAssetInfo({...AssetInfo,dataProj: event.target.value})}
+                    />
 
-              <Button colorScheme="blue"
-                rightIcon={<ChevronRightIcon />}
-                size="lg"
-                w="100%"
-                mb="4" 
-                onClick={avancarParaProximoStep}
-              >
-                Próximo
-              </Button>
-              <Button colorScheme="blue"
-                variant="outline"
-                size="lg"
-                w="100%"
-                onClick={voltarParaStepAnterior}
-              >
-                Voltar
-              </Button>
-            </Box>
-          )}
-          {step === 4 && (
-            <Grid
-            templateAreas={`"nav main"`}
-            gridTemplateRows={'100%'}
-            gridTemplateColumns={'300px 1fr'}
-            height="calc(100vh - 70px)"
-            mt={1}
-            gap='1'
-          >
-            <GridItem pl='2' bg="#1A202C" area={'nav'}>
-              <Flex 
-                direction="column" 
-                bg="transparent" 
-                p={4} 
-                borderRadius="md" 
-                alignContent={'center'} 
-                justify={"center"} 
-                color="white"
-                mt={10}
-                >
-                <Text fontWeight="bold" mb={2}>
-                  Filtros
-                </Text>
-                <Box>
-                  <Flex align="center" mb={2} justify={'space-between'}>
-                    <Text mr={2}>Sistema:</Text>
-                    <Select
-                      bg="#E7E7E7"
-                      borderColor="#F5F5F5"
-                      borderRadius="md"
-                      py={2}
-                      px={3}
-                      width="180px"
-                      placeholder="Selecione"
-                      color={'black'}
-                      pr={2}
-                      value={selectedSistema}
-                      onChange={(e) => setSelectedSistema(e.target.value)}
+                    <div className='flex justify-between gap-96'>
+                      <Button
+                        color='secondary'
+                        startContent={<ChevronLeftIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={voltarParaStepAnterior}
+                      >
+                        Anterior
+                      </Button>
+
+                    <Button
+                        color='primary'
+                        startContent={<ChevronRightIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={avancarParaProximoStep}
+                      >
+                        Próximo
+                      </Button>
+                    </div>
+                    
+                  </form>
+                </Tab>
+              )}
+
+              {step === 3 && (
+                <Tab  key="Cadastro de Ativo - Parte 3" title="Cadastro de Ativo - Terceira Etapa">
+                  <form className='flex flex-col gap-4 items-center'>
+
+                    <CheckboxGroup
+                      isRequired
+                      label="Tipo de Investimento"
+                      placeholder='Explicite o investimento'
+                      defaultValue={tipoInv}
+                      onChange={(values) => {
+                        if(Array.isArray(values)) {
+                          setTipoInv(values)
+                        }
+                      }}
                     >
-                      <option value="agua">Água</option>
-                      <option value="esgoto">Esgoto</option>
-                      <option value="outro">Outro</option>
-                    </Select>
-                  </Flex>
-    
-                  <Flex align="center" mb={2} justify={'space-between'}>
-                    <Text mr={2}>Tipo de Ativo:</Text>
-                    <Select
-                      bg="#E7E7E7"
-                      borderColor="#F5F5F5"
-                      borderRadius="md"
-                      py={2}
-                      px={3}
-                      width="180px"
-                      placeholder="Selecione"
-                      color={'black'}
-                      pr={2}
-                      value={selectedTipoAtivo}
-                      onChange={(e) => setSelectedTipoAtivo(e.target.value)}
+                      <Checkbox value="TipoInv1">Tipo de Investimento 1</Checkbox>
+                      <Checkbox value="TipoInv2">Tipo de Investimento 2</Checkbox>
+                    </CheckboxGroup>
+
+                    <CheckboxGroup
+                      isRequired
+                      label="Etapa de Serviço"
+                      defaultValue={etapaServ}
+                      onChange={(values) => {
+                        if(Array.isArray(values)) {
+                          setEtapaServ(values)
+                        }
+                      }}
                     >
-                      <option value="visivel">Visível</option>
-                      <option value="enterrado">Enterrado</option>
-                    </Select>
-                  </Flex>
-    
-                  <Flex align="center" justify={'space-between'}>
-                    <Text mr={2}>Localidade:</Text>
-                    <Select
-                      bg="#E7E7E7"
-                      borderColor="#F5F5F5"
-                      borderRadius="md"
-                      py={2}
-                      px={3}
-                      width="180px"
-                      placeholder="Selecione"
-                      color={'black'}
-                      pr={2}
-                      value={selectedLocalidade}
-                      onChange={(e) => setSelectedLocalidade(e.target.value)}
+                      <Checkbox value="etapaServ1">Etapa 1</Checkbox>
+                      <Checkbox value="etapaServ2">Etapa 2</Checkbox>
+                    </CheckboxGroup>
+
+                    <CheckboxGroup
+                      isRequired
+                      label="Situação do item"
+                      defaultValue={situacao}
+                      onChange={(values) => {
+                        if(Array.isArray(values)) {
+                          setSituacao(values)
+                        }
+                      }}
                     >
-                      <option value="localidade1">Localidade 1</option>
-                      <option value="localidade2">Localidade 2</option>
-                      <option value="localidade3">Localidade 3</option>
-                    </Select>
-                  </Flex>
-                </Box>
-                <Button
-                  mt={4}
-                  colorScheme="blue"
-                  size="lg"
-                  w="100%"
-                  mb="4"
-                  onClick={handleFormSubmit}
+                      <Checkbox value="Situacao1">Situação 1</Checkbox>
+                      <Checkbox value="situacao2">Situação 2</Checkbox>
+                    </CheckboxGroup>
+
+                    <Input 
+                      isRequired
+                      label="Proprietário"
+                      placeholder='Nome do Proprietário'
+                      value={AssetInfo.proprietario}
+                      onChange={(event) => setAssetInfo({...AssetInfo,proprietario: event.target.value})}
+                    />
+
+                    <Input 
+                      isRequired
+                      label="Recebido em Doação"
+                      placeholder='insira a quantia'
+                      className='border-spacing-2'
+                      type='number'
+                      value={AssetInfo.recebidoDoacao}
+                      onChange={(event) => setAssetInfo({...AssetInfo,recebidoDoacao: event.target.value})}
+                    />
+
+                    <Input 
+                      isRequired
+                      label="Vida Util Regulatória"
+                      placeholder='Quanto tempo de vida util o ativo tem em meses'
+                      type='number'
+                      value={AssetInfo.vidaUtil}
+                      onChange={(event) => setAssetInfo({...AssetInfo,vidaUtil: event.target.value})}
+                    />
+
+                    <Input 
+                      isRequired
+                      label="Valor Original"
+                      placeholder='Informe o Valor Original do Ativo'
+                      type='number'
+                      value={AssetInfo.valorOriginal}
+                      onChange={(event) => setAssetInfo({...AssetInfo,valorOriginal: event.target.value})}
+                    />
+
+                    <div className='flex justify-between gap-96'>
+                      <Button
+                        color='secondary'
+                        startContent={<ChevronLeftIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={voltarParaStepAnterior}
+                      >
+                        Anterior
+                      </Button>
+
+                      <Button
+                        color='primary'
+                        startContent={<ChevronRightIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={avancarParaProximoStep}
+                      >
+                        Próximo
+                      </Button>
+                    </div>
+                  </form>
+                </Tab>
+              )}
+
+              {step === 4 && (
+                <Tab
+                  key="Cadastro de Ativo - Parte 4" title="Cadastro de Ativo - Quarta Etapa"
                 >
-                  Cadastrar
-                </Button>
-                <Button colorScheme="blue"
-                  variant="outline"
-                  size="lg"
-                  w="100%"
-                  onClick={voltarParaStepAnterior}
-                >
-                  Voltar
-                </Button>
-                <Button colorScheme="blue"
-                  size="lg"
-                  w="100%"
-                  mb="4"
-                  mt={8} 
-                  onClick={handleButtonESRI}
-                >
-                  ESRI (Satélite)
-                </Button>
-                <Button colorScheme="blue"
-                  size="lg"
-                  w="100%"
-                  mb="4" 
-                  onClick={handleButtonOSM}
-                >
-                  OSM (Cartográfico)
-                </Button>
-              </Flex>
-            </GridItem>
-            <GridItem bg='transparent' area={'main'}>
-              <MapCadastro selectedLayer={selectedLayer}/>
-            </GridItem>
-          </Grid>
-          )}
-            
-        </GridItem>
-      </Grid>
+                  <form
+                    className='flex flex-col gap-60 items-center p-10'
+                  >
+                    <div>
+                      <h1>filtros</h1>
+                      <Divider className='my-4' />
+                      <div className='flex justify-between gap-4'>
+                        <CheckboxGroup
+                          isRequired
+                          label='Sistema'
+                          defaultValue={selectedSistema}
+                          onChange={(values) => {
+                            if(Array.isArray(values)) {
+                              setSelectedSistema(values)
+                            }
+                          }}
+                        >
+                          <Checkbox value="agua">Água</Checkbox>
+                          <Checkbox value="esgoto">Esgoto</Checkbox>
+                          <Checkbox value="outro">Outro</Checkbox>
+                        </CheckboxGroup>
+
+                        <CheckboxGroup
+                          isRequired
+                          label="Tipo de Ativo"
+                          defaultValue={selectedTipoAtivo}
+                          onChange={(values) => {
+                            if(Array.isArray(values)) {
+                              setSelectedTipoAtivo(values)
+                            }
+                          }}
+                        >
+                          <Checkbox value="visivel">Visível</Checkbox>
+                          <Checkbox value="enterrado">Enterrado</Checkbox>
+                        </CheckboxGroup>
+
+                        <CheckboxGroup
+                          isRequired
+                          label="Localidade"
+                          defaultValue={selectedLocalidade}
+                          onChange={(values) => {
+                            if(Array.isArray(values)) {
+                              setSelectedLocalidade(values)
+                            }
+                          }}
+                        >
+                          <Checkbox value="localidade1">Localidade 1</Checkbox>
+                          <Checkbox value="localidade2">Localidade 2</Checkbox>
+                          <Checkbox value="localidade3">Localidade 3</Checkbox>
+                        </CheckboxGroup>
+                      </div>
+                      
+                    </div>
+
+                    <div className='flex justify-between gap-4 p-4 '>
+                      <Button
+                        color='secondary'
+                        startContent={<ChevronLeftIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={voltarParaStepAnterior}
+                      >
+                        Anterior
+                      </Button>
+
+                      <Button
+                        color='primary'
+                        startContent={<PlusSquareIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={handleButtonESRI}
+                      >
+                        ESRI(Satelite)
+                      </Button>
+
+                      <Button
+                        color='warning'
+                        startContent={<EditIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={handleButtonOSM}
+                      >
+                        OSM(Cartográfico)
+                      </Button>
+
+                      <Button
+                        color='success'
+                        startContent={<CheckIcon className={iconClasses} />}
+                        className='rounded-xl'
+                        onClick={onSubmit}
+                      >
+                        Cadastrar
+                      </Button>
+                    </div>
+
+                    <MapCadastro selectedLayer={selectedLayer} />
+                  </form>
+                </Tab>
+              )}
+            </Tabs>
+          </CardBody>
+        </Card>
+      </div>
     </>
-    
   )
 }
 
-export default CadastroAtivos
+export default CadastroAtivo
