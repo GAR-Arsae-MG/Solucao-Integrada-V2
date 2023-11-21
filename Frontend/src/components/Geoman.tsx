@@ -24,7 +24,7 @@ const Geoman = () => {
 
     leafletContainer.pm.setGlobalOptions({ pmIgnore: false });
 
-    leafletContainer.on("pm:create", (e: { layer: { pm: any; }; }) => {
+    leafletContainer.on("pm:create", (e: { layer: { pm }; }) => {
       if (e.layer && e.layer.pm) {
         const shape = e;
         console.log(e);
@@ -40,15 +40,15 @@ const Geoman = () => {
           .openPopup();
         leafletContainer.pm
           .getGeomanLayers()
-          .map((layer: { bindPopup: (arg0: string) => any; }, index: any) => layer.bindPopup(`I am figure N° ${index}`));
-        shape.layer.on("pm:edit", (e: never) => {
+          .map((layer: { bindPopup: (arg0) => any; }, index) => layer.bindPopup(`I am figure N° ${index}`));
+        shape.layer.on("pm:edit", (e) => {
           const event = e;
           // console.log(leafletContainer.pm.getGeomanLayers(true).toGeoJSON());
         });
       }
     });
 
-    leafletContainer.on("pm:remove", (e: any) => {
+    leafletContainer.on("pm:remove", (e) => {
       console.log("object removed");
       // console.log(leafletContainer.pm.getGeomanLayers(true).toGeoJSON());
     });
