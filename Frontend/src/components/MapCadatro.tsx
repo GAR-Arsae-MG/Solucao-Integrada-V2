@@ -8,7 +8,7 @@ import {
 
 import Geoman from "./Geoman";
 
-const MapCadastro = (props: { selectedLayer: unknown; }) => {
+const MapCadastro = (props: { selectedLayer: number; }) => {
   const mapProviders = [
     {
         id: 1,
@@ -95,20 +95,22 @@ const MapCadastro = (props: { selectedLayer: unknown; }) => {
     // }
 
     const multiPolyline = [
-        [
-            [-19.947128, -45.165717],
-            [-19.951, -45.165717],
-            [-19.947128, -45.17],
-        ],
-        [
-            [-19.95, -45.17],
-            [-19.95, -45.172],
-            [-19.94, -45.18],
-        ],
-    ];
+      [
+        [51.5, -0.1],
+        [51.5, -0.12],
+        [51.52, -0.12],
+      ],
+      [
+        [51.5, -0.05],
+        [51.5, -0.06],
+        [51.52, -0.06],
+      ],
+    ]
+    
     const redOptions = { color: "red" };
 
   return (   
+    <>
       <MapContainer center={[-19.947128, -45.165717]} zoom={15}>
         <TileLayer
           url={mapProviders[`${props.selectedLayer}`].url}
@@ -118,6 +120,8 @@ const MapCadastro = (props: { selectedLayer: unknown; }) => {
         <LayerCartocdn condicao={props.selectedLayer} />
         <Geoman />
       </MapContainer>
+
+    </>
   );
 };
 
