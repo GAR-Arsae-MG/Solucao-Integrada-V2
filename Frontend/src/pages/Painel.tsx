@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form"
 import {Tabs, Tab, Button, Card, CardBody,RadioGroup, Radio} from "@nextui-org/react";
 import 'leaflet/dist/leaflet.css'
+import '../assets/CadastroAtivos.css'
 import TopNav from "../components/ui/TopNav";
 import { EditIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import MapCadastro from "../components/MapCadatro";
+import { GridItem } from "@chakra-ui/layout";
 
 
 function Painel() {
@@ -98,7 +100,9 @@ function Painel() {
                                         OSM(Cartográfico)
                                     </Button>
 
-                                    <MapCadastro selectedLayer={selectedLayerValue} />
+                                    <GridItem bg='transparent'>
+                                        <MapCadastro selectedLayer={selectedLayerValue} />
+                                    </GridItem>
                                 </div>
                             </Tab>
                         </Tabs>
