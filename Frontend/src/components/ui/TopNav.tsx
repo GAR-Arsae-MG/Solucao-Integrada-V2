@@ -102,6 +102,8 @@ function TopNav() {
                                 </Card>
                             </>
                         }
+
+                        className="bg-slate-800"
                     >
                         <Button
                             disableRipple
@@ -113,12 +115,6 @@ function TopNav() {
                             Perfil
                         </Button>
                     </Tooltip>
-                </NavbarItem>
-
-                <NavbarItem>
-                    <Button as={Link} color="primary" href="/" variant="flat">
-                        Sign Up
-                    </Button>
                 </NavbarItem>
             </NavbarContent>
         </Navbar>
