@@ -1,7 +1,8 @@
 
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem} from "@nextui-org/react";
-import LogoSGP  from '../../assets/logo_sgp.png'  
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Card, CardHeader, Tooltip, Avatar} from "@nextui-org/react";
+import LogoSGP  from '../../assets/logo_sgp.png'
+import PersonSVG from '../../assets/person-svgrepo-com.svg'  
 
 
 function TopNav() {
@@ -18,7 +19,7 @@ function TopNav() {
                     <DropdownTrigger>
                         <Button
                         disableRipple
-                        className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+                        className="p-0 text-gray-400 bg-transparent data-[hover=true]:bg-transparent"
                         radius="sm"
                         variant="faded"
                         aria-label="Clique Aqui"
@@ -77,8 +78,41 @@ function TopNav() {
             </NavbarContent>
 
             <NavbarContent justify="end">
-                <NavbarItem className="hidden lg:flex">
-                    <Link href="/">Login</Link>
+                <NavbarItem className="lg:flex">
+                    <Tooltip
+                        content={
+                            <>
+                                <Card>
+                                    <CardHeader className="justify-between">
+                                        <div className="flex gap-5">
+                                            <Avatar 
+                                                isBordered 
+                                                radius="full" 
+                                                size="md"
+                                                src={PersonSVG} 
+                                            />
+                                            <div className="flex flex-col gap-1 items-start justify-center">
+                                                <h4 className="text-small font-semibold leading-none text-default-600">Sanarj</h4>
+                                                <h5 className="text-small tracking-tight text-default-400">Agência Reguladora</h5>
+                                                <h6 className="text-small tracking-tight text-default-400">Administrador</h6>
+                                            </div>
+                                            
+                                        </div>
+                                    </CardHeader>
+                                </Card>
+                            </>
+                        }
+                    >
+                        <Button
+                            disableRipple
+                            color="success"
+                            radius="sm"
+                            variant="shadow"
+                            aria-label="Clique Aqui"
+                        >
+                            Perfil
+                        </Button>
+                    </Tooltip>
                 </NavbarItem>
 
                 <NavbarItem>
