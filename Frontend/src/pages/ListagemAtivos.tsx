@@ -18,7 +18,7 @@ const ListagemAtivos = () => {
         <TopNav />
 
         <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-tr'>
-            <Card className="max-w-full w-[750px] h-[680px]">
+            <Card className="max-w-full w-[1200px] h-[1000px]">
                 <CardBody className="overflow-auto scrollbar-hide">
                     <Tabs
                         fullWidth

@@ -1,12 +1,11 @@
-import React from 'react';
-
 import {
   MapContainer,
   TileLayer,
   Polyline,
+  Marker,
 } from "react-leaflet";
 
-import Geoman from "./Geoman";
+import { MapData } from './MapData';
 
 const MapCadastro = (props: { selectedLayer: number; }) => {
   const mapProviders = [
@@ -39,75 +38,15 @@ const MapCadastro = (props: { selectedLayer: number; }) => {
     }
   }
 
-    // const [polygonLatLngs, setPolygonLatLngs] = useState([]);
-    // const [layerID, setLayerID] = useState(0);
-
-	// LEAFLET DRAW ON CREATE
-    // function handlePolygonCreated(event) {
-    //     const polygon = event.layer
-
-    //     if (polygon != null) {
-    //         // SE EXISTE PROPRIEDADE DRAGGING TIPO == MARKER
-    //         if(polygon.dragging) {
-    //             var lat_lngs = polygon._latlng
-                
-    //         } else {
-    //             var lat_lngs = polygon._latlngs
-    //         }
-
-    //         console.log(lat_lngs)
-    //         console.log(polygon._leaflet_id)
-    //         setLayerID(polygon._leaflet_id)
-    //         setPolygonLatLngs(lat_lngs)
-    //     }
-    // }
-
-    // function handlePolygonEdited(event) {
-    //     const polygon = event.layers._layers
-
-    //     if (polygon != null) {
-    //         // SE EXISTE PROPRIEDADE DRAGGING TIPO == MARKER
-    //         // if(polygon.dragging) {
-    //         //     var lat_lngs = polygon._latlng
-    //         // } else {
-    //         //     var lat_lngs = polygon._latlngs
-    //         // }
-
-    //         console.log(`polygon.${layerID}._latlngs`)
-    //         // setPolygonLatLngs(lat_lngs)
-    //     }
-    // }
-
-    // function handlePolygonDeleted(event) {
-    //     const polygon = event.layer;
-
-    //     if (polygon != null) {
-    //         // SE EXISTE PROPRIEDADE DRAGGING TIPO == MARKER
-    //         if(polygon.dragging) {
-    //             var lat_lngs = polygon._latlng
-    //         } else {
-    //             var lat_lngs = polygon._latlngs
-    //         }
-
-    //         console.log(lat_lngs)
-    //         setPolygonLatLngs(lat_lngs)
-    //     }
-    // }
-
-    const multiPolyline = [
-      [
-        [51.5, -0.1],
-        [51.5, -0.12],
-        [51.52, -0.12],
-      ],
-      [
-        [51.5, -0.05],
-        [51.5, -0.06],
-        [51.52, -0.06],
-      ],
-    ]
-    
-    const redOptions = { color: "red" };
+    const getMarkerColor = (sistema: string) => {
+      if (sistema === 'agua') {
+        return 'blue';
+      } else if (sistema === 'esgoto') {
+        return 'darkgreen';
+      } else {
+        return 'orange';
+      }
+    };
 
   return (   
     <>
@@ -116,9 +55,36 @@ const MapCadastro = (props: { selectedLayer: number; }) => {
           url={mapProviders[`${props.selectedLayer}`].url}
           attribution={mapProviders[`${props.selectedLayer}`].attribution}
         />
-        <Polyline pathOptions={redOptions} positions={multiPolyline} />
+
+        {MapData.map((ativo) => {
+          const {id, tipo2, sistema, coordenadas } = ativo
+          const markerColor = getMarkerColor(sistema)
+          let componentReturn = null
+
+          if (tipo2 === 'linear') {
+            const polylinePoints = coordenadas
+            componentReturn = (
+              <Polyline 
+                key={`polyline-${id}`}
+                positions={polylinePoints}
+                pathOptions={{color: markerColor}}
+              />
+            )
+          } else {
+            const markerPosition = coordenadas
+            componentReturn = (
+              <Marker 
+                key={`marker-${id}`}
+                position={markerPosition}
+              />
+            )
+          }
+
+            return componentReturn
+
+        })}
+
         <LayerCartocdn condicao={props.selectedLayer} />
-        <Geoman />
       </MapContainer>
 
     </>

@@ -6,6 +6,7 @@ import TopNav from "../components/ui/TopNav";
 import { EditIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import MapCadastro from "../components/MapCadatro";
 import { GridItem } from "@chakra-ui/layout";
+import { useState } from "react";
 
 
 function Painel() {
@@ -14,24 +15,19 @@ function Painel() {
         selectedSistema: string,
         selectedTipoAtivo: string,
         selectedLocalidade: string,
-        selectedLayer: number,
     }
 
-    const {register,setValue, watch} = useForm<Painel>({
-        defaultValues: {
-            selectedLayer: 0
-        }
-    })
+    const {register, watch} = useForm<Painel>()
+
+    const [selectedLayer, setSelectedLayer] = useState(0);
 
     function handleButtonESRI() {
-        setValue('selectedLayer', 0)
-    }
+        setSelectedLayer(0);
+      }
     
-    function handleButtonOSM() {
-        setValue('selectedLayer', 1)
-    }
-
-   const selectedLayerValue = watch('selectedLayer')
+      function handleButtonOSM() {
+          setSelectedLayer(1);
+      }
 
     const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
@@ -40,7 +36,7 @@ function Painel() {
             <TopNav />
 
             <div className="flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-tr">
-                <Card className="max-w-full w-[750px] h-[680px]">
+                <Card className="max-w-full w-[1200px] h-[800px]">
                     <CardBody className="overflow-auto scrollbar-hide">
                         <Tabs
                             fullWidth
@@ -101,7 +97,7 @@ function Painel() {
                                     </Button>
 
                                     <GridItem bg='transparent'>
-                                        <MapCadastro selectedLayer={selectedLayerValue} />
+                                        <MapCadastro selectedLayer={selectedLayer} />
                                     </GridItem>
                                 </div>
                             </Tab>

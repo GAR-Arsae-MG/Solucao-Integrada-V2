@@ -370,8 +370,12 @@ function CadastroAtivo() {
                         Cadastrar
                       </Button>
                     </div>
+                    
+                    <Divider />
 
-                    <MapCadastro selectedLayer={selectedLayer} />
+                    <div>
+                      <MapCadastro selectedLayer={selectedLayer} />
+                    </div>
                   </form>
                 </Tab>
               )}

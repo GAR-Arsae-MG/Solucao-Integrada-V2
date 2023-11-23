@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import Painel from './pages/Painel'
 import ListagemAtivos from './pages/ListagemAtivos'
+import ListagemUsuarios from './pages/ListagemUsuarios'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/cadastroAtivos' Component={CadastroAtivo} />
         <Route path='/painel' Component={Painel} />
         <Route path='/listagemAtivos' Component={ListagemAtivos} />
+        <Route path='/ListagemUsuarios' Component={ListagemUsuarios} />
       </Routes>
     </BrowserRouter>
     </>
