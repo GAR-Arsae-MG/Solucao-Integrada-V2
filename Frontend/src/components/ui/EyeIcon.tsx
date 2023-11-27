@@ -1,5 +1,6 @@
-import React from "react";
-export const EyeIcon = (props) => (
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const EyeIcon = (props: any) => (
   <svg
     aria-hidden="true"
     fill="none"

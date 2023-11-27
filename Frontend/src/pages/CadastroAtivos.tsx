@@ -32,7 +32,7 @@ function CadastroAtivo() {
     selectedLocalidade: string,
   }
 
-  const {register,handleSubmit, formState:{ errors } } = useForm<CadastroAtivoForm>()
+  const {register,handleSubmit } = useForm<CadastroAtivoForm>()
 
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
@@ -73,7 +73,7 @@ function CadastroAtivo() {
       <TopNav />
       
       <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-br'>
-        <Card className='max-w-full w-[750px] h-[680px]'>
+        <Card className='max-w-full w-[1200px] h-[680px]'>
           <CardBody className='overflow-auto scrollbar-hide' >
             <Tabs
               fullWidth
@@ -302,7 +302,6 @@ function CadastroAtivo() {
                       <Divider className='my-4' />
                       <div className='flex justify-between gap-4'>
                         <RadioGroup
-                          isRequired
                           label='Sistema'
                           {...register('selectedSistema')}
                         >
@@ -312,7 +311,6 @@ function CadastroAtivo() {
                         </RadioGroup>
 
                         <RadioGroup
-                          isRequired
                           label="Tipo de Ativo"
                           {...register('selectedTipoAtivo')}
                         >
@@ -321,7 +319,6 @@ function CadastroAtivo() {
                         </RadioGroup>
 
                         <RadioGroup
-                          isRequired
                           label="Localidade"
                           {...register('selectedLocalidade')}
                         >
@@ -333,7 +330,7 @@ function CadastroAtivo() {
                       
                     </div>
 
-                    <div className='flex justify-between gap-4 p-4 '>
+                    <div className='flex justify-between gap-4 '>
                       <Button
                         color='secondary'
                         startContent={<ChevronLeftIcon className={iconClasses} />}
@@ -370,13 +367,11 @@ function CadastroAtivo() {
                         Cadastrar
                       </Button>
                     </div>
-                    
-                    <Divider />
-
-                    <div>
-                      <MapCadastro selectedLayer={selectedLayer} />
-                    </div>
                   </form>
+
+                  <div>
+                    <MapCadastro selectedLayer={selectedLayer} />
+                  </div>
                 </Tab>
               )}
             </Tabs>

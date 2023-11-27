@@ -6,6 +6,7 @@ import {
 } from "react-leaflet";
 
 import { MapData } from './MapData';
+import { LatLngTuple } from "leaflet";
 
 const MapCadastro = (props: { selectedLayer: number; }) => {
   const mapProviders = [
@@ -25,7 +26,8 @@ const MapCadastro = (props: { selectedLayer: number; }) => {
     },
   ];
 
-  function LayerCartocdn({ condicao }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function LayerCartocdn({ condicao }: any) {
     const conditional = condicao;
 
     if (!conditional) {
@@ -62,7 +64,7 @@ const MapCadastro = (props: { selectedLayer: number; }) => {
           let componentReturn = null
 
           if (tipo2 === 'linear') {
-            const polylinePoints = coordenadas
+            const polylinePoints = coordenadas as LatLngTuple[]
             componentReturn = (
               <Polyline 
                 key={`polyline-${id}`}
@@ -71,7 +73,7 @@ const MapCadastro = (props: { selectedLayer: number; }) => {
               />
             )
           } else {
-            const markerPosition = coordenadas
+            const markerPosition = coordenadas as LatLngTuple
             componentReturn = (
               <Marker 
                 key={`marker-${id}`}

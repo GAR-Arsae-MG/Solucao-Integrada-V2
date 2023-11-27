@@ -1,4 +1,17 @@
-export const MapData = [
+type LatLngTuple = [number, number];
+type LatLngExpression = LatLngTuple | LatLngTuple[];
+
+interface MapItem {
+  id: number;
+  tipo: string;
+  sistema: string;
+  tipo2: string;
+  coordenadas: LatLngExpression;
+  valorOriginal: number;
+  data: string;
+}
+
+export const MapData: MapItem[] = [
     {
     "id":0,  
     "tipo":"enterrado",
@@ -12,6 +25,7 @@ export const MapData = [
     "valorOriginal":32,
     "data":"05/20/2023"
     },
+
     {
     "id":1, 
     "tipo":"enterrado",
@@ -25,6 +39,7 @@ export const MapData = [
     "valorOriginal": 33, 
     "data":"05/21/2023"
     },
+
     {
     "id":2, 
     "tipo":"enterrado",
@@ -34,6 +49,7 @@ export const MapData = [
     "valorOriginal": 43, 
     "data":"05/22/2023"
     },
+
     {
     "id":3, 
     "tipo":"enterrado",
@@ -43,6 +59,7 @@ export const MapData = [
     "valorOriginal": 20, 
     "data":"05/23/2023"
     },
+
     {
     "id":4, 
     "tipo":"enterrado",
@@ -56,6 +73,7 @@ export const MapData = [
     "valorOriginal": 25.5, 
     "data":"05/24/2023"
     },
+
     {
     "id":5, 
     "tipo":"enterrado",
@@ -65,6 +83,7 @@ export const MapData = [
     "valorOriginal": 22.9, 
     "data":"05/25/2023"
     },
+
     {
     "id":6, 
     "tipo":"enterrado",
@@ -74,6 +93,7 @@ export const MapData = [
     "valorOriginal": 20.3, 
     "data":"05/26/2023"
     },
+
     {
     "id":8, 
     "tipo":"visivel",
@@ -83,6 +103,7 @@ export const MapData = [
     "valorOriginal": 15.1, 
     "data":"05/28/2023"
     },
+
     {
     "id":9, 
     "tipo":"visivel",
@@ -92,6 +113,7 @@ export const MapData = [
     "valorOriginal": 12.5, 
     "data":"05/29/2023"
     },
+
     {
     "id":11, 
     "tipo":"visivel",
@@ -101,6 +123,7 @@ export const MapData = [
     "valorOriginal": 7.3, 
     "data":"05/31/2023"
     },
+
     {
     "id":12, 
     "tipo":"visivel",
@@ -110,6 +133,7 @@ export const MapData = [
     "valorOriginal": 4.7, 
     "data":"06/01/2023"
     },
+
     {
     "id":14, 
     "tipo":"visivel",

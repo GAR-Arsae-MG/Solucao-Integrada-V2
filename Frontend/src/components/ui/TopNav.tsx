@@ -1,17 +1,22 @@
-
-
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Card, CardHeader, Tooltip, Avatar} from "@nextui-org/react";
 import LogoSGP  from '../../assets/logo_sgp.png'
 import PersonSVG from '../../assets/person-svgrepo-com.svg'  
 
 
 function TopNav() {
+
     return(
         <Navbar className=" gap-6 bg-slate-900" >
-            <NavbarBrand>
-                <img src={LogoSGP} className="h-14 justify-start" />
-                <p className="font-bold text-inherit"></p>
-            </NavbarBrand>
+
+            <div>
+                <NavbarBrand
+                    rel="/painel"
+                >
+                    <img src={LogoSGP} className="h-14 justify-start"/>
+                    <p className="font-bold text-inherit"></p>
+                </NavbarBrand>
+            </div>
+           
 
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <Dropdown>

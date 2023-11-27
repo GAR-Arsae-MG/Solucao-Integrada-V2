@@ -13,7 +13,7 @@ function CadastroUnidades() {
       formaAtivo: ("pontual") 
     }
 
-    const {register, watch,handleSubmit, formState:{ errors } } = useForm<CadastroUnidadeForm>()
+    const {register, watch,handleSubmit } = useForm<CadastroUnidadeForm>()
 
     const navigate = useNavigate()
 
