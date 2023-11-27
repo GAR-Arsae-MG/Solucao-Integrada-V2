@@ -13,14 +13,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 import subprocess
+import django_vite
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '../Frontend/dist/assets')
-]
 
 
 GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal307.dll"
@@ -65,7 +61,7 @@ ROOT_URLCONF = 'SolucaoIntegrada.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '../Frontend/dist')],
+        'DIRS': [os.path.join('../../Frontend/dist/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,6 +75,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'SolucaoIntegrada.wsgi.application'
+
+DJANGO_VITE = {
+  "default": {
+    "dev_mode": True
+  }
+}
 
 
 # Database
@@ -128,7 +130,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join('../../Frontend/dist/assets')
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
