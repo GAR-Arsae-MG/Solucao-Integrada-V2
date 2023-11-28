@@ -55,19 +55,19 @@ const ListagemAtivos = () => {
             case 'actions': 
                 return (
                     <div className='relative flex items-center gap-2'>
-                    <Tooltip content='Details'>
+                    <Tooltip content='Detalhes'>
                         <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
                             <EyeIcon />
                         </span>
                     </Tooltip>
 
-                    <Tooltip content="Edit user">
+                    <Tooltip content="Editar Ativo">
                         <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                             <EditIcon />
                         </span>
                     </Tooltip>
 
-                    <Tooltip color="danger" content="Delete user">
+                    <Tooltip color="danger" content="Apagar Ativo">
                         <span className="text-lg text-danger cursor-pointer active:opacity-50">
                             <DeleteIcon />
                         </span>
