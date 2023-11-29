@@ -1,17 +1,18 @@
-
+import pessoaSVG from '../assets/pessoa.svg'
 
 const columns = [
-    {name: "NAME", uid: "name"},
-    {name: "ROLE", uid: "role"},
-    {name: "STATUS", uid: "status"},
+    {name: "EMAIL", uid: "email"},
+    {name: "FUNÇÃO", uid: "role"},
+    {name: "AGÊNCIA", uid: "agency"},
+    {name: 'TELEFONE', uid: "tel"},
     {name: "ACTIONS", uid: "actions"},
   ];
 
   const users = [
     {
       id: 0,
-      nome: "Fulano 1",
-      avatar: '../assets/pessoa.svg',
+      nome: "Pedro",
+      avatar: pessoaSVG,
       email: "ra@ra.com",
       funcao: "administrador",
       time: 'Sanarj-MG',
@@ -20,8 +21,8 @@ const columns = [
 
     {
       id: 1,
-      nome: "Fulano 2",
-      avatar: '../assets/pessoa.svg',
+      nome: "Ana",
+      avatar: pessoaSVG,
       email: "re@re.com",
       funcao: "regulador",
       time: 'Arsae-MG',
@@ -30,8 +31,8 @@ const columns = [
 
     {
       id: 2,
-      nome: "Fulano 3",
-      avatar: '../assets/pessoa.svg',
+      nome: "Maria",
+      avatar: pessoaSVG,
       email: "ri@ri.com",
       funcao: "Operário",
       time: 'Sanarj-MG',
@@ -40,8 +41,8 @@ const columns = [
 
     {
       id: 0,
-      nome: "Fulano 1",
-      avatar: '../assets/pessoa.svg',
+      nome: "Gabriel",
+      avatar: pessoaSVG,
       email: "ra@ra.com",
       funcao: "administrador",
       time: 'Sanarj-MG',
@@ -50,8 +51,8 @@ const columns = [
 
     {
       id: 1,
-      nome: "Fulano 2",
-      avatar: '../assets/pessoa.svg',
+      nome: "José",
+      avatar: pessoaSVG,
       email: "re@re.com",
       funcao: "regulador",
       time: 'Arsae-MG',
@@ -60,8 +61,8 @@ const columns = [
 
     {
       id: 2,
-      nome: "Fulano 3",
-      avatar: '../assets/pessoa.svg',
+      nome: "Elias",
+      avatar: pessoaSVG,
       email: "ri@ri.com",
       funcao: "Diretor",
       time: 'Sanarj-MG',
@@ -70,8 +71,8 @@ const columns = [
 
     {
       id: 0,
-      nome: "Fulano 1",
-      avatar: '../assets/pessoa.svg',
+      nome: "Julia",
+      avatar: pessoaSVG,
       email: "ra@ra.com",
       funcao: "administrador",
       time: 'Arsae-MG',

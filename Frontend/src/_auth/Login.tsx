@@ -40,7 +40,7 @@ function Login() {
             title: "Logado com sucesso",
             html:
                 "Clique " +
-                '<b><a href="/painel">aqui</a></b>' +
+                '<b><a href="/">aqui</a></b>' +
                 " para ir ao painel",
             showConfirmButton: false,
             })

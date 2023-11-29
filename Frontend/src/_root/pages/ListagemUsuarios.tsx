@@ -14,11 +14,11 @@ function ListagemUsuarios() {
         const cellValue = user[columnKey as keyof User]
 
         switch(columnKey) {
-            case 'name':
+            case 'email':
                 return(
                     <User
                         avatarProps={{radius:'lg', src: user.avatar}}
-                        description={user.email}
+                        description={user.nome}
                         name={cellValue}
                     >
                         {user.email}
@@ -29,9 +29,25 @@ function ListagemUsuarios() {
                 return (
                     <div className='flex flex-col '>
                         <p className='text-bold text-sm capitalize'>{cellValue}</p>
-                        <p className='text-bold text-sm capitalize text-default-400'>{user.time}</p>
+                        <p className='text-bold text-sm capitalize text-default-400'>{user.funcao}</p>
                     </div>
                 );
+            
+            case 'agency': 
+            return (
+                <div className='flex flex-col '>
+                    <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                    <p className='text-bold text-sm capitalize text-default-400'>{user.time}</p>
+                </div>
+            );
+
+            case 'tel': 
+            return (
+                <div className='flex flex-col '>
+                    <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                    <p className='text-bold text-sm capitalize text-default-400'>{user.telefone}</p>
+                </div>
+            );
 
             case 'actions':
                 return(
