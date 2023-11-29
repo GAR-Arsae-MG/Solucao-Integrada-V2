@@ -35,7 +35,7 @@ function Painel() {
 
             <div className="flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-tr">
                 <div className="flex flex-row  py-10">
-                    <Card className="h-48 w-[800px] ">
+                    <Card className="h-60 w-[800px] ">
                         <CardBody className="overflow-auto scrollbar-hide">
                             <Tabs
                                 fullWidth
@@ -104,7 +104,8 @@ function Painel() {
                     <div className="flex justify-between gap-4 p-4 flex-col w-[600px] h-[600px] scrollbar-hide ">
                         <Card className="max-w-full">
                             <CardBody className="overflow-auto scrollbar-hide">
-                                <section className="">
+                                <section>
+                                    <p className=" flex justify-center font-bold">Mapa Sanarj</p>
                                     <MapCadastro  selectedLayer={selectedLayer} />
                                 </section>
                             </CardBody>
