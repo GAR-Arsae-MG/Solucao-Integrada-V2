@@ -70,7 +70,7 @@ function TopNav() {
                 </Dropdown>
 
                 <NavbarItem isActive>
-                    <Link href="/painel" aria-current="page">
+                    <Link href="/" aria-current="page">
                         Painel Principal
                     </Link>
                 </NavbarItem>
