@@ -1,8 +1,8 @@
 
-import TopNav from '../components/ui/TopNav';
+import TopNav from '../../components/ui/TopNav';
 import { ChevronRightIcon, ChevronLeftIcon, PlusSquareIcon, CheckIcon, EditIcon } from '@chakra-ui/icons';
 import 'leaflet/dist/leaflet.css'
-import MapCadastro from '../components/MapCadatro';
+import MapCadastro from '../../components/MapCadatro';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Tabs, Tab, Input, Button, Card, CardBody, Divider, RadioGroup, Radio} from "@nextui-org/react";

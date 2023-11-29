@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
-import TopNav from '../components/ui/TopNav'
+import TopNav from '../../components/ui/TopNav'
 import { Card, CardBody, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react'
-import { columns, users } from '../components/data'
-import { EyeIcon } from '../components/ui/EyeIcon';
-import { EditIcon } from '../components/ui/EditIcon';
-import { DeleteIcon } from '../components/ui/DeleteIcon';
+import { columns, users } from '../../components/data'
+import { EyeIcon } from '../../components/ui/EyeIcon';
+import { EditIcon } from '../../components/ui/EditIcon';
+import { DeleteIcon } from '../../components/ui/DeleteIcon';
 
 type User = typeof users[0];
 

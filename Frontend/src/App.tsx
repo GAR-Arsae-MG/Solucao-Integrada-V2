@@ -1,11 +1,12 @@
 import './App.css'
-import CadastroAtivo from './pages/CadastroAtivos'
-import CadastroUnidades from './pages/CadastroUnidades'
-import Home from './pages/Home'
+import CadastroAtivo from './_root/pages/CadastroAtivos'
+import CadastroUnidades from './_root/pages/CadastroUnidades'
+import Home from './_root/pages/Home'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
-import Painel from './pages/Painel'
-import ListagemAtivos from './pages/ListagemAtivos'
-import ListagemUsuarios from './pages/ListagemUsuarios'
+import Painel from './_root/pages/Painel'
+import ListagemAtivos from './_root/pages/ListagemAtivos'
+import ListagemUsuarios from './_root/pages/ListagemUsuarios'
+import Login from './_auth/Login'
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
       <Routes>
 
         <Route>
-          <Route path='/login' Component={Home} />
+          <Route path='/login' Component={Login} />
         </Route>
         
         <Route>

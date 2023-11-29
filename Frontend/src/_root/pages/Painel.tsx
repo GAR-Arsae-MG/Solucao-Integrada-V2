@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form"
 import {Tabs, Tab, Button, Card, CardBody,RadioGroup, Radio} from "@nextui-org/react";
 import 'leaflet/dist/leaflet.css'
-import '../assets/CadastroAtivos.css'
-import TopNav from "../components/ui/TopNav";
+import '../../assets/CadastroAtivos.css'
+import TopNav from "../../components/ui/TopNav";
 import { EditIcon, PlusSquareIcon } from "@chakra-ui/icons";
-import MapCadastro from "../components/MapCadatro";
+import MapCadastro from "../../components/MapCadatro";
 import { useState } from "react";
 
 

@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form"
-import TopNav from "../components/ui/TopNav"
+import TopNav from "../../components/ui/TopNav"
 import { useNavigate } from "react-router-dom"
 import { Button, Card, CardBody, Input, Radio, RadioGroup, Tab, Tabs } from "@nextui-org/react"
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"

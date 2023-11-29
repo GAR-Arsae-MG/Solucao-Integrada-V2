@@ -1,12 +1,12 @@
 
-import TopNav from '../components/ui/TopNav'
+import TopNav from '../../components/ui/TopNav'
 import { Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, Tooltip, DropdownTrigger, Input, Tab, Tabs, Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
-import { MapData, MapItem, columns } from '../components/MapData'
+import { MapData, MapItem, columns } from '../../components/MapData'
 import React, { useCallback } from 'react'
-import { EyeIcon } from '../components/ui/EyeIcon'
-import { EditIcon } from '../components/ui/EditIcon'
-import { DeleteIcon } from '../components/ui/DeleteIcon'
+import { EyeIcon } from '../../components/ui/EyeIcon'
+import { EditIcon } from '../../components/ui/EditIcon'
+import { DeleteIcon } from '../../components/ui/DeleteIcon'
 
 const ListagemAtivos = () => {
 
