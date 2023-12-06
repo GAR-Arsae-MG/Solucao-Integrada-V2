@@ -5,6 +5,8 @@ import {
   Marker,
 } from "react-leaflet";
 
+import 'leaflet/dist/leaflet.css'
+
 import { MapData } from './MapData';
 import { LatLngTuple } from "leaflet";
 
