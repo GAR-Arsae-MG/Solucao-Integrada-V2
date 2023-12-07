@@ -13,6 +13,7 @@ import Distance from "../distance"
 import { Radio, RadioGroup } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
+import ativo from '../../assets/ativo.png'
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
@@ -116,6 +117,7 @@ export default function Map() {
             key={`${marker.lat}-${marker.lng}`} 
             position={{lat: marker.lat, lng: marker.lng}} 
             title="ativo"
+            icon={ativo}
            />
          ))} 
       </GoogleMap>
