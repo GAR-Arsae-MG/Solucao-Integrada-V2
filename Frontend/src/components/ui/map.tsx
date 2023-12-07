@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useMemo, useCallback, useRef } from "react";
 import {
   GoogleMap,
@@ -11,12 +12,22 @@ import Places from "../places"
 import Distance from "../distance"
 import { Radio, RadioGroup } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
+import defaultMarker from '../../assets/location.png'
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 
 export default function Map() {
+
+  const [selectedMarker, setSelectedMarker] = useState<any>([])
+
+  const handleMarkerClick = (e) => {
+    setSelectedMarker((current: any) => [...current, {
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng(),
+    }])
+  }
 
   type Painel = {
     selectedSistema: string,
@@ -40,7 +51,7 @@ export default function Map() {
     clickableIcons: false,
   }), [])
 
-  const onLoad = useCallback((map ) => (mapRef.current = map), [])
+  const onLoad = useCallback((map) => (mapRef.current = map), [])
 
   return <div className="flex h-full">
     <div className="w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
@@ -89,8 +100,24 @@ export default function Map() {
         mapContainerClassName="map-container"
         options={options}
         onLoad={onLoad}
+        onClick={handleMarkerClick}
       >
+        {office && (
+          <Marker 
+            position={office} 
+            icon={defaultMarker} 
+            title="location"
+          />
+        )}
 
+          
+         {selectedMarker.map((marker: { lat: any; lng: any; }) => (
+           <Marker 
+            key={`${marker.lat}-${marker.lng}`} 
+            position={{lat: marker.lat, lng: marker.lng}} 
+            title="ativo"
+           />
+         ))} 
       </GoogleMap>
     </div>
   </div>;
