@@ -13,7 +13,7 @@ export default function Places({ setOffice }: PlacesProps) {
       ready, 
       value, 
       setValue,
-      suggestions: {status, data}, 
+      suggestions: { data}, 
       clearSuggestions,
     } = usePlacesAutocomplete()
 
