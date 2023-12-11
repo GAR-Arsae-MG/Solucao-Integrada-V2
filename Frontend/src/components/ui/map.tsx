@@ -1,29 +1,63 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useMemo, useCallback, useRef } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   GoogleMap,
-  Marker,
+  InfoWindow,
+  Marker
 } from "@react-google-maps/api";
 import '../../assets/Map.css'
 import Places from "../places"
-import { Radio, RadioGroup } from "@nextui-org/react";
+import { Input, Radio, RadioGroup } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
 import ativo from '../../assets/ativo.png'
 
+
 type LatLngLiteral = google.maps.LatLngLiteral;
-type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 
 export default function Map() {
 
-  const [selectedMarker, setSelectedMarker] = useState<any>([])
+  interface  Marker {
+    id: string
+    name: string
+    position: LatLngLiteral 
+  }
 
-  const handleMarkerClick = (e) => {
-    setSelectedMarker((current: any) => [...current, {
-      lat: e.latLng.lat(),
-      lng: e.latLng.lng(),
-    }])
+  const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
+  const [markers, setMarkers] = useState<Marker[]>([])
+  const [inputValue, setInputValue] = useState('')
+
+  const handleMapClick = (e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      const newMarker: Marker = {
+        id: new Date().toISOString(),
+        position: e.latLng.toJSON(),
+        name: `Ativo ${markers.length + 1}`,
+      }
+      setMarkers([...markers, newMarker])
+    }
+  }
+
+  const handleMarkerClick = (marker: Marker): void => {
+    setSelectedMarker(marker)
+    setInputValue(marker.name)
+  }
+
+  const handleMarkerClose = () => {
+    setSelectedMarker(null)
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value)
+    if (selectedMarker) {
+      setMarkers((prevMarkers) => 
+        prevMarkers.map(
+          (marker) => 
+            marker.id === selectedMarker.id ? {...marker, name: e.target.value} : marker
+        )
+      )
+    }
   }
 
   type Painel = {
@@ -47,8 +81,6 @@ export default function Map() {
     mapId: 'd78eeda2034f463a',
     clickableIcons: false,
   }), [])
-
-  const onLoad = useCallback((map) => (mapRef.current = map), [])
 
   return <div className="flex h-full">
     <div className="w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
@@ -96,8 +128,7 @@ export default function Map() {
         center={center}
         mapContainerClassName="map-container"
         options={options}
-        onLoad={onLoad}
-        onClick={handleMarkerClick}
+        onClick={handleMapClick}
       >
         {office && (
           <>
@@ -109,14 +140,32 @@ export default function Map() {
           </>
         )}
           
-         {selectedMarker.map((marker: { lat: any; lng: any; }) => (
+         {markers.map((marker) => (
            <Marker 
-            key={`${marker.lat}-${marker.lng}`} 
-            position={{lat: marker.lat, lng: marker.lng}} 
-            title="ativo"
-            icon={ativo}
+              key={marker.id}
+              position={marker.position}
+              onClick={() => handleMarkerClick(marker)}
+              icon={ativo}
            />
-         ))} 
+         ))}
+
+         {selectedMarker && (
+           <InfoWindow
+            key={selectedMarker.id}
+            position={selectedMarker.position}
+            onCloseClick={handleMarkerClose}
+           >
+              <div>
+                <h2>Editar nome de Ativo</h2>
+                 <Input 
+                    placeholder="Nome do ativo"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    type="text"
+                 />
+              </div>
+           </InfoWindow>
+         )}
       </GoogleMap>
     </div>
   </div>;

@@ -5,7 +5,6 @@ import { useLoadScript } from "@react-google-maps/api";
 import Map from "../../components/ui/map";
 
 const VITE_GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-
 function Painel() {
     
     const { isLoaded } = useLoadScript({
@@ -14,7 +13,7 @@ function Painel() {
     })
 
     if (!isLoaded) {
-        return <Spinner />
+        return <Spinner className="flex justify-center" />
     }
 
     return (
