@@ -99,6 +99,7 @@ export default function Map() {
       })
       setIsDragging(true)
     }
+    
   }
 
   const handleMapMouseMove = (e: google.maps.MapMouseEvent) => {
