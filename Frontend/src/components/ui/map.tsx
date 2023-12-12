@@ -74,13 +74,13 @@ export default function Map() {
         const lastPolyline = currentPolylines[currentPolylines.length - 1]
 
         if (isDragging) {
-          const newPolyline = {...lastPolyline, path: [...lastPolyline.path, e.latLng?.toJSON()]}
+          const newPolyline = {...lastPolyline, path: [...lastPolyline.path, e.latLng!.toJSON()]}
 
           return [...currentPolylines.slice(0, -1), newPolyline]
         } else {
           const newPolyline: Polyline = {
             id: new Date().toISOString(),
-            path: [e.latLng.toJSON()]
+            path: [e.latLng!.toJSON()]
           }
           return [...currentPolylines, newPolyline]
         }
@@ -94,7 +94,7 @@ export default function Map() {
       setPolylines((currentPolylines) => {
 
         const lastPolyline = currentPolylines[currentPolylines.length - 1]
-        lastPolyline.path.push(e.latLng.toJSON())
+        lastPolyline.path.push(e.latLng!.toJSON())
         return [...currentPolylines.slice(0, -1), lastPolyline]
       })
     }
@@ -102,19 +102,6 @@ export default function Map() {
 
   const handleMapMouseUp = () => {
     setIsDragging(false)
-  }
-
-  const handlePolylineChange = (e: google.maps.MapMouseEvent, polylineId: string) => {
-    if (e.latLng) {
-      setPolylines((currentPolylines) => {
-        return currentPolylines.map((polyline) => {
-          if(polyline.id === polylineId) {
-            polyline.path[polyline.path.length - 1] = e.latLng.toJSON()
-          }
-          return polyline
-        })
-      })
-    }
   }
 
   type Painel = {
@@ -237,7 +224,6 @@ export default function Map() {
                 draggable: true,
                 visible: true,
               }}
-              
             />
          ))}
       </GoogleMap>
