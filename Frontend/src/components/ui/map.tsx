@@ -3,7 +3,8 @@ import React, { useState, useMemo, useRef } from "react";
 import {
   GoogleMap,
   InfoWindow,
-  Marker
+  Marker,
+  Polyline
 } from "@react-google-maps/api";
 import '../../assets/Map.css'
 import Places from "../places"
@@ -24,9 +25,16 @@ export default function Map() {
     position: LatLngLiteral 
   }
 
+  interface Polyline {
+    id: string,
+    path: LatLngLiteral[]
+  }
+
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
   const [markers, setMarkers] = useState<Marker[]>([])
   const [inputValue, setInputValue] = useState('')
+  const [polylines, setPolylines] = useState<Polyline[]>([])
+  const [isDragging, setIsDragging] = useState(false)
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
@@ -57,6 +65,55 @@ export default function Map() {
             marker.id === selectedMarker.id ? {...marker, name: e.target.value} : marker
         )
       )
+    }
+  }
+
+  const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      setPolylines((currentPolylines) => {
+        const lastPolyline = currentPolylines[currentPolylines.length - 1]
+
+        if (isDragging) {
+          const newPolyline = {...lastPolyline, path: [...lastPolyline.path, e.latLng?.toJSON()]}
+
+          return [...currentPolylines.slice(0, -1), newPolyline]
+        } else {
+          const newPolyline: Polyline = {
+            id: new Date().toISOString(),
+            path: [e.latLng.toJSON()]
+          }
+          return [...currentPolylines, newPolyline]
+        }
+      })
+      setIsDragging(true)
+    }
+  }
+
+  const handleMapMouseMove = (e: google.maps.MapMouseEvent) => {
+    if (isDragging && e.latLng) {
+      setPolylines((currentPolylines) => {
+
+        const lastPolyline = currentPolylines[currentPolylines.length - 1]
+        lastPolyline.path.push(e.latLng.toJSON())
+        return [...currentPolylines.slice(0, -1), lastPolyline]
+      })
+    }
+  }
+
+  const handleMapMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  const handlePolylineChange = (e: google.maps.MapMouseEvent, polylineId: string) => {
+    if (e.latLng) {
+      setPolylines((currentPolylines) => {
+        return currentPolylines.map((polyline) => {
+          if(polyline.id === polylineId) {
+            polyline.path[polyline.path.length - 1] = e.latLng.toJSON()
+          }
+          return polyline
+        })
+      })
     }
   }
 
@@ -129,6 +186,9 @@ export default function Map() {
         mapContainerClassName="map-container"
         options={options}
         onClick={handleMapClick}
+        onRightClick={handleMapRightClick}
+        onMouseMove={handleMapMouseMove}
+        onMouseUp={handleMapMouseUp}
       >
         {office && (
           <>
@@ -166,6 +226,20 @@ export default function Map() {
               </div>
            </InfoWindow>
          )}
+
+         {polylines.map((polyline) => (
+            <Polyline 
+              key={polyline.id}
+              path={polyline.path}
+              options={{
+                strokeColor: '#FF0000',
+                editable: true,
+                draggable: true,
+                visible: true,
+              }}
+              
+            />
+         ))}
       </GoogleMap>
     </div>
   </div>;
