@@ -74,9 +74,21 @@ export default function Map() {
         const lastPolyline = currentPolylines[currentPolylines.length - 1]
 
         if (isDragging) {
-          const newPolyline = {...lastPolyline, path: [...lastPolyline.path, e.latLng!.toJSON()]}
+          const newPoint = e.latLng!.toJSON()
+          const lastPoint = lastPolyline.path[lastPolyline.path.length - 1]
 
-          return [...currentPolylines.slice(0, -1), newPolyline]
+          const distance = google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng(lastPoint),
+            new google.maps.LatLng(newPoint)
+          )
+
+          if (distance > 10) {
+            const newPolyline = {...lastPolyline, path: [...lastPolyline.path, newPoint]}
+
+            return [...currentPolylines.slice(0, -1), newPolyline]
+          } else {
+            return currentPolylines
+          }
         } else {
           const newPolyline: Polyline = {
             id: new Date().toISOString(),
