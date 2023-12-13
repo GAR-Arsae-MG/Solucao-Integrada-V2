@@ -8,7 +8,7 @@ import {
 } from "@react-google-maps/api";
 import '../../assets/Map.css'
 import Places from "../places"
-import { Input, Radio, RadioGroup } from "@nextui-org/react";
+import { Button, Input, Radio, RadioGroup } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
 import ativo from '../../assets/ativo.png'
@@ -22,12 +22,13 @@ export default function Map() {
   interface  Marker {
     id: string
     name: string
-    position: LatLngLiteral 
+    position: LatLngLiteral
   }
 
   interface Polyline {
     id: string,
     path: LatLngLiteral[]
+    type: string
   }
 
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
@@ -35,6 +36,8 @@ export default function Map() {
   const [inputValue, setInputValue] = useState('')
   const [polylines, setPolylines] = useState<Polyline[]>([])
   const [isDragging, setIsDragging] = useState(false)
+  const [selectedType, setSelectedType] = useState('agua')
+  const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
@@ -82,7 +85,7 @@ export default function Map() {
             new google.maps.LatLng(newPoint)
           )
 
-          if (distance > 10) {
+          if (distance > 1) {
             const newPolyline = {...lastPolyline, path: [...lastPolyline.path, newPoint]}
 
             return [...currentPolylines.slice(0, -1), newPolyline]
@@ -92,7 +95,8 @@ export default function Map() {
         } else {
           const newPolyline: Polyline = {
             id: new Date().toISOString(),
-            path: [e.latLng!.toJSON()]
+            path: [e.latLng!.toJSON()],
+            type: selectedType
           }
           return [...currentPolylines, newPolyline]
         }
@@ -113,8 +117,53 @@ export default function Map() {
     }
   }
 
+  const selectedPolylineHandler = (e: google.maps.MapMouseEvent) => {
+    if (selectedPolyline) {
+      setSelectedPolyline({
+        ...selectedPolyline,
+        path: [...selectedPolyline.path, e.latLng!.toJSON()]
+      })
+    }
+  }
+
+  const removeUnconnectedPolylines = () => {
+    setPolylines((currentPolylines) => {
+      return currentPolylines.filter((polyline, index, self) => {
+        return self.some((otherPolyline) => {
+          if (polyline === otherPolyline) {
+            return false
+          }
+
+          const polylineStart = polyline.path[0]
+          const polylineEnd = polyline.path[polyline.path.length - 1]
+          const otherPolylineStart = otherPolyline.path[0]
+          const otherPolylineEnd = otherPolyline.path[otherPolyline.path.length - 1]
+
+          return (
+            polylineStart === otherPolylineStart ||
+            polylineStart === otherPolylineEnd ||
+            polylineEnd === otherPolylineStart ||
+            polylineEnd === otherPolylineEnd
+          )
+        })
+      })
+    })
+  }
+
+  const eventRightClickHandler = (e: google.maps.MapMouseEvent) => {
+    e.stop()
+
+    handleMapRightClick(e)
+    selectedPolylineHandler(e)
+    removeUnconnectedPolylines
+  }
+
   const handleMapMouseUp = () => {
     setIsDragging(false)
+  }
+
+  const handleButtonClick = (type: string) => {
+    setSelectedType(type)
   }
 
   type Painel = {
@@ -176,6 +225,23 @@ export default function Map() {
           <Radio value="localidade2">Localidade 2</Radio>
           <Radio value="localidade3">Localidade 3</Radio>
         </RadioGroup>
+
+
+        <div>
+          <Button 
+            color="primary"
+            onClick={() => handleButtonClick('agua')}
+          >
+            Água
+          </Button>
+          <Button 
+            color="success"
+            onClick={() => handleButtonClick('esgoto')}
+          >
+            Esgoto
+          </Button>
+        </div>
+
       </div>
     </div>
 
@@ -186,7 +252,7 @@ export default function Map() {
         mapContainerClassName="map-container"
         options={options}
         onClick={handleMapClick}
-        onRightClick={handleMapRightClick}
+        onRightClick={eventRightClickHandler}
         onMouseMove={handleMapMouseMove}
         onMouseUp={handleMapMouseUp}
       >
@@ -232,11 +298,12 @@ export default function Map() {
               key={polyline.id}
               path={polyline.path}
               options={{
-                strokeColor: '#FF0000',
+                strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
                 editable: true,
                 draggable: true,
                 visible: true,
               }}
+              onRightClick={() => setSelectedPolyline(polyline)}
             />
          ))}
       </GoogleMap>
