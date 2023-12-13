@@ -5,6 +5,8 @@ import {
   DirectionsRenderer,
   Circle,
   MarkerClusterer,
+  Polyline,
+  KmlLayer
 } from "@react-google-maps/api";
 import '../../assets/Map.css'
 import Places from "../places"
@@ -90,7 +92,7 @@ export default function Map() {
         options={options}
         onLoad={onLoad}
       >
-
+        
       </GoogleMap>
     </div>
   </div>;
