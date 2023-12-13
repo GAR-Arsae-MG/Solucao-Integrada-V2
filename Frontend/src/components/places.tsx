@@ -13,7 +13,7 @@ export default function Places({ setOffice }: PlacesProps) {
       ready, 
       value, 
       setValue,
-      suggestions: {status, data}, 
+      suggestions: { data}, 
       clearSuggestions,
     } = usePlacesAutocomplete()
 
@@ -25,6 +25,10 @@ export default function Places({ setOffice }: PlacesProps) {
       const {lat, lng} = await getLatLng(results[0])
       setOffice({lat, lng})
     }
+
+    const suggestions = data.map(({description}) => ({
+       description
+    }))
   
     
     return (
@@ -41,7 +45,9 @@ export default function Places({ setOffice }: PlacesProps) {
             key={place_id}
             value={description}
             placeholder={description}
-            onChange={e => setValue(e.target.value)}
+            onClick={() => suggestions.map(({description}) => {
+              handleSelect(description)
+            })}
           >
             {description}
           </AutocompleteItem>

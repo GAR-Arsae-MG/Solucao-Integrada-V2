@@ -1,24 +1,121 @@
-import { useState, useMemo, useCallback, useRef } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useMemo, useRef } from "react";
 import {
   GoogleMap,
+  InfoWindow,
   Marker,
-  DirectionsRenderer,
-  Circle,
-  MarkerClusterer,
-  Polyline,
-  KmlLayer
+  Polyline
 } from "@react-google-maps/api";
 import '../../assets/Map.css'
 import Places from "../places"
-import Distance from "../distance"
-import { Radio, RadioGroup } from "@nextui-org/react";
+import { Input, Radio, RadioGroup } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
+import defaultMarker from '../../assets/location.png'
+import ativo from '../../assets/ativo.png'
+
 
 type LatLngLiteral = google.maps.LatLngLiteral;
-type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 
 export default function Map() {
+
+  interface  Marker {
+    id: string
+    name: string
+    position: LatLngLiteral 
+  }
+
+  interface Polyline {
+    id: string,
+    path: LatLngLiteral[]
+  }
+
+  const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
+  const [markers, setMarkers] = useState<Marker[]>([])
+  const [inputValue, setInputValue] = useState('')
+  const [polylines, setPolylines] = useState<Polyline[]>([])
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleMapClick = (e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      const newMarker: Marker = {
+        id: new Date().toISOString(),
+        position: e.latLng.toJSON(),
+        name: `Ativo ${markers.length + 1}`,
+      }
+      setMarkers([...markers, newMarker])
+    }
+  }
+
+  const handleMarkerClick = (marker: Marker): void => {
+    setSelectedMarker(marker)
+    setInputValue(marker.name)
+  }
+
+  const handleMarkerClose = () => {
+    setSelectedMarker(null)
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value)
+    if (selectedMarker) {
+      setMarkers((prevMarkers) => 
+        prevMarkers.map(
+          (marker) => 
+            marker.id === selectedMarker.id ? {...marker, name: e.target.value} : marker
+        )
+      )
+    }
+  }
+
+  const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      setPolylines((currentPolylines) => {
+        const lastPolyline = currentPolylines[currentPolylines.length - 1]
+
+        if (isDragging) {
+          const newPoint = e.latLng!.toJSON()
+          const lastPoint = lastPolyline.path[lastPolyline.path.length - 1]
+
+          const distance = google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng(lastPoint),
+            new google.maps.LatLng(newPoint)
+          )
+
+          if (distance > 10) {
+            const newPolyline = {...lastPolyline, path: [...lastPolyline.path, newPoint]}
+
+            return [...currentPolylines.slice(0, -1), newPolyline]
+          } else {
+            return currentPolylines
+          }
+        } else {
+          const newPolyline: Polyline = {
+            id: new Date().toISOString(),
+            path: [e.latLng!.toJSON()]
+          }
+          return [...currentPolylines, newPolyline]
+        }
+      })
+      setIsDragging(true)
+    }
+    
+  }
+
+  const handleMapMouseMove = (e: google.maps.MapMouseEvent) => {
+    if (isDragging && e.latLng) {
+      setPolylines((currentPolylines) => {
+
+        const lastPolyline = currentPolylines[currentPolylines.length - 1]
+        lastPolyline.path.push(e.latLng!.toJSON())
+        return [...currentPolylines.slice(0, -1), lastPolyline]
+      })
+    }
+  }
+
+  const handleMapMouseUp = () => {
+    setIsDragging(false)
+  }
 
   type Painel = {
     selectedSistema: string,
@@ -41,8 +138,6 @@ export default function Map() {
     mapId: 'd78eeda2034f463a',
     clickableIcons: false,
   }), [])
-
-  const onLoad = useCallback((map ) => (mapRef.current = map), [])
 
   return <div className="flex h-full">
     <div className="w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
@@ -90,52 +185,61 @@ export default function Map() {
         center={center}
         mapContainerClassName="map-container"
         options={options}
-        onLoad={onLoad}
+        onClick={handleMapClick}
+        onRightClick={handleMapRightClick}
+        onMouseMove={handleMapMouseMove}
+        onMouseUp={handleMapMouseUp}
       >
-        
+        {office && (
+          <>
+            <Marker 
+              position={office} 
+              icon={defaultMarker} 
+              title="location"
+            />
+          </>
+        )}
+          
+         {markers.map((marker) => (
+           <Marker 
+              key={marker.id}
+              position={marker.position}
+              onClick={() => handleMarkerClick(marker)}
+              icon={ativo}
+           />
+         ))}
+
+         {selectedMarker && (
+           <InfoWindow
+            key={selectedMarker.id}
+            position={selectedMarker.position}
+            onCloseClick={handleMarkerClose}
+           >
+              <div>
+                <h2>Editar nome de Ativo</h2>
+                 <Input 
+                    placeholder="Nome do ativo"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    type="text"
+                 />
+              </div>
+           </InfoWindow>
+         )}
+
+         {polylines.map((polyline) => (
+            <Polyline 
+              key={polyline.id}
+              path={polyline.path}
+              options={{
+                strokeColor: '#FF0000',
+                editable: true,
+                draggable: true,
+                visible: true,
+              }}
+            />
+         ))}
       </GoogleMap>
     </div>
   </div>;
 }
-
-const defaultOptions = {
-  strokeOpacity: 0.5,
-  strokeWeight: 2,
-  clickable: false,
-  draggable: false,
-  editable: false,
-  visible: true,
-};
-const closeOptions = {
-  ...defaultOptions,
-  zIndex: 3,
-  fillOpacity: 0.05,
-  strokeColor: "#8BC34A",
-  fillColor: "#8BC34A",
-};
-const middleOptions = {
-  ...defaultOptions,
-  zIndex: 2,
-  fillOpacity: 0.05,
-  strokeColor: "#FBC02D",
-  fillColor: "#FBC02D",
-};
-const farOptions = {
-  ...defaultOptions,
-  zIndex: 1,
-  fillOpacity: 0.05,
-  strokeColor: "#FF5252",
-  fillColor: "#FF5252",
-};
-
-const generateHouses = (position: LatLngLiteral) => {
-  const _houses: Array<LatLngLiteral> = [];
-  for (let i = 0; i < 100; i++) {
-    const direction = Math.random() < 0.5 ? -2 : 2;
-    _houses.push({
-      lat: position.lat + Math.random() / direction,
-      lng: position.lng + Math.random() / direction,
-    });
-  }
-  return _houses;
-};
