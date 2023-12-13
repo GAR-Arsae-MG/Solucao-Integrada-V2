@@ -29,6 +29,10 @@ export default function Map() {
     id: string,
     path: LatLngLiteral[]
     type: string
+    creationDate: Date,
+    updateDate: Date,
+    itemCode: string,
+    diameter: string,
   }
 
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
@@ -39,6 +43,22 @@ export default function Map() {
   const [selectedType, setSelectedType] = useState('agua')
   const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
   const [firstPolylineToLink, setFirstPolylineToLink] = useState(null)
+
+  function generateItemCode(): string {
+    const timestamp = new Date().getTime()
+    const randomNum = Math.floor(Math.random() * 1000)
+    return `${timestamp}-${randomNum}`
+  }
+
+  function calculateDiameter(path: LatLngLiteral[]): number {
+    let diameter = 0
+    for (let i = 0; i < path.length - 1; i++) {
+      const point1 = new google.maps.LatLng(path[i])
+      const point2 = new google.maps.LatLng(path[i + 1])
+      diameter += google.maps.geometry.spherical.computeDistanceBetween(point1, point2)
+    }
+    return diameter
+  }
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
@@ -97,7 +117,11 @@ export default function Map() {
           const newPolyline: Polyline = {
             id: new Date().toISOString(),
             path: [e.latLng!.toJSON()],
-            type: selectedType
+            type: selectedType,
+            creationDate: new Date(),
+            updateDate: new Date(),
+            itemCode: generateItemCode(),
+            diameter: calculateDiameter([e.latLng!.toJSON()]).toString(),
           }
           return [...currentPolylines, newPolyline]
         }
@@ -168,7 +192,11 @@ export default function Map() {
       const newPolyline: Polyline = {
         id: new Date().toISOString(),
         path: [...polyline1.path, ...polyline2.path],
-        type: polyline1.type
+        type: polyline1.type,
+        creationDate: new Date(),
+        updateDate: new Date(),
+        itemCode: generateItemCode(),
+        diameter: calculateDiameter([...polyline1.path, ...polyline2.path]).toString(),
       }
 
       return [
@@ -185,6 +213,9 @@ export default function Map() {
       interlinkPolylines(firstPolylineToLink, polylineId)
       setFirstPolylineToLink(null)
     }
+
+    const polyline = polylines.find((polyline) => polyline.id === polylineId)
+    setSelectedPolyline(polyline || null)
   }
 
   const eventRightClickHandler = (e: google.maps.MapMouseEvent) => {
@@ -343,6 +374,21 @@ export default function Map() {
               onRightClick={() => polylineClickHandler(polyline.id)}
             />
          ))}
+
+         {selectedPolyline && (
+            <InfoWindow
+              position={selectedPolyline.path[0]}
+              onCloseClick={() => setSelectedPolyline(null)}
+            >
+              <div>
+                <p>Data de criação: {selectedPolyline.creationDate.toLocaleString()}</p>
+                <p>Data de atualização: {selectedPolyline.updateDate.toLocaleString()}</p>
+                <p>Item Code: {selectedPolyline.itemCode}</p>
+                <p>Diâmetro: {selectedPolyline.diameter} m</p>
+                <p>Extensão: {selectedPolyline.path.length}</p>
+              </div>
+            </InfoWindow>
+         )}
       </GoogleMap>
     </div>
   </div>;
