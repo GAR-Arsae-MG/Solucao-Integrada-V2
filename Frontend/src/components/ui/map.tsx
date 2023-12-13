@@ -38,6 +38,7 @@ export default function Map() {
   const [isDragging, setIsDragging] = useState(false)
   const [selectedType, setSelectedType] = useState('agua')
   const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
+  const [firstPolylineToLink, setFirstPolylineToLink] = useState(null)
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
@@ -128,7 +129,7 @@ export default function Map() {
 
   const removeUnconnectedPolylines = () => {
     setPolylines((currentPolylines) => {
-      return currentPolylines.filter((polyline, index, self) => {
+      return currentPolylines.filter((polyline, _index, self) => {
         return self.some((otherPolyline) => {
           if (polyline === otherPolyline) {
             return false
@@ -148,6 +149,42 @@ export default function Map() {
         })
       })
     })
+  }
+
+  const interlinkPolylines = (id1: string, id2: string) => {
+    setPolylines((currentPolylines) => {
+
+      const polyline1 = currentPolylines.find((polyline) => polyline.id === id1)
+      const polyline2 = currentPolylines.find((polyline) => polyline.id === id2)
+
+      if (!polyline1 || !polyline2) {
+        return currentPolylines
+      }
+
+      if (polyline1.path.length + polyline2.path.length > 10) {
+        return currentPolylines
+      }
+
+      const newPolyline: Polyline = {
+        id: new Date().toISOString(),
+        path: [...polyline1.path, ...polyline2.path],
+        type: polyline1.type
+      }
+
+      return [
+        ...currentPolylines.filter((polyline) => polyline !== polyline1 && polyline !== polyline2),
+        newPolyline
+      ]
+    })
+  }
+
+  const polylineClickHandler = (polylineId: any) => {
+    if (!firstPolylineToLink) {
+      setFirstPolylineToLink(polylineId)
+    } else {
+      interlinkPolylines(firstPolylineToLink, polylineId)
+      setFirstPolylineToLink(null)
+    }
   }
 
   const eventRightClickHandler = (e: google.maps.MapMouseEvent) => {
@@ -303,7 +340,7 @@ export default function Map() {
                 draggable: true,
                 visible: true,
               }}
-              onRightClick={() => setSelectedPolyline(polyline)}
+              onRightClick={() => polylineClickHandler(polyline.id)}
             />
          ))}
       </GoogleMap>
