@@ -97,7 +97,7 @@ export default function Map() {
       setPolylines((currentPolylines) => {
         const lastPolyline = currentPolylines[currentPolylines.length - 1]
 
-        if (isDragging) {
+        if (lastPolyline &&  isDragging) {
           const newPoint = e.latLng!.toJSON()
           const lastPoint = lastPolyline.path[lastPolyline.path.length - 1]
 
@@ -128,16 +128,20 @@ export default function Map() {
       })
       setIsDragging(true)
     }
-    
   }
 
   const handleMapMouseMove = (e: google.maps.MapMouseEvent) => {
     if (isDragging && e.latLng) {
       setPolylines((currentPolylines) => {
 
-        const lastPolyline = currentPolylines[currentPolylines.length - 1]
-        lastPolyline.path.push(e.latLng!.toJSON())
-        return [...currentPolylines.slice(0, -1), lastPolyline]
+        const lastPolyline = currentPolylines[currentPolylines.length - 1] 
+        if (lastPolyline) {
+
+          lastPolyline.path.push(e.latLng!.toJSON())
+          return [...currentPolylines.slice(0, -1), lastPolyline]
+        } else {
+          return currentPolylines
+        }
       })
     }
   }
@@ -151,25 +155,42 @@ export default function Map() {
     }
   }
 
+  const pointBetween = (point: google.maps.LatLng, start: google.maps.LatLng, end: google.maps.LatLng) => {
+    const epsilon = 0.0001; // margem de erro para lidar com erros de ponto flutuante
+    const crossproduct = (point.lat() - start.lat()) * (end.lng() - start.lng()) - (point.lng() - start.lng()) * (end.lat() - start.lat());
+    if (Math.abs(crossproduct) > epsilon) return false; // (point, start, end) não colinear
+  
+    const dotproduct = (point.lat() - start.lat()) * (end.lat() - start.lat()) + (point.lng() - start.lng())*(end.lng() - start.lng());
+    if (dotproduct < 0) return false; // point não está entre start e end
+  
+    const squaredlengthba = (end.lat() - start.lat())*(end.lat() - start.lat()) + (end.lng() - start.lng())*(end.lng() - start.lng());
+    if (dotproduct > squaredlengthba) return false; // point não está entre start e end
+  
+    return true;
+  }
+
   const removeUnconnectedPolylines = () => {
+
+    const currentTime = new Date().getTime()
+
     setPolylines((currentPolylines) => {
       return currentPolylines.filter((polyline, _index, self) => {
+        if (currentTime - polyline.creationDate.getTime() < 5000) {
+          return true
+        }
+        
         return self.some((otherPolyline) => {
           if (polyline === otherPolyline) {
             return false
           }
 
-          const polylineStart = polyline.path[0]
-          const polylineEnd = polyline.path[polyline.path.length - 1]
-          const otherPolylineStart = otherPolyline.path[0]
-          const otherPolylineEnd = otherPolyline.path[otherPolyline.path.length - 1]
+          const polylineStart = new google.maps.LatLng(polyline.path[0])
+          const polylineEnd = new google.maps.LatLng(polyline.path[polyline.path.length - 1])
 
-          return (
-            polylineStart === otherPolylineStart ||
-            polylineStart === otherPolylineEnd ||
-            polylineEnd === otherPolylineStart ||
-            polylineEnd === otherPolylineEnd
-          )
+            return otherPolyline.path.some((otherPoint) => {
+              const point = new google.maps.LatLng(otherPoint)
+              return pointBetween(point, polylineStart, polylineEnd)
+            })
         })
       })
     })
@@ -185,7 +206,7 @@ export default function Map() {
         return currentPolylines
       }
 
-      if (polyline1.path.length + polyline2.path.length > 10) {
+      if (polyline1.path.length + polyline2.path.length > 5) {
         return currentPolylines
       }
 
@@ -223,7 +244,7 @@ export default function Map() {
 
     handleMapRightClick(e)
     selectedPolylineHandler(e)
-    removeUnconnectedPolylines
+    removeUnconnectedPolylines()
   }
 
   const handleMapMouseUp = () => {
@@ -258,7 +279,7 @@ export default function Map() {
 
   return <div className="flex h-full">
     <div className="w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
-      <h1>Commute?</h1>
+      <h1>Painel - Filtros</h1>
       <Places setOffice={(position) => {
         setOffice(position)
         mapRef.current?.panTo(position)
@@ -385,7 +406,7 @@ export default function Map() {
                 <p>Data de atualização: {selectedPolyline.updateDate.toLocaleString()}</p>
                 <p>Item Code: {selectedPolyline.itemCode}</p>
                 <p>Diâmetro: {selectedPolyline.diameter} m</p>
-                <p>Extensão: {selectedPolyline.path.length}</p>
+                <p>Extensão: {selectedPolyline.path.length} m</p>
               </div>
             </InfoWindow>
          )}
