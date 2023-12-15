@@ -43,6 +43,7 @@ export default function Map() {
   const [selectedType, setSelectedType] = useState('agua')
   const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
   const [firstPolylineToLink, setFirstPolylineToLink] = useState(null)
+  const [isDeleteMode, setIsDeleteMode] = useState(false)
 
   function generateItemCode(): string {
     const timestamp = new Date().getTime()
@@ -239,6 +240,26 @@ export default function Map() {
     setSelectedPolyline(polyline || null)
   }
 
+  const handlePolylineDoubleClick = (polylineId: string) => {
+    setPolylines((currentPolylines) => {
+      return currentPolylines.filter((polyline) => polyline.id !== polylineId)
+    })
+
+    setPolylines((currentInitialPolylines) => {
+      return currentInitialPolylines.filter((polyline) => polyline.id === polylineId)
+    })
+  }
+
+  const handlePolylineFunction = (polylineId: string) => {
+    if(isDeleteMode) {
+      handlePolylineDoubleClick(polylineId)
+    }
+  }
+
+  const handleDeleteModeButtonClick = () => {
+    setIsDeleteMode(!isDeleteMode)
+  }
+
   const eventRightClickHandler = (e: google.maps.MapMouseEvent) => {
     e.stop()
 
@@ -248,7 +269,9 @@ export default function Map() {
   }
 
   const handleMapMouseUp = () => {
-    setIsDragging(false)
+    if (!isDeleteMode) {
+      setIsDragging(false)
+    }
   }
 
   const handleButtonClick = (type: string) => {
@@ -330,7 +353,15 @@ export default function Map() {
             Esgoto
           </Button>
         </div>
-
+        
+        <div>
+          <Button 
+            color="danger"
+            onClick={() => handleDeleteModeButtonClick()}
+          >
+            Deletar Polylines
+          </Button>
+        </div>
       </div>
     </div>
 
@@ -393,6 +424,7 @@ export default function Map() {
                 visible: true,
               }}
               onRightClick={() => polylineClickHandler(polyline.id)}
+              onDblClick={() => handlePolylineFunction(polyline.id)}
             />
          ))}
 
