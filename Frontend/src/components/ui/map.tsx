@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   GoogleMap,
   InfoWindow,
   Marker,
-  Polyline
+  Polyline,
+  LoadScript
 } from "@react-google-maps/api";
 import '../../assets/Map.css'
 import Places from "../places"
@@ -44,6 +45,8 @@ export default function Map() {
   const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
   const [firstPolylineToLink, setFirstPolylineToLink] = useState(null)
   const [isDeleteMode, setIsDeleteMode] = useState(false)
+
+  const [visiblePolylines, setVisiblePolylines] = useState<string[]>(polylines.map((polyline) => polyline.id))
 
   function generateItemCode(): string {
     const timestamp = new Date().getTime()
@@ -124,6 +127,7 @@ export default function Map() {
             itemCode: generateItemCode(),
             diameter: calculateDiameter([e.latLng!.toJSON()]).toString(),
           }
+          setVisiblePolylines((currentVisiblePolylines) => [...currentVisiblePolylines, newPolyline.id])
           return [...currentPolylines, newPolyline]
         }
       })
@@ -156,7 +160,7 @@ export default function Map() {
     }
   }
 
-  const pointBetween = (point: google.maps.LatLng, start: google.maps.LatLng, end: google.maps.LatLng) => {
+  /*const pointBetween = (point: google.maps.LatLng, start: google.maps.LatLng, end: google.maps.LatLng) => {
     const epsilon = 0.0001; // margem de erro para lidar com erros de ponto flutuante
     const crossproduct = (point.lat() - start.lat()) * (end.lng() - start.lng()) - (point.lng() - start.lng()) * (end.lat() - start.lat());
     if (Math.abs(crossproduct) > epsilon) return false; // (point, start, end) não colinear
@@ -195,7 +199,7 @@ export default function Map() {
         })
       })
     })
-  }
+  }*/
 
   const interlinkPolylines = (id1: string, id2: string) => {
     setPolylines((currentPolylines) => {
@@ -204,11 +208,11 @@ export default function Map() {
       const polyline2 = currentPolylines.find((polyline) => polyline.id === id2)
 
       if (!polyline1 || !polyline2) {
-        return currentPolylines
+        return[ ...currentPolylines]
       }
 
       if (polyline1.path.length + polyline2.path.length > 5) {
-        return currentPolylines
+        return[ ...currentPolylines]
       }
 
       const newPolyline: Polyline = {
@@ -220,13 +224,10 @@ export default function Map() {
         itemCode: generateItemCode(),
         diameter: calculateDiameter([...polyline1.path, ...polyline2.path]).toString(),
       }
-
-      return [
-        ...currentPolylines.filter((polyline) => polyline !== polyline1 && polyline !== polyline2),
-        newPolyline
-      ]
+      setVisiblePolylines((currentVisiblePolylines) => [...currentVisiblePolylines, newPolyline.id])
+      return [...currentPolylines, newPolyline]
     })
-  }
+    }
 
   const polylineClickHandler = (polylineId: any) => {
     if (!firstPolylineToLink) {
@@ -241,20 +242,21 @@ export default function Map() {
   }
 
   const handlePolylineDoubleClick = (polylineId: string) => {
-    setPolylines((currentPolylines) => {
-      return currentPolylines.filter((polyline) => polyline.id !== polylineId)
+    setVisiblePolylines((currentVisiblePolylines) => {
+      return currentVisiblePolylines.filter((id) => id !== polylineId)
     })
 
-    setPolylines((currentInitialPolylines) => {
-      return currentInitialPolylines.filter((polyline) => polyline.id === polylineId)
-    })
   }
 
-  const handlePolylineFunction = (polylineId: string) => {
+  useEffect(() => {
+    console.log(polylines)
+  }, [polylines])
+
+  /*const handlePolylineFunction = (polylineId: string) => {
     if(isDeleteMode) {
       handlePolylineDoubleClick(polylineId)
     }
-  }
+  }*/
 
   const handleDeleteModeButtonClick = () => {
     setIsDeleteMode(!isDeleteMode)
@@ -265,7 +267,7 @@ export default function Map() {
 
     handleMapRightClick(e)
     selectedPolylineHandler(e)
-    removeUnconnectedPolylines()
+    //removeUnconnectedPolylines()
   }
 
   const handleMapMouseUp = () => {
@@ -366,83 +368,92 @@ export default function Map() {
     </div>
 
     <div className="w-4/5 h-full">
-      <GoogleMap
-        zoom={15}
-        center={center}
-        mapContainerClassName="map-container"
-        options={options}
-        onClick={handleMapClick}
-        onRightClick={eventRightClickHandler}
-        onMouseMove={handleMapMouseMove}
-        onMouseUp={handleMapMouseUp}
+      <LoadScript
+        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+        libraries={["geometry", "places"]}
       >
-        {office && (
-          <>
+        <GoogleMap
+          zoom={15}
+          center={center}
+          mapContainerClassName="map-container"
+          options={options}
+          onClick={handleMapClick}
+          onRightClick={eventRightClickHandler}
+          onMouseMove={handleMapMouseMove}
+          onMouseUp={handleMapMouseUp}
+        >
+          {office && (
+            <>
+              <Marker 
+                position={office} 
+                icon={defaultMarker} 
+                title="location"
+              />
+            </>
+          )}
+            
+          {markers.map((marker) => (
             <Marker 
-              position={office} 
-              icon={defaultMarker} 
-              title="location"
+                key={marker.id}
+                position={marker.position}
+                onClick={() => handleMarkerClick(marker)}
+                icon={ativo}
             />
-          </>
-        )}
-          
-         {markers.map((marker) => (
-           <Marker 
-              key={marker.id}
-              position={marker.position}
-              onClick={() => handleMarkerClick(marker)}
-              icon={ativo}
-           />
-         ))}
+          ))}
 
-         {selectedMarker && (
-           <InfoWindow
-            key={selectedMarker.id}
-            position={selectedMarker.position}
-            onCloseClick={handleMarkerClose}
-           >
-              <div>
-                <h2>Editar nome de Ativo</h2>
-                 <Input 
-                    placeholder="Nome do ativo"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    type="text"
-                 />
-              </div>
-           </InfoWindow>
-         )}
-
-         {polylines.map((polyline) => (
-            <Polyline 
-              key={polyline.id}
-              path={polyline.path}
-              options={{
-                strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
-                editable: true,
-                draggable: true,
-                visible: true,
-              }}
-              onRightClick={() => polylineClickHandler(polyline.id)}
-              onDblClick={() => handlePolylineFunction(polyline.id)}
-            />
-         ))}
-
-         {selectedPolyline && (
+          {selectedMarker && (
             <InfoWindow
-              position={selectedPolyline.path[0]}
-              onCloseClick={() => setSelectedPolyline(null)}
+              key={selectedMarker.id}
+              position={selectedMarker.position}
+              onCloseClick={handleMarkerClose}
             >
-              <div>
-                <p>Data de criação: {selectedPolyline.creationDate.toLocaleString()}</p>
-                <p>Data de atualização: {selectedPolyline.updateDate.toLocaleString()}</p>
-                <p>Item Code: {selectedPolyline.itemCode}</p>
-                <p>Diâmetro: {selectedPolyline.diameter} m</p>
-                <p>Extensão: {selectedPolyline.path.length} m</p>
-              </div>
+                <div>
+                  <h2>Editar nome de Ativo</h2>
+                  <Input 
+                      placeholder="Nome do ativo"
+                      value={inputValue}
+                      onChange={handleInputChange}
+                      type="text"
+                  />
+                </div>
             </InfoWindow>
-         )}
-      </GoogleMap>
+          )}
+
+          {visiblePolylines.map((polylineId) => {
+            const polyline = polylines.find((polyline) => polyline.id === polylineId)
+            return polyline && (
+              <Polyline 
+                key={polyline.id}
+                path={polyline.path}
+                options={{
+                  strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
+                  editable: true,
+                  draggable: true,
+                  visible: true,
+                }}
+                onRightClick={() => polylineClickHandler(polyline.id)}
+                onDblClick={() => handlePolylineDoubleClick(polyline.id)}
+              />
+            )
+            })}
+
+          {selectedPolyline && (
+              <InfoWindow
+                position={selectedPolyline.path[0]}
+                onCloseClick={() => setSelectedPolyline(null)}
+              >
+                <div>
+                  <p>ID: {selectedPolyline.id}</p>
+                  <p>Data de criação: {selectedPolyline.creationDate.toLocaleString()}</p>
+                  <p>Data de atualização: {selectedPolyline.updateDate.toLocaleString()}</p>
+                  <p>Item Code: {selectedPolyline.itemCode}</p>
+                  <p>Diâmetro: {selectedPolyline.diameter} m</p>
+                  <p>Extensão: {selectedPolyline.path.length} m</p>
+                </div>
+              </InfoWindow>
+          )}
+        </GoogleMap>
+      </LoadScript>
     </div>
   </div>;
 }
