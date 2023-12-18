@@ -45,7 +45,7 @@ export default function Map() {
   const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
   const [firstPolylineToLink, setFirstPolylineToLink] = useState(null)
   const [isDeleteMode, setIsDeleteMode] = useState(false)
-
+  const [initialPolyline, setInitialPolyline] = useState<Polyline[]>([])
   const [visiblePolylines, setVisiblePolylines] = useState<string[]>(polylines.map((polyline) => polyline.id))
 
   function generateItemCode(): string {
@@ -95,6 +95,10 @@ export default function Map() {
       )
     }
   }
+
+  useEffect(() => {
+    setInitialPolyline([...polylines]);
+  }, [polylines]);
 
   const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
@@ -160,47 +164,6 @@ export default function Map() {
     }
   }
 
-  /*const pointBetween = (point: google.maps.LatLng, start: google.maps.LatLng, end: google.maps.LatLng) => {
-    const epsilon = 0.0001; // margem de erro para lidar com erros de ponto flutuante
-    const crossproduct = (point.lat() - start.lat()) * (end.lng() - start.lng()) - (point.lng() - start.lng()) * (end.lat() - start.lat());
-    if (Math.abs(crossproduct) > epsilon) return false; // (point, start, end) não colinear
-  
-    const dotproduct = (point.lat() - start.lat()) * (end.lat() - start.lat()) + (point.lng() - start.lng())*(end.lng() - start.lng());
-    if (dotproduct < 0) return false; // point não está entre start e end
-  
-    const squaredlengthba = (end.lat() - start.lat())*(end.lat() - start.lat()) + (end.lng() - start.lng())*(end.lng() - start.lng());
-    if (dotproduct > squaredlengthba) return false; // point não está entre start e end
-  
-    return true;
-  }
-
-  const removeUnconnectedPolylines = () => {
-
-    const currentTime = new Date().getTime()
-
-    setPolylines((currentPolylines) => {
-      return currentPolylines.filter((polyline, _index, self) => {
-        if (currentTime - polyline.creationDate.getTime() < 5000) {
-          return true
-        }
-        
-        return self.some((otherPolyline) => {
-          if (polyline === otherPolyline) {
-            return false
-          }
-
-          const polylineStart = new google.maps.LatLng(polyline.path[0])
-          const polylineEnd = new google.maps.LatLng(polyline.path[polyline.path.length - 1])
-
-            return otherPolyline.path.some((otherPoint) => {
-              const point = new google.maps.LatLng(otherPoint)
-              return pointBetween(point, polylineStart, polylineEnd)
-            })
-        })
-      })
-    })
-  }*/
-
   const interlinkPolylines = (id1: string, id2: string) => {
     setPolylines((currentPolylines) => {
 
@@ -243,20 +206,13 @@ export default function Map() {
 
   const handlePolylineDoubleClick = (polylineId: string) => {
     setVisiblePolylines((currentVisiblePolylines) => {
-      return currentVisiblePolylines.filter((id) => id !== polylineId)
+      return currentVisiblePolylines.filter((id) => id !== polylineId || polylineId === firstPolylineToLink)
     })
-
   }
 
   useEffect(() => {
     console.log(polylines)
   }, [polylines])
-
-  /*const handlePolylineFunction = (polylineId: string) => {
-    if(isDeleteMode) {
-      handlePolylineDoubleClick(polylineId)
-    }
-  }*/
 
   const handleDeleteModeButtonClick = () => {
     setIsDeleteMode(!isDeleteMode)
@@ -421,6 +377,12 @@ export default function Map() {
 
           {visiblePolylines.map((polylineId) => {
             const polyline = polylines.find((polyline) => polyline.id === polylineId)
+            
+            if (!polyline) {
+              console.error(`Polyline not found for id: ${polylineId}`)
+              return null
+            }
+
             return polyline && (
               <Polyline 
                 key={polyline.id}
