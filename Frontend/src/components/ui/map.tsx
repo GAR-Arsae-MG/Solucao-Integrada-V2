@@ -34,6 +34,7 @@ export default function Map() {
     updateDate: Date,
     itemCode: string,
     diameter: string,
+    Initial: LatLngLiteral
   }
 
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
@@ -104,18 +105,25 @@ export default function Map() {
     if (e.latLng) {
       setPolylines((currentPolylines) => {
         const lastPolyline = currentPolylines[currentPolylines.length - 1]
-
+        const initialPoint = lastPolyline?.path[0] ?? undefined
+        
         if (lastPolyline &&  isDragging) {
           const newPoint = e.latLng!.toJSON()
           const lastPoint = lastPolyline.path[lastPolyline.path.length - 1]
 
           const distance = google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng(lastPoint),
+            new google.maps.LatLng(lastPoint ?? initialPoint),
             new google.maps.LatLng(newPoint)
           )
 
           if (distance > 1) {
             const newPolyline = {...lastPolyline, path: [...lastPolyline.path, newPoint]}
+
+            if (newPolyline.Initial === initialPoint) {
+              console.log('O polyline inicial foi criado corretamente.');
+            } else {
+              console.log('O polyline inicial não foi criado corretamente.');
+            }
 
             return [...currentPolylines.slice(0, -1), newPolyline]
           } else {
@@ -130,7 +138,15 @@ export default function Map() {
             updateDate: new Date(),
             itemCode: generateItemCode(),
             diameter: calculateDiameter([e.latLng!.toJSON()]).toString(),
+            Initial: initialPoint
           }
+
+          if (newPolyline.Initial === initialPoint) {
+            console.log('O polyline inicial foi criado corretamente.');
+          } else {
+            console.log('O polyline inicial não foi criado corretamente.');
+          }
+
           setVisiblePolylines((currentVisiblePolylines) => [...currentVisiblePolylines, newPolyline.id])
           return [...currentPolylines, newPolyline]
         }
@@ -164,7 +180,7 @@ export default function Map() {
     }
   }
 
-  const interlinkPolylines = (id1: string, id2: string) => {
+  const interlinkPolylines = (id1: string, id2: string, initialPoint: LatLngLiteral) => {
     setPolylines((currentPolylines) => {
 
       const polyline1 = currentPolylines.find((polyline) => polyline.id === id1)
@@ -186,6 +202,7 @@ export default function Map() {
         updateDate: new Date(),
         itemCode: generateItemCode(),
         diameter: calculateDiameter([...polyline1.path, ...polyline2.path]).toString(),
+        Initial: initialPoint
       }
       setVisiblePolylines((currentVisiblePolylines) => [...currentVisiblePolylines, newPolyline.id])
       return [...currentPolylines, newPolyline]
@@ -196,7 +213,7 @@ export default function Map() {
     if (!firstPolylineToLink) {
       setFirstPolylineToLink(polylineId)
     } else {
-      interlinkPolylines(firstPolylineToLink, polylineId)
+      interlinkPolylines(firstPolylineToLink, polylineId, polylines.find((polyline) => polyline.id === firstPolylineToLink)!.path[0])
       setFirstPolylineToLink(null)
     }
 
@@ -204,15 +221,38 @@ export default function Map() {
     setSelectedPolyline(polyline || null)
   }
 
-  const handlePolylineDoubleClick = (polylineId: string) => {
-    setVisiblePolylines((currentVisiblePolylines) => {
-      return currentVisiblePolylines.filter((id) => id !== polylineId || polylineId === firstPolylineToLink)
-    })
-  }
+  const handlePolylineDoubleClickToRemove = (polylineId: string, initialPoint: google.maps.LatLngLiteral | undefined) => {
+    setPolylines((currentPolylines) =>
+      currentPolylines.filter((polyline) => polyline.id !== polylineId),
+    );
+
+    setPolylines((currentPolylines) =>
+      currentPolylines.filter((polyline) => polyline.Initial !== initialPoint),
+    );
+  
+    setInitialPolyline((currentInitialPolylines) =>
+      currentInitialPolylines.filter((polyline) => polyline.id !== polylineId)
+    );
+  };
+  
+  const handlePolylineDoubleClickToHide = (polylineId: string) => {
+    setVisiblePolylines((currentVisiblePolylines) =>
+      currentVisiblePolylines.filter((id) => id == polylineId)
+    );
+  };
+  
+  const handlePolylineDoubleClick = (polylineId: string, initialPoint: LatLngLiteral) => {
+    handlePolylineDoubleClickToHide(polylineId);
+    handlePolylineDoubleClickToRemove(polylineId, initialPoint);
+  };
 
   useEffect(() => {
     console.log(polylines)
   }, [polylines])
+
+  useEffect(() => {
+    console.log(visiblePolylines)
+  }, [visiblePolylines])
 
   const handleDeleteModeButtonClick = () => {
     setIsDeleteMode(!isDeleteMode)
@@ -394,7 +434,7 @@ export default function Map() {
                   visible: true,
                 }}
                 onRightClick={() => polylineClickHandler(polyline.id)}
-                onDblClick={() => handlePolylineDoubleClick(polyline.id)}
+                onDblClick={() => handlePolylineDoubleClick(polyline.id, polyline.Initial)}
               />
             )
             })}
