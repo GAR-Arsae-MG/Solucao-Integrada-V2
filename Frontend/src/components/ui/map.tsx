@@ -34,36 +34,12 @@ export default function Map() {
     updateDate: Date,
     itemCode: string,
     diameter: string,
-    Initial: LatLngLiteral
+    InitialPoint: LatLngLiteral
   }
 
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
   const [markers, setMarkers] = useState<Marker[]>([])
   const [inputValue, setInputValue] = useState('')
-  const [polylines, setPolylines] = useState<Polyline[]>([])
-  const [isDragging, setIsDragging] = useState(false)
-  const [selectedType, setSelectedType] = useState('agua')
-  const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
-  const [firstPolylineToLink, setFirstPolylineToLink] = useState(null)
-  const [isDeleteMode, setIsDeleteMode] = useState(false)
-  const [initialPolyline, setInitialPolyline] = useState<Polyline[]>([])
-  const [visiblePolylines, setVisiblePolylines] = useState<string[]>(polylines.map((polyline) => polyline.id))
-
-  function generateItemCode(): string {
-    const timestamp = new Date().getTime()
-    const randomNum = Math.floor(Math.random() * 1000)
-    return `${timestamp}-${randomNum}`
-  }
-
-  function calculateDiameter(path: LatLngLiteral[]): number {
-    let diameter = 0
-    for (let i = 0; i < path.length - 1; i++) {
-      const point1 = new google.maps.LatLng(path[i])
-      const point2 = new google.maps.LatLng(path[i + 1])
-      diameter += google.maps.geometry.spherical.computeDistanceBetween(point1, point2)
-    }
-    return diameter
-  }
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
@@ -95,185 +71,6 @@ export default function Map() {
         )
       )
     }
-  }
-
-  useEffect(() => {
-    setInitialPolyline([...polylines]);
-  }, [polylines]);
-
-  const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
-    if (e.latLng) {
-      setPolylines((currentPolylines) => {
-        const lastPolyline = currentPolylines[currentPolylines.length - 1]
-        const initialPoint = lastPolyline?.path[0] ?? undefined
-        
-        if (lastPolyline &&  isDragging) {
-          const newPoint = e.latLng!.toJSON()
-          const lastPoint = lastPolyline.path[lastPolyline.path.length - 1]
-
-          const distance = google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng(lastPoint ?? initialPoint),
-            new google.maps.LatLng(newPoint)
-          )
-
-          if (distance > 1) {
-            const newPolyline = {...lastPolyline, path: [...lastPolyline.path, newPoint]}
-
-            if (newPolyline.Initial === initialPoint) {
-              console.log('O polyline inicial foi criado corretamente.');
-            } else {
-              console.log('O polyline inicial não foi criado corretamente.');
-            }
-
-            return [...currentPolylines.slice(0, -1), newPolyline]
-          } else {
-            return currentPolylines
-          }
-        } else {
-          const newPolyline: Polyline = {
-            id: new Date().toISOString(),
-            path: [e.latLng!.toJSON()],
-            type: selectedType,
-            creationDate: new Date(),
-            updateDate: new Date(),
-            itemCode: generateItemCode(),
-            diameter: calculateDiameter([e.latLng!.toJSON()]).toString(),
-            Initial: initialPoint
-          }
-
-          if (newPolyline.Initial === initialPoint) {
-            console.log('O polyline inicial foi criado corretamente.');
-          } else {
-            console.log('O polyline inicial não foi criado corretamente.');
-          }
-
-          setVisiblePolylines((currentVisiblePolylines) => [...currentVisiblePolylines, newPolyline.id])
-          return [...currentPolylines, newPolyline]
-        }
-      })
-      setIsDragging(true)
-    }
-  }
-
-  const handleMapMouseMove = (e: google.maps.MapMouseEvent) => {
-    if (isDragging && e.latLng) {
-      setPolylines((currentPolylines) => {
-
-        const lastPolyline = currentPolylines[currentPolylines.length - 1] 
-        if (lastPolyline) {
-
-          lastPolyline.path.push(e.latLng!.toJSON())
-          return [...currentPolylines.slice(0, -1), lastPolyline]
-        } else {
-          return currentPolylines
-        }
-      })
-    }
-  }
-
-  const selectedPolylineHandler = (e: google.maps.MapMouseEvent) => {
-    if (selectedPolyline) {
-      setSelectedPolyline({
-        ...selectedPolyline,
-        path: [...selectedPolyline.path, e.latLng!.toJSON()]
-      })
-    }
-  }
-
-  const interlinkPolylines = (id1: string, id2: string, initialPoint: LatLngLiteral) => {
-    setPolylines((currentPolylines) => {
-
-      const polyline1 = currentPolylines.find((polyline) => polyline.id === id1)
-      const polyline2 = currentPolylines.find((polyline) => polyline.id === id2)
-
-      if (!polyline1 || !polyline2) {
-        return[ ...currentPolylines]
-      }
-
-      if (polyline1.path.length + polyline2.path.length > 5) {
-        return[ ...currentPolylines]
-      }
-
-      const newPolyline: Polyline = {
-        id: new Date().toISOString(),
-        path: [...polyline1.path, ...polyline2.path],
-        type: polyline1.type,
-        creationDate: new Date(),
-        updateDate: new Date(),
-        itemCode: generateItemCode(),
-        diameter: calculateDiameter([...polyline1.path, ...polyline2.path]).toString(),
-        Initial: initialPoint
-      }
-      setVisiblePolylines((currentVisiblePolylines) => [...currentVisiblePolylines, newPolyline.id])
-      return [...currentPolylines, newPolyline]
-    })
-    }
-
-  const polylineClickHandler = (polylineId: any) => {
-    if (!firstPolylineToLink) {
-      setFirstPolylineToLink(polylineId)
-    } else {
-      interlinkPolylines(firstPolylineToLink, polylineId, polylines.find((polyline) => polyline.id === firstPolylineToLink)!.path[0])
-      setFirstPolylineToLink(null)
-    }
-
-    const polyline = polylines.find((polyline) => polyline.id === polylineId)
-    setSelectedPolyline(polyline || null)
-  }
-
-  const handlePolylineDoubleClickToRemove = (polylineId: string, initialPoint: google.maps.LatLngLiteral | undefined) => {
-    setPolylines((currentPolylines) =>
-      currentPolylines.filter((polyline) => polyline.id !== polylineId),
-    );
-
-    setPolylines((currentPolylines) =>
-      currentPolylines.filter((polyline) => polyline.Initial !== initialPoint),
-    );
-  
-    setInitialPolyline((currentInitialPolylines) =>
-      currentInitialPolylines.filter((polyline) => polyline.id !== polylineId)
-    );
-  };
-  
-  const handlePolylineDoubleClickToHide = (polylineId: string) => {
-    setVisiblePolylines((currentVisiblePolylines) =>
-      currentVisiblePolylines.filter((id) => id == polylineId)
-    );
-  };
-  
-  const handlePolylineDoubleClick = (polylineId: string, initialPoint: LatLngLiteral) => {
-    handlePolylineDoubleClickToHide(polylineId);
-    handlePolylineDoubleClickToRemove(polylineId, initialPoint);
-  };
-
-  useEffect(() => {
-    console.log(polylines)
-  }, [polylines])
-
-  useEffect(() => {
-    console.log(visiblePolylines)
-  }, [visiblePolylines])
-
-  const handleDeleteModeButtonClick = () => {
-    setIsDeleteMode(!isDeleteMode)
-  }
-
-  const eventRightClickHandler = (e: google.maps.MapMouseEvent) => {
-    e.stop()
-
-    handleMapRightClick(e)
-    selectedPolylineHandler(e)
-    //removeUnconnectedPolylines()
-  }
-
-  const handleMapMouseUp = () => {
-    if (!isDeleteMode) {
-      setIsDragging(false)
-    }
-  }
-
-  const handleButtonClick = (type: string) => {
-    setSelectedType(type)
   }
 
   type Painel = {
@@ -340,13 +137,13 @@ export default function Map() {
         <div>
           <Button 
             color="primary"
-            onClick={() => handleButtonClick('agua')}
+            //onClick={() => ()}
           >
             Água
           </Button>
           <Button 
             color="success"
-            onClick={() => handleButtonClick('esgoto')}
+            //onClick={() => ()}
           >
             Esgoto
           </Button>
@@ -355,7 +152,7 @@ export default function Map() {
         <div>
           <Button 
             color="danger"
-            onClick={() => handleDeleteModeButtonClick()}
+            //onClick={() => ()}
           >
             Deletar Polylines
           </Button>
@@ -374,9 +171,6 @@ export default function Map() {
           mapContainerClassName="map-container"
           options={options}
           onClick={handleMapClick}
-          onRightClick={eventRightClickHandler}
-          onMouseMove={handleMapMouseMove}
-          onMouseUp={handleMapMouseUp}
         >
           {office && (
             <>
@@ -415,31 +209,24 @@ export default function Map() {
             </InfoWindow>
           )}
 
-          {visiblePolylines.map((polylineId) => {
-            const polyline = polylines.find((polyline) => polyline.id === polylineId)
-            
-            if (!polyline) {
-              console.error(`Polyline not found for id: ${polylineId}`)
-              return null
-            }
-
-            return polyline && (
+          {
+            (
               <Polyline 
-                key={polyline.id}
-                path={polyline.path}
+                //key={}
+                //path={}
                 options={{
-                  strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
+                  //strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
                   editable: true,
                   draggable: true,
                   visible: true,
                 }}
-                onRightClick={() => polylineClickHandler(polyline.id)}
-                onDblClick={() => handlePolylineDoubleClick(polyline.id, polyline.Initial)}
+                //onRightClick={() => polylineClickHandler(polyline.id)}
+                //onDblClick={() => handlePolylineDoubleClick(polyline.id, polyline.Initial)}
               />
             )
-            })}
+            }
 
-          {selectedPolyline && (
+          { /*(
               <InfoWindow
                 position={selectedPolyline.path[0]}
                 onCloseClick={() => setSelectedPolyline(null)}
@@ -453,7 +240,7 @@ export default function Map() {
                   <p>Extensão: {selectedPolyline.path.length} m</p>
                 </div>
               </InfoWindow>
-          )}
+          )*/}
         </GoogleMap>
       </LoadScript>
     </div>
