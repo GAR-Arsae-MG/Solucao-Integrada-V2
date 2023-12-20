@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   GoogleMap,
   InfoWindow,
@@ -26,17 +26,7 @@ export default function Map() {
     position: LatLngLiteral
   }
 
-  interface Polyline {
-    id: string,
-    path: LatLngLiteral[]
-    type: string
-    creationDate: Date,
-    updateDate: Date,
-    itemCode: string,
-    diameter: string,
-    InitialPoint: LatLngLiteral
-  }
-
+  //Markers Logic
   const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
   const [markers, setMarkers] = useState<Marker[]>([])
   const [inputValue, setInputValue] = useState('')
@@ -72,6 +62,101 @@ export default function Map() {
       )
     }
   }
+
+  //Polyline Logic
+
+  interface Polyline {
+    id: string,
+    path: LatLngLiteral[]
+    type: 'agua' | 'esgoto',
+    creationDate: Date,
+    updateDate: Date,
+    itemCode: string,
+    length: string,
+    diameter: string,
+    InitialPoint: LatLngLiteral
+  }
+
+  const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
+  const [polylines, setPolylines] = useState<Polyline[]>([])
+  const [inputPolyline, setInputPolyline] = useState({
+    itemCode: '',
+    diameter: '',
+    type: '',
+    creationDate: new Date(),
+    updateDate: new Date(),
+  })
+
+  function calculateLength(path: LatLngLiteral[]): number {
+    let totalLength = 1
+
+    for (let i = 1; i < path.length; i++) {
+      const currentPoint = path[i]
+      const previousPoint = path[i - 1]
+      totalLength += google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(currentPoint),
+        new google.maps.LatLng(previousPoint)
+      )
+    }
+    return totalLength
+  }
+
+  let idCounter = 0
+  const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
+
+    function getNewId() {
+      return idCounter++
+    }
+
+    if (e.latLng) {
+      const path = [e.latLng.toJSON()]
+
+      const newPolyline: Polyline = {
+        id: getNewId().toString(),
+        path: path,
+        type: 'agua',
+        creationDate: new Date('2000-01-01'),
+        updateDate: new Date('2000-01-01'),
+        itemCode:  `Tubulação ${polylines.length + 1}`,
+        length: `${calculateLength(path)} metros`,
+        diameter: `50 milímetros`,
+        InitialPoint: path[0]
+      }
+      setPolylines([...polylines, newPolyline])
+    }
+  }
+
+  const handlePolylineClick = (polyline: Polyline): void => {
+    setSelectedPolyline(polyline)
+    setInputPolyline({
+      itemCode: polyline.itemCode,
+      diameter: polyline.diameter,
+      type: polyline.type,
+      creationDate: polyline.creationDate,
+      updateDate: polyline.updateDate,
+    })
+  }
+
+  const handlePolylineClose = () => {
+    setSelectedPolyline(null)
+  }
+
+  const handleInputChangePolyline = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputPolyline({
+      ...inputPolyline,
+      [e.target.name]: e.target.value
+    })
+    if (selectedPolyline) {
+      setPolylines((prevPolylines) => 
+        prevPolylines.map(
+          (polyline) => 
+            polyline.id === selectedPolyline.id ? {...polyline, [e.target.name]: e.target.value} : polyline
+        )
+      )
+    }
+  }
+
+  //Map Logic
 
   type Painel = {
     selectedSistema: string,
@@ -137,7 +222,7 @@ export default function Map() {
         <div>
           <Button 
             color="primary"
-            //onClick={() => ()}
+            //onClick={}
           >
             Água
           </Button>
@@ -171,6 +256,7 @@ export default function Map() {
           mapContainerClassName="map-container"
           options={options}
           onClick={handleMapClick}
+          onRightClick={handleMapRightClick}
         >
           {office && (
             <>
@@ -209,38 +295,67 @@ export default function Map() {
             </InfoWindow>
           )}
 
-          {
+          {polylines.map((polyline) =>
             (
               <Polyline 
-                //key={}
-                //path={}
+                key={polyline.id}
+                path={polyline.path}
                 options={{
-                  //strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
+                  strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
                   editable: true,
                   draggable: true,
                   visible: true,
                 }}
-                //onRightClick={() => polylineClickHandler(polyline.id)}
+                onRightClick={() => handlePolylineClick(polyline)}
                 //onDblClick={() => handlePolylineDoubleClick(polyline.id, polyline.Initial)}
               />
-            )
+            ))
             }
 
-          { /*(
+          {selectedPolyline && (
               <InfoWindow
-                position={selectedPolyline.path[0]}
-                onCloseClick={() => setSelectedPolyline(null)}
+                position={selectedPolyline.InitialPoint}
+                onCloseClick={handlePolylineClose}
               >
                 <div>
+                  <h2>Informações gerais do Polyline</h2>
                   <p>ID: {selectedPolyline.id}</p>
-                  <p>Data de criação: {selectedPolyline.creationDate.toLocaleString()}</p>
-                  <p>Data de atualização: {selectedPolyline.updateDate.toLocaleString()}</p>
-                  <p>Item Code: {selectedPolyline.itemCode}</p>
-                  <p>Diâmetro: {selectedPolyline.diameter} m</p>
-                  <p>Extensão: {selectedPolyline.path.length} m</p>
+                  <p>Tipo: {selectedPolyline.type}</p>
+                  <p>Tamanho: {selectedPolyline.length} m</p>
+
+                  <h2>Editar Informações</h2>
+
+                  <Input 
+                    placeholder="Nome da Tubulação"
+                    value={inputPolyline.itemCode}
+                    onChange={handleInputChangePolyline}
+                    type="text"
+                  />
+
+                  <Input 
+                    placeholder="Diâmetro da Tubulação"
+                    value={inputPolyline.diameter}
+                    onChange={handleInputChangePolyline}
+                    type="text" 
+                  />
+
+                  <Input 
+                    placeholder="Data de Criação"
+                    value={new Date(inputPolyline.creationDate).toLocaleDateString('pt-BR')}
+                    onChange={handleInputChangePolyline}
+                    type="date"
+                  />
+
+                  <Input 
+                    placeholder="Data de Atualização"
+                    value={new Date(inputPolyline.updateDate).toLocaleTimeString('pt-BR')}
+                    onChange={handleInputChangePolyline}
+                    type="date"
+                  />
+
                 </div>
               </InfoWindow>
-          )*/}
+          )}
         </GoogleMap>
       </LoadScript>
     </div>
