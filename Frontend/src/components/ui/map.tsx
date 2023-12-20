@@ -101,11 +101,11 @@ export default function Map() {
     return totalLength
   }
 
-  let idCounter = 0
+  const idCounter = useRef(1)
   const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
 
     function getNewId() {
-      return idCounter++
+      return idCounter.current++
     }
 
     if (e.latLng) {
@@ -123,6 +123,23 @@ export default function Map() {
         InitialPoint: path[0]
       }
       setPolylines([...polylines, newPolyline])
+    } else if (selectedPolyline) {
+      // Interconnection logic:
+      const newPath = [...selectedPolyline.path, e.latLng!.toJSON()];
+      const newLength = calculateLength(newPath);
+      const newPolyline = {
+        id: getNewId().toString(),
+        path: newPath,
+        type: selectedPolyline.type,
+        creationDate: new Date(),
+        updateDate: new Date(),
+        itemCode: `Tubulação ${polylines.length + 1}`,
+        length: `${newLength} metros`,
+        diameter: selectedPolyline.diameter, // Inherit diameter from previous polyline
+        InitialPoint: selectedPolyline.InitialPoint,
+      };
+      setPolylines([...polylines.filter((p) => p.id !== selectedPolyline.id), newPolyline]);
+      setSelectedPolyline(null); // Clear selection after interconnection
     }
   }
 
