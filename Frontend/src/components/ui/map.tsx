@@ -77,6 +77,10 @@ export default function Map() {
     InitialPoint: LatLngLiteral
   }
 
+  interface LatLngwithId extends LatLngLiteral {
+    id: string
+  }
+
   const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
   const [polylines, setPolylines] = useState<Polyline[]>([])
   const [inputPolyline, setInputPolyline] = useState({
@@ -102,45 +106,50 @@ export default function Map() {
   }
 
   const idCounter = useRef(1)
-  const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
+
+  const createPolyline = (path: LatLngLiteral[]): Polyline => {
 
     function getNewId() {
       return idCounter.current++
     }
 
-    if (e.latLng) {
-      const path = [e.latLng.toJSON()]
+    return {
+      id: getNewId().toString(),
+      path: path,
+      type: 'agua',
+      creationDate: new Date('2000-01-01'),
+      updateDate: new Date('2000-01-01'),
+      itemCode:  `Tubulação ${polylines.length + 1}`,
+      length: `${calculateLength(path)} metros`,
+      diameter: `50 milímetros`,
+      InitialPoint: path[0]
+    }
+  }
 
-      const newPolyline: Polyline = {
-        id: getNewId().toString(),
-        path: path,
-        type: 'agua',
-        creationDate: new Date('2000-01-01'),
-        updateDate: new Date('2000-01-01'),
-        itemCode:  `Tubulação ${polylines.length + 1}`,
-        length: `${calculateLength(path)} metros`,
-        diameter: `50 milímetros`,
-        InitialPoint: path[0]
+  const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      const newPoint: LatLngwithId = {...e.latLng.toJSON(), id: ''}
+      let path = []
+      let newPolyline
+
+      if (polylines.length > 0) {
+        const lastPolyline = polylines[polylines.length - 1]
+        newPoint.id = lastPolyline.id
+        
+        if (lastPolyline.id === newPoint.id) {
+          lastPolyline.path.push(newPoint)
+          newPolyline = lastPolyline
+        } else {
+          path = [newPoint]
+          newPolyline = createPolyline(path)
+        }
+      } else {
+        path = [newPoint]
+        newPolyline = createPolyline(path)
       }
       setPolylines([...polylines, newPolyline])
-    } else if (selectedPolyline) {
-      // Interconnection logic:
-      const newPath = [...selectedPolyline.path, e.latLng!.toJSON()];
-      const newLength = calculateLength(newPath);
-      const newPolyline = {
-        id: getNewId().toString(),
-        path: newPath,
-        type: selectedPolyline.type,
-        creationDate: new Date(),
-        updateDate: new Date(),
-        itemCode: `Tubulação ${polylines.length + 1}`,
-        length: `${newLength} metros`,
-        diameter: selectedPolyline.diameter, // Inherit diameter from previous polyline
-        InitialPoint: selectedPolyline.InitialPoint,
-      };
-      setPolylines([...polylines.filter((p) => p.id !== selectedPolyline.id), newPolyline]);
-      setSelectedPolyline(null); // Clear selection after interconnection
     }
+    console.log(polylines)
   }
 
   const handlePolylineClick = (polyline: Polyline): void => {
