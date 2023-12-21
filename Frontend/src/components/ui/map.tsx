@@ -83,6 +83,7 @@ export default function Map() {
 
   const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
   const [polylines, setPolylines] = useState<Polyline[]>([])
+  const [isNewPolyline, setIsNewPolyline] = useState(false)
   const [inputPolyline, setInputPolyline] = useState({
     itemCode: '',
     diameter: '',
@@ -126,13 +127,17 @@ export default function Map() {
     }
   }
 
+  const handleCreatePolyline = () => {
+    setIsNewPolyline(true)
+  }
+
   const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
       const newPoint: LatLngwithId = {...e.latLng.toJSON(), id: ''}
       let path = []
       let newPolyline
 
-      if (polylines.length > 0) {
+      if (polylines.length > 0 && !isNewPolyline) {
         const lastPolyline = polylines[polylines.length - 1]
         newPoint.id = lastPolyline.id
         
@@ -146,6 +151,7 @@ export default function Map() {
       } else {
         path = [newPoint]
         newPolyline = createPolyline(path)
+        setIsNewPolyline(false)
       }
       setPolylines([...polylines, newPolyline])
     }
@@ -206,184 +212,196 @@ export default function Map() {
     clickableIcons: false,
   }), [])
 
-  return <div className="flex h-full">
-    <div className="w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
-      <h1>Painel - Filtros</h1>
-      <Places setOffice={(position) => {
-        setOffice(position)
-        mapRef.current?.panTo(position)
-      }} />
+  return (
+      <>
+        <div className="flex h-full">
+          <div className="w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
+          <h1>Painel - Filtros</h1>
+          <Places setOffice={(position) => {
+            setOffice(position)
+            mapRef.current?.panTo(position)
+          }} />
 
-      <div className=" p-10 gap-10 bg-white rounded-lg ">
-        <RadioGroup
-          isRequired
-          label='Sistema'
-          {...register('selectedSistema')}
-        >
-          <Radio value="agua">Água</Radio>
-          <Radio value="esgoto">Esgoto</Radio>
-          <Radio value="outro">Outro</Radio>
-        </RadioGroup>
-
-        <RadioGroup
-          isRequired
-          label="Tipo de Ativo"
-          {...register('selectedTipoAtivo')}
-        >
-          <Radio value="visivel">Visível</Radio>
-          <Radio value="enterrado">Enterrado</Radio>
-        </RadioGroup>
-
-        <RadioGroup
-          isRequired
-          label="Localidade"
-          {...register('selectedLocalidade')}
-        >
-          <Radio value="localidade1">Localidade 1</Radio>
-          <Radio value="localidade2">Localidade 2</Radio>
-          <Radio value="localidade3">Localidade 3</Radio>
-        </RadioGroup>
-
-
-        <div>
-          <Button 
-            color="primary"
-            //onClick={}
-          >
-            Água
-          </Button>
-          <Button 
-            color="success"
-            //onClick={() => ()}
-          >
-            Esgoto
-          </Button>
-        </div>
-        
-        <div>
-          <Button 
-            color="danger"
-            //onClick={() => ()}
-          >
-            Deletar Polylines
-          </Button>
-        </div>
-      </div>
-    </div>
-
-    <div className="w-4/5 h-full">
-      <LoadScript
-        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
-        libraries={["geometry", "places"]}
-      >
-        <GoogleMap
-          zoom={15}
-          center={center}
-          mapContainerClassName="map-container"
-          options={options}
-          onClick={handleMapClick}
-          onRightClick={handleMapRightClick}
-        >
-          {office && (
-            <>
-              <Marker 
-                position={office} 
-                icon={defaultMarker} 
-                title="location"
-              />
-            </>
-          )}
-            
-          {markers.map((marker) => (
-            <Marker 
-                key={marker.id}
-                position={marker.position}
-                onClick={() => handleMarkerClick(marker)}
-                icon={ativo}
-            />
-          ))}
-
-          {selectedMarker && (
-            <InfoWindow
-              key={selectedMarker.id}
-              position={selectedMarker.position}
-              onCloseClick={handleMarkerClose}
+          <div className=" p-10 gap-10 bg-white rounded-lg ">
+            <RadioGroup
+              isRequired
+              label='Sistema'
+              {...register('selectedSistema')}
             >
-                <div>
-                  <h2>Editar nome de Ativo</h2>
-                  <Input 
-                      placeholder="Nome do ativo"
-                      value={inputValue}
-                      onChange={handleInputChange}
-                      type="text"
-                  />
-                </div>
-            </InfoWindow>
-          )}
+              <Radio value="agua">Água</Radio>
+              <Radio value="esgoto">Esgoto</Radio>
+              <Radio value="outro">Outro</Radio>
+            </RadioGroup>
 
-          {polylines.map((polyline) =>
-            (
-              <Polyline 
-                key={polyline.id}
-                path={polyline.path}
-                options={{
-                  strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
-                  editable: true,
-                  draggable: true,
-                  visible: true,
-                }}
-                onRightClick={() => handlePolylineClick(polyline)}
-                //onDblClick={() => handlePolylineDoubleClick(polyline.id, polyline.Initial)}
-              />
-            ))
-            }
+            <RadioGroup
+              isRequired
+              label="Tipo de Ativo"
+              {...register('selectedTipoAtivo')}
+            >
+              <Radio value="visivel">Visível</Radio>
+              <Radio value="enterrado">Enterrado</Radio>
+            </RadioGroup>
 
-          {selectedPolyline && (
-              <InfoWindow
-                position={selectedPolyline.InitialPoint}
-                onCloseClick={handlePolylineClose}
+            <RadioGroup
+              isRequired
+              label="Localidade"
+              {...register('selectedLocalidade')}
+            >
+              <Radio value="localidade1">Localidade 1</Radio>
+              <Radio value="localidade2">Localidade 2</Radio>
+              <Radio value="localidade3">Localidade 3</Radio>
+            </RadioGroup>
+
+
+            <div>
+              <Button 
+                color="primary"
+                //onClick={}
               >
-                <div>
-                  <h2>Informações gerais do Polyline</h2>
-                  <p>ID: {selectedPolyline.id}</p>
-                  <p>Tipo: {selectedPolyline.type}</p>
-                  <p>Tamanho: {selectedPolyline.length} m</p>
+                Água
+              </Button>
+              <Button 
+                color="success"
+                //onClick={() => ()}
+              >
+                Esgoto
+              </Button>
+            </div>
+            
+            <div>
 
-                  <h2>Editar Informações</h2>
+              <Button
+                color="warning"
+                onClick={handleCreatePolyline}
+              >
+                Adicionar Polylines
+              </Button>
 
-                  <Input 
-                    placeholder="Nome da Tubulação"
-                    value={inputPolyline.itemCode}
-                    onChange={handleInputChangePolyline}
-                    type="text"
+              <Button 
+                color="danger"
+                //onClick={() => ()}
+              >
+                Deletar Polylines
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-4/5 h-full">
+            <LoadScript
+              googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+              libraries={["geometry", "places"]}
+            >
+              <GoogleMap
+                zoom={15}
+                center={center}
+                mapContainerClassName="map-container"
+                options={options}
+                onClick={handleMapClick}
+                onRightClick={handleMapRightClick}
+              >
+                {office && (
+                  <>
+                    <Marker 
+                      position={office} 
+                      icon={defaultMarker} 
+                      title="location"
+                    />
+                  </>
+                )}
+                  
+                {markers.map((marker) => (
+                  <Marker 
+                      key={marker.id}
+                      position={marker.position}
+                      onClick={() => handleMarkerClick(marker)}
+                      icon={ativo}
                   />
+                ))}
 
-                  <Input 
-                    placeholder="Diâmetro da Tubulação"
-                    value={inputPolyline.diameter}
-                    onChange={handleInputChangePolyline}
-                    type="text" 
-                  />
+                {selectedMarker && (
+                  <InfoWindow
+                    key={selectedMarker.id}
+                    position={selectedMarker.position}
+                    onCloseClick={handleMarkerClose}
+                  >
+                      <div>
+                        <h2>Editar nome de Ativo</h2>
+                        <Input 
+                            placeholder="Nome do ativo"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            type="text"
+                        />
+                      </div>
+                  </InfoWindow>
+                )}
 
-                  <Input 
-                    placeholder="Data de Criação"
-                    value={new Date(inputPolyline.creationDate).toLocaleDateString('pt-BR')}
-                    onChange={handleInputChangePolyline}
-                    type="date"
-                  />
+                {polylines.map((polyline) =>
+                  (
+                    <Polyline 
+                      key={polyline.id}
+                      path={polyline.path}
+                      options={{
+                        strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
+                        editable: true,
+                        draggable: true,
+                        visible: true,
+                      }}
+                      onRightClick={() => handlePolylineClick(polyline)}
+                      //onDblClick={() => handlePolylineDoubleClick(polyline.id, polyline.Initial)}
+                    />
+                  ))
+                  }
 
-                  <Input 
-                    placeholder="Data de Atualização"
-                    value={new Date(inputPolyline.updateDate).toLocaleTimeString('pt-BR')}
-                    onChange={handleInputChangePolyline}
-                    type="date"
-                  />
+                {selectedPolyline && (
+                    <InfoWindow
+                      position={selectedPolyline.InitialPoint}
+                      onCloseClick={handlePolylineClose}
+                    >
+                      <div>
+                        <h2>Informações gerais do Polyline</h2>
+                        <p>ID: {selectedPolyline.id}</p>
+                        <p>Tipo: {selectedPolyline.type}</p>
+                        <p>Tamanho: {selectedPolyline.length} m</p>
 
-                </div>
-              </InfoWindow>
-          )}
-        </GoogleMap>
-      </LoadScript>
-    </div>
-  </div>;
+                        <h2>Editar Informações</h2>
+
+                        <Input 
+                          placeholder="Nome da Tubulação"
+                          value={inputPolyline.itemCode}
+                          onChange={handleInputChangePolyline}
+                          type="text"
+                        />
+
+                        <Input 
+                          placeholder="Diâmetro da Tubulação"
+                          value={inputPolyline.diameter}
+                          onChange={handleInputChangePolyline}
+                          type="text" 
+                        />
+
+                        <Input 
+                          placeholder="Data de Criação"
+                          value={new Date(inputPolyline.creationDate).toLocaleDateString('pt-BR')}
+                          onChange={handleInputChangePolyline}
+                          type="date"
+                        />
+
+                        <Input 
+                          placeholder="Data de Atualização"
+                          value={new Date(inputPolyline.updateDate).toLocaleTimeString('pt-BR')}
+                          onChange={handleInputChangePolyline}
+                          type="date"
+                        />
+
+                      </div>
+                    </InfoWindow>
+                )}
+              </GoogleMap>
+            </LoadScript>
+          </div>
+        </div>
+      </>
+    )
 }
