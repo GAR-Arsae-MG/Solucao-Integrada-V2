@@ -65,6 +65,8 @@ export default function Map() {
 
   //Polyline Logic
 
+  const [nextPolylineType, setNextPolylineType] = useState<'agua' | 'esgoto'>('agua')
+
   interface Polyline {
     id: string,
     path: LatLngLiteral[]
@@ -117,7 +119,7 @@ export default function Map() {
     return {
       id: getNewId().toString(),
       path: path,
-      type: 'agua',
+      type: nextPolylineType,
       creationDate: new Date('2000-01-01'),
       updateDate: new Date('2000-01-01'),
       itemCode:  `Tubulação ${polylines.length + 1}`,
@@ -188,6 +190,10 @@ export default function Map() {
     }
   }
 
+  const handleTypeChange = (type: 'agua' | 'esgoto') => {
+    setNextPolylineType(type)
+  }
+
   //Map Logic
 
   type Painel = {
@@ -256,13 +262,13 @@ export default function Map() {
             <div>
               <Button 
                 color="primary"
-                //onClick={}
+                onClick={() => handleTypeChange('agua')}
               >
                 Água
               </Button>
               <Button 
                 color="success"
-                //onClick={() => ()}
+                onClick={() => handleTypeChange('esgoto')}
               >
                 Esgoto
               </Button>

@@ -60,11 +60,13 @@ function Painel() {
 
                                         <AccordionItem title='Tubulação'>
                                             <p>
-                                                Clique no mapa com o botão direito no mapa para criar um polyline que represente a tubulação da localidade.
+                                                Clique no mapa com o botão direito no mapa para criar um polyline que represente a tubulação da localidade. Sempre que clicar no mapa com o botão direito, o polyline se extende.
+
+                                                para criar um novo polyline basta apertar o botão Criar tubulação e clicar novamente no mapa.
                                             </p>
 
                                             <p>
-                                                Você pode modificar a cor da tubulação para o que deseja, seja este de água ou esgoto.
+                                                Você pode modificar a cor da tubulação para o que deseja, seja este de água ou esgoto. Basta apertar nos botões de cores para modificar a cor da tubulação, e em seguida clique em Criar Tubulação.
                                             </p>
 
                                             <p>
