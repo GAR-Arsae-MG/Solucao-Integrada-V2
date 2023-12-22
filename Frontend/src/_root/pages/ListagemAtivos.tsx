@@ -51,7 +51,31 @@ const ListagemAtivos = () => {
                         <p className='text-bold text-sm capitalize text-default-400'>{ativo.tipo}</p>
                     </div>
                 )
-            
+
+            case 'Secondtype': 
+                return (
+                    <div className='flex flex-col'>
+                        <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                        <p className='text-bold text-sm capitalize text-default-400'>{ativo.tipo2}</p>
+                    </div>
+                )
+
+            case 'originalValue':
+                return (
+                    <div className='flex flex-col'>
+                        <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                        <p className='text-bold text-sm capitalize text-default-400'>{ativo.valorOriginal}</p>
+                    </div>
+                )
+
+            case 'ResidualValue': 
+                return (
+                    <div className='flex flex-col'>
+                        <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                        <p className='text-bold text-sm capitalize text-default-400'>{ativo.valorResidual}</p>
+                    </div>
+                )
+                
             case 'actions': 
                 return (
                     <div className='relative flex items-center gap-2'>
