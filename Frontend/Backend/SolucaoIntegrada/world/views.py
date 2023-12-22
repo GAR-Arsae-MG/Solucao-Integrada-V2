@@ -42,7 +42,7 @@ def Register(request):
        name = data.get('nome')
        funcao = data.get('funcao')
        password = data.get('senha')
-       user = Usuarios.objects.create_user(email=email, nome=name, funcao=funcao senha=password)
+       user = Usuarios.objects.create_user(email=email, nome=name, funcao=funcao, senha=password)
        return JsonResponse({'message': 'Cadastrado com sucesso'})
    else:
        return JsonResponse({'message': 'Método Inválido'})
