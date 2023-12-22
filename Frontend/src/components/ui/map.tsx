@@ -98,7 +98,7 @@ export default function Map() {
   })
 
   function calculateLength(path: LatLngLiteral[]): number {
-    let totalLength = 1
+    let totalLength = 0
 
     for (let i = 1; i < path.length; i++) {
       const currentPoint = path[i]
