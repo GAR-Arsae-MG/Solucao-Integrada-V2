@@ -23,6 +23,7 @@ export default function Map() {
   interface  Marker {
     id: string
     name: string
+    tipoAtivo: 'Visível'
     position: LatLngLiteral
   }
 
@@ -37,6 +38,7 @@ export default function Map() {
         id: new Date().toISOString(),
         position: e.latLng.toJSON(),
         name: `Ativo ${markers.length + 1}`,
+        tipoAtivo: 'Visível',
       }
       setMarkers([...markers, newMarker])
     }
@@ -71,6 +73,7 @@ export default function Map() {
     id: string,
     path: LatLngLiteral[]
     type: 'agua' | 'esgoto',
+    tipoAtivo: 'Enterrado',
     creationDate: Date,
     updateDate: Date,
     itemCode: string,
@@ -120,6 +123,7 @@ export default function Map() {
       id: getNewId().toString(),
       path: path,
       type: nextPolylineType,
+      tipoAtivo: 'Enterrado',
       creationDate: new Date('2000-01-01'),
       updateDate: new Date('2000-01-01'),
       itemCode:  `Tubulação ${polylines.length + 1}`,
@@ -332,6 +336,9 @@ export default function Map() {
                     onCloseClick={handleMarkerClose}
                   >
                       <div>
+                        <h2>Informações gerais do Ativo</h2>
+                        <p>Tipo Ativo: {selectedMarker.tipoAtivo}</p>
+
                         <h2>Editar nome de Ativo</h2>
                         <Input 
                             placeholder="Nome do ativo"
@@ -369,18 +376,22 @@ export default function Map() {
                         <h2>Informações gerais do Polyline</h2>
                         <p>ID: {selectedPolyline.id}</p>
                         <p>Tipo: {selectedPolyline.type}</p>
-                        <p>Tamanho: {selectedPolyline.length} m</p>
+                        <p>Tamanho: {selectedPolyline.length}</p>
 
                         <h2>Editar Informações</h2>
 
                         <Input 
+                          name="itemCode"
+                          label="Nome da Tubulação"
                           placeholder="Nome da Tubulação"
                           value={inputPolyline.itemCode}
                           onChange={handleInputChangePolyline}
                           type="text"
                         />
 
-                        <Input 
+                        <Input
+                          name="diameter"
+                          label="Diâmetro da Tubulação" 
                           placeholder="Diâmetro da Tubulação"
                           value={inputPolyline.diameter}
                           onChange={handleInputChangePolyline}
@@ -388,6 +399,8 @@ export default function Map() {
                         />
 
                         <Input 
+                          name="creationDate"
+                          label="Data de Criação"
                           placeholder="Data de Criação"
                           value={new Date(inputPolyline.creationDate).toLocaleDateString('pt-BR')}
                           onChange={handleInputChangePolyline}
@@ -395,6 +408,8 @@ export default function Map() {
                         />
 
                         <Input 
+                          name="updateDate"
+                          label="Data de Atualização"
                           placeholder="Data de Atualização"
                           value={new Date(inputPolyline.updateDate).toLocaleTimeString('pt-BR')}
                           onChange={handleInputChangePolyline}
