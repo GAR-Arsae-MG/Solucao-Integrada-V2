@@ -120,6 +120,17 @@ function TopNav() {
                             Perfil
                         </Button>
                     </Tooltip>
+
+                    <Button
+                        className="ml-2"
+                        color="danger"
+                        radius="sm"
+                        variant="shadow"
+                        aria-label="Clique Aqui"
+                        disableRipple
+                    >
+                        Sair
+                    </Button>
                 </NavbarItem>
             </NavbarContent>
         </Navbar>

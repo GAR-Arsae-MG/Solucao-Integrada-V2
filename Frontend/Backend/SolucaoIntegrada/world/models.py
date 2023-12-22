@@ -27,14 +27,12 @@ class Localidades(models.Model):
     SISTEMAS = (
         ('A', 'Água'),
         ('E', 'Esgoto'),
-        ('A/O', 'Administrativo/Operacional'),
     )
     localidade = models.CharField(max_length=50)
     sistemas = models.IntegerField(choices=SISTEMAS, null=False, blank=False)
     TIPO = (
         ('E', 'Enterrado'),
         ('V', 'Visivel'),
-        ('O', 'Outro'),
     )
     tipo = models.CharField(max_length=1, choices=TIPO, blank=False, null=False)
 
