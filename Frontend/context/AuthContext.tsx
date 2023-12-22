@@ -33,8 +33,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         setIsLoading(true)
 
         try {
-
             const currentAccount = await getCurrentUser()
+
+            if (currentAccount) {
+                setUser({
+                    id: currentAccount.id,
+                    name: currentAccount.name,
+                    email: currentAccount.email,
+                    imageUrl: currentAccount.image,
+                    agency: currentAccount.agency
+                })
+            }
             
         }
     }

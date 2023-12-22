@@ -18,11 +18,16 @@ from django import views
 from django.contrib import admin
 from django.urls import include, path
 
-from world.views import index
+from world.views import index, Login, Logout, Register, users, ativos, locals, system_units
 
 urlpatterns = [
     path('', index, name='index'),
     path('admin/', admin.site.urls),
-    path('api/', include('world.urls')),
-    path('users', views.users),
+    path('api/login', Login, name='login'),
+    path('api/logout', Logout, name='logout'),
+    path('api/registro', Register, name='register'),
+    path('api/usuarios', users, name='users'),
+    path('api/ativos', ativos, name='ativos'),
+    path('api/locais', locals, name='locals'),
+    path('api/unidades', system_units, name='system_units'),
 ]

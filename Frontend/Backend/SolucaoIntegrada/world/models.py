@@ -15,6 +15,8 @@ class Usuarios(models.Model):
     criado_em = models.DateField()
     criado_por = models.CharField(max_length=64)
     senha = models.CharField(max_length=128, blank=False, null=False, default="Padronizado")
+    agencia = models.CharField(max_length=30, blank=True, null=True)
+    imageUrl = models.CharField(max_length=300, blank=True, null=True)
 
     def __str__(self):
         return self.nome
