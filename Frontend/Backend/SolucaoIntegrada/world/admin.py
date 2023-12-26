@@ -4,10 +4,10 @@ from world.models import Ativos, Localidades, Usuarios, unidades_do_sistema
 # Register your models here.
 
 class UsuariosAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nome', 'email', 'telefone', 'funcao', 'criado_em', 'criado_por')
+    list_display = ('id', 'nome', 'email', 'is_staff', 'telefone', 'funcao', 'criado_em', 'criado_por')
     list_display_links = ('nome', 'email')
     search_fields = ('nome', 'email', 'funcao')
-    list_filter = ('funcao', 'criado_por')
+    list_filter = ('funcao', 'criado_por', 'criado_em')
     
 admin.site.register(Usuarios, UsuariosAdmin)
 

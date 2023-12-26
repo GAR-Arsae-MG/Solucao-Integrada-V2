@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 
-from Backend.SolucaoIntegrada.world.models import Ativos, Localidades, Usuarios, unidades_do_sistema
+from world.models import Ativos, Localidades, unidades_do_sistema, Usuarios
 
 # Create your views here.
 

@@ -1,7 +1,25 @@
 from django.contrib.gis.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
+from django.utils import timezone
 
 # Create your models here.
-class Usuarios(models.Model):
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, senha=None, **extra_fields):
+        if not email:
+            raise ValueError('O endereço de e-mail é obrigatório')
+        email = self.normalize_email(email)
+        usuario = self.model(email=email, **extra_fields)
+        usuario.set_password(senha)
+        usuario.save(using=self._db)
+        return usuario
+    
+    def create_superuser(self, email, senha=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, senha, **extra_fields)
+    
+class Usuarios(AbstractBaseUser, PermissionsMixin):
     FUNCAO = (
         ('P', 'Prestador'),
         ('R', 'Regulador'),
@@ -12,14 +30,22 @@ class Usuarios(models.Model):
     email = models.EmailField(max_length=64)
     telefone = models.CharField(max_length=11)
     funcao = models.CharField(max_length=1, choices=FUNCAO, blank=False, null=False)
-    criado_em = models.DateField()
+    is_staff = models.BooleanField(default=False)
+    criado_em = models.DateTimeField(default=timezone.now)
     criado_por = models.CharField(max_length=64)
-    senha = models.CharField(max_length=128, blank=False, null=False, default="Padronizado")
     agencia = models.CharField(max_length=30, blank=True, null=True)
     imageUrl = models.CharField(max_length=300, blank=True, null=True)
+    
+    groups = models.ManyToManyField(Group, related_name='usuarios_groups', blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name='usuarios_permissions', blank=True)
+    
+    objects = UserManager()
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.nome
+        return self.email
     
 
 
@@ -105,4 +131,4 @@ class unidades_do_sistema(models.Model):
     tipo = models.CharField(max_length=30)
     criado_por = models.CharField(max_length=64)
     status = models.CharField(max_length=64)
-    criado_em = models.DateTimeField(auto_now_add=True, editable=False)
+    criado_em = models.DateTimeField(default=timezone.now)
