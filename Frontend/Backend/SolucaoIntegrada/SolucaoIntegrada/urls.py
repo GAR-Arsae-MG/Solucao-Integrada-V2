@@ -17,17 +17,23 @@ Including another URLconf
 from django import views
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from rest_framework import routers
 
-from world.views import index, Login, Logout, Register, users, ativos, locals, system_units
+from world.views import ativos, locals, system_units, UserViewSet, GroupViewSet, register, CustomAuthToken
+from SolucaoIntegrada.settings import STATIC_URL
+
+router = routers.DefaultRouter()
+router.register('usuarios', UserViewSet)
+router.register('grupos', GroupViewSet)
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('api/login', Login, name='login'),
-    path('api/logout', Logout, name='logout'),
-    path('api/registro', Register, name='register'),
-    path('api/usuarios', users, name='users'),
-    path('api/ativos', ativos, name='ativos'),
-    path('api/locais', locals, name='locals'),
-    path('api/unidades', system_units, name='system_units'),
+    path('api-token-auth/', CustomAuthToken.as_view(), name='api_token_auth'),
+    path('api/register/', register, name='register'),
+    
+    path('ativos', ativos, name='ativos'),
+    path('locais', locals, name='locals'),
+    path('unidades', system_units, name='system_units'),
 ]

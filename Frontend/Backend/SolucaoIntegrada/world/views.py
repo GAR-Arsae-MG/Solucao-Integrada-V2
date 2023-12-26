@@ -9,6 +9,11 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
+from rest_framework.settings import api_settings
+from rest_framework.response import Response
+
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
 from world.models import Ativos, Localidades, unidades_do_sistema, Usuarios
@@ -18,50 +23,47 @@ from world.models import Ativos, Localidades, unidades_do_sistema, Usuarios
 def index(request):
     return HttpResponse("Hello, world. You're at the world index.")
 
-@csrf_exempt
-def Login(request):
-   if request.method == 'POST': 
-       data = json.loads(request.body)
-       email = data.get('email')
-       password = data.get('senha')
-       user = authenticate(request, email=email, senha=password)
-       if user is not None:
-           login(request, user)
-           return JsonResponse({'message': 'Logou com sucesso'})
-       else:
-           return JsonResponse({'message': 'Login falhou'})
-   else:
-       return JsonResponse({'message': 'Método inválido'})
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = Usuarios.objects.all().order_by('id')
+    serializer_class = UserSerializer
+    
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    
+@api_view(['POST'])
+def register(request):
+    data = request.data
+    if Usuarios.objects.filter(email=data['email']).exists():
+        return JsonResponse({'message': 'Email já existe.'}, status=status.HTTP_400_BAD_REQUEST)
+    user = Usuarios.objects.create_user(
+        email=data['email'],
+        nome=data['nome'],
+        senha=data['senha'],
+    )
+    payload = jwt_payload_handler(user)
+    token = jwt_encode_handler(payload)
+    
+    return Response({'Usuário cadastrado com sucesso'}, status=status.HTTP_201_CREATED)
 
-@csrf_exempt
-def Logout(request):
-   if request.method == 'POST': 
-       logout(request)
-       return JsonResponse({'message': 'Deslogou com sucesso'})
-   else:
-       return JsonResponse({'message': 'Método Inválido'})
-
-@csrf_exempt
-def Register(request):
-   if request.method == 'POST': 
-       data = json.loads(request.body)
-       email = data.get('email')
-       name = data.get('nome')
-       funcao = data.get('funcao')
-       password = data.get('senha')
-       user = Usuarios.objects.create_user(email=email, nome=name, funcao=funcao, senha=password)
-       return JsonResponse({'message': 'Cadastrado com sucesso'})
-   else:
-       return JsonResponse({'message': 'Método Inválido'})
-
-
-def users(request):
-    if request.method == 'GET':
-        users = Usuarios.objects.all().values()
-        users_list = list(users)
-        return JsonResponse(users_list, safe=False)
-    else:
-        return JsonResponse({'message': 'Consulta não permitida'})
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request):
+        email = request.data.get('email')
+        senha = request.data.get('senha')
+        user = authenticate(request,email=email, password=senha)
+        
+        if user is not None:
+            login(request, user)
+            token, created = Token.objects.get_or_create(user=user)
+            user_data = {
+                'id': user.id,
+                'nome': user.nome,
+                'email': user.email,
+                'funcao': user.funcao,
+            }
+            return Response(user_data, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'Credenciais inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
     
 def locals(request):
     if request.method == 'GET':

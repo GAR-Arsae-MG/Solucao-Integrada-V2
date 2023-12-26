@@ -29,7 +29,7 @@ class Usuarios(AbstractBaseUser, PermissionsMixin):
     nome = models.CharField(max_length=64)
     email = models.EmailField(max_length=64)
     telefone = models.CharField(max_length=11)
-    funcao = models.CharField(max_length=1, choices=FUNCAO, blank=False, null=False)
+    funcao = models.CharField(max_length=1, choices=FUNCAO, blank=False, null=False, default='R')
     is_staff = models.BooleanField(default=False)
     criado_em = models.DateTimeField(default=timezone.now)
     criado_por = models.CharField(max_length=64)
