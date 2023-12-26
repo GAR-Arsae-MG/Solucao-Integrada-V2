@@ -13,3 +13,8 @@ export type IContextType = {
     isAuthenticated: boolean,
     checkAuthUser: () => Promise<boolean>
 }
+
+export type INewUser = {
+    email: string,
+    password: string,
+}

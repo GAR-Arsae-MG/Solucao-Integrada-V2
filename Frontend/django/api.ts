@@ -1,12 +1,13 @@
 import axios from 'axios'
+import { INewUser, IRequestProps } from '../types/types'
 
 export const api = axios.create({
-    baseURL: 'http://localhost:8000/',
+    baseURL: 'http://127.0.0.1:8000/',
 })
 
 export async function getAccount() {
     try {
-        const response = await api.get('/api/usuarios/')
+        const response = await api.get('/usuarios/')
         return response.data
     } catch (error) {
         console.error(error)
@@ -14,21 +15,25 @@ export async function getAccount() {
     }
 }
 
-export async function getCurrentUser() {
+export async function getCurrentUser({email, password}: INewUser) {
     try {
-        const currentAccount = await getAccount()
-    
-        if (!currentAccount || currentAccount.length === 0) {
-            throw new Error('Conta não encontrada')
-        }
-    
-        const currentUser = await api.get(`/api/usuarios/${currentAccount.id}/`)
-        
-        if (!currentUser) {
-            throw new Error('Usuário não encontrado')
-        }
-    
-        return currentUser.data
+        const response = await api.get('/api-token-auth/')
+
+        const requestOptions = await api({
+            method: 'POST',
+            url: '/api-token-auth/',
+            data: {
+                username: email,
+                password: password
+            }
+        })
+
+        const status = response.status
+        const user = await response.data()
+
+        console.log(status, user)
+
+        return user
 
     }   catch (error) {
         console.error(error)
