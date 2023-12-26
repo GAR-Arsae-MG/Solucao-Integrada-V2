@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
-from world.serializers import UserSerializer, GroupSerializer
+from world.serializers import LocalsSerializer, UserSerializer, GroupSerializer, SystemUnitsSerializer, AtivosSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
@@ -27,6 +27,20 @@ class UserViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    
+class LocalsViewSet(viewsets.ModelViewSet):
+    queryset = Localidades.objects.all().order_by('id')
+    serializer_class = LocalsSerializer
+    
+class SystemUnitsViewSet(viewsets.ModelViewSet):
+    queryset = unidades_do_sistema.objects.all().order_by('id')
+    serializer_class = SystemUnitsSerializer
+
+class AtivosViewSet(viewsets.ModelViewSet):
+    queryset = Ativos.objects.all().order_by('id')
+    serializer_class = AtivosSerializer
+
+
     
 @api_view(['POST'])
 def register(request):

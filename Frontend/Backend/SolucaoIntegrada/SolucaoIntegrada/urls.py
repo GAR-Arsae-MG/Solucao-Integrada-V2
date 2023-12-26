@@ -20,20 +20,19 @@ from django.urls import include, path
 from django.conf import settings
 from rest_framework import routers
 
-from world.views import ativos, locals, system_units, UserViewSet, GroupViewSet, register, CustomAuthToken
+from world.views import AtivosViewSet, LocalsViewSet, SystemUnitsViewSet, ativos, locals, system_units, UserViewSet, GroupViewSet, register, CustomAuthToken
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
 router.register('usuarios', UserViewSet)
 router.register('grupos', GroupViewSet)
+router.register('ativos', AtivosViewSet)
+router.register('locais', LocalsViewSet)
+router.register('unidades', SystemUnitsViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('api-token-auth/', CustomAuthToken.as_view(), name='api_token_auth'),
     path('api/register/', register, name='register'),
-    
-    path('ativos', ativos, name='ativos'),
-    path('locais', locals, name='locals'),
-    path('unidades', system_units, name='system_units'),
 ]
