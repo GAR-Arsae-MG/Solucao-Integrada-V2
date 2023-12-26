@@ -20,7 +20,7 @@ from django.urls import include, path
 from django.conf import settings
 from rest_framework import routers
 
-from world.views import AtivosViewSet, LocalsViewSet, SystemUnitsViewSet, ativos, locals, system_units, UserViewSet, GroupViewSet, register, CustomAuthToken
+from world.views import AtivosViewSet, LocalsViewSet, SystemUnitsViewSet, UserViewSet, GroupViewSet, register, CustomAuthToken
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()

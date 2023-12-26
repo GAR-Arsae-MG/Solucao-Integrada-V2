@@ -89,28 +89,4 @@ def logout_view(request):
         return Response({'message': 'Logout bem-sucedido.'}, status=status.HTTP_200_OK)
     except Token.DoesNotExist:
         return Response({'message': 'Token Inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
-   
-def locals(request):
-    if request.method == 'GET':
-        locals = Localidades.objects.all().values()
-        locals_list = list(locals)
-        return JsonResponse(locals_list, safe=False)
-    else:
-        return JsonResponse({'message': 'Consulta não permitida'})
-    
-def ativos(request):
-    if request.method == 'GET':
-        ativos = Ativos.objects.all().values()
-        ativos_list = list(ativos)
-        return JsonResponse(ativos_list, safe=False)
-    else:
-        return JsonResponse({'message': 'Consulta não permitida'})
-    
-def system_units(request):
-    if request.method == 'GET':
-        system_units = unidades_do_sistema.objects.all().values()
-        system_units_list = list(system_units)
-        return JsonResponse(system_units_list, safe=False)
-    else:
-        return JsonResponse({'message': 'Consulta não permitida'})
 
