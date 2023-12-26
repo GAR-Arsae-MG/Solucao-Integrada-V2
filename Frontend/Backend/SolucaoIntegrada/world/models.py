@@ -27,7 +27,7 @@ class Usuarios(AbstractBaseUser, PermissionsMixin):
         ('A', 'Administrador'),
     )
     nome = models.CharField(max_length=64)
-    email = models.EmailField(max_length=64)
+    email = models.EmailField(max_length=64, unique=True)
     telefone = models.CharField(max_length=11)
     funcao = models.CharField(max_length=1, choices=FUNCAO, blank=False, null=False, default='R')
     is_staff = models.BooleanField(default=False)

@@ -9,8 +9,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
-from rest_framework.settings import api_settings
 from rest_framework.response import Response
+from rest_framework_jwt.settings import api_settings
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -19,9 +19,6 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 from world.models import Ativos, Localidades, unidades_do_sistema, Usuarios
 
 # Create your views here.
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the world index.")
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = Usuarios.objects.all().order_by('id')
