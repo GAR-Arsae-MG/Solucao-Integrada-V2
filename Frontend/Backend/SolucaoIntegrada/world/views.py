@@ -57,11 +57,25 @@ class CustomAuthToken(ObtainAuthToken):
                 'nome': user.nome,
                 'email': user.email,
                 'funcao': user.funcao,
+                'token': token.key
             }
             return Response(user_data, status=status.HTTP_200_OK)
         else:
             return Response({'detail': 'Credenciais inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
-    
+
+
+@api_view(['POST'])
+def logout_view(request):
+    token = request.data.get('token')
+    if not token:
+        return Response({'message': 'Token Ausente.'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        token = Token.objects.get(key=token)
+        token.delete()
+        return Response({'message': 'Logout bem-sucedido.'}, status=status.HTTP_200_OK)
+    except Token.DoesNotExist:
+        return Response({'message': 'Token Inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
+   
 def locals(request):
     if request.method == 'GET':
         locals = Localidades.objects.all().values()
