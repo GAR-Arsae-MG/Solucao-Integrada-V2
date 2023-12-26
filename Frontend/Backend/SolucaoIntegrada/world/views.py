@@ -3,6 +3,13 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
+from world.serializers import UserSerializer, GroupSerializer
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view
+
 
 from world.models import Ativos, Localidades, unidades_do_sistema, Usuarios
 
