@@ -16,5 +16,6 @@ export type IContextType = {
 
 export type INewUser = {
     email: string,
-    password: string,
+    senha: string,
+    nome?: string
 }

@@ -20,7 +20,7 @@ from django.urls import include, path
 from django.conf import settings
 from rest_framework import routers
 
-from world.views import AtivosViewSet, LocalsViewSet, SystemUnitsViewSet, UserViewSet, GroupViewSet, register, CustomAuthToken
+from world.views import AtivosViewSet, LocalsViewSet, SystemUnitsViewSet, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
@@ -35,4 +35,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-token-auth/', CustomAuthToken.as_view(), name='api_token_auth'),
     path('api/register/', register, name='register'),
+    path('api/logout/', logout_view, name='logout'),
 ]
