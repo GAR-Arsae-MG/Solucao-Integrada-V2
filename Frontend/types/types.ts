@@ -1,9 +1,10 @@
 export type IUser = {
     id: string,
-    name: string,
+    nome: string,
     email: string,
-    imageUrl: string,
-    agency: string
+    funcao: string,
+    imageUrl?: string,
+    agencia: string
 }
 
 export type IContextType = {

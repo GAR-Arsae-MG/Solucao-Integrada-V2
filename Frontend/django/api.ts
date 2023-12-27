@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { INewUser } from '../types/types'
+import { INewUser, IUser } from '../types/types'
 import { redirect } from 'react-router-dom'
 
 export const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/',
 })
 
-export async function getAccount() {
+export async function getAccounts() {
     try {
         const response = await api.get('/usuarios/')
         return response.data as JSON
@@ -115,6 +115,35 @@ export async function logoutUser(token: string) {
         
         } else {
             throw new Error('Erro ao fazer logout')
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error(error.response.data)
+            console.error(error.response.status)
+            console.error(error.response.headers)
+        }else if (error.request) {
+            console.error(error.request)
+        } else {
+            console.error('Erro', error.message)
+        }
+        throw error
+    }
+}
+
+
+export async function getInfoUser(token:string): Promise<IUser> {
+    try {
+        const response = await api.get('/api/user-info', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+
+        if (response.status === 200) {
+            return response.data as IUser
+        
+        } else {
+            throw new Error('Erro ao buscar informações do usuário')
         }
     } catch (error) {
         if (error.response) {

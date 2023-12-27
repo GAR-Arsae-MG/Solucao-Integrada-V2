@@ -8,9 +8,11 @@ from world.serializers import LocalsSerializer, UserSerializer, GroupSerializer,
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -71,6 +73,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'nome': user.nome,
                 'email': user.email,
                 'funcao': user.funcao,
+                'imageUrl': user.imageUrl,
                 'token': token.key
             }
             return Response(user_data, status=status.HTTP_200_OK)
@@ -89,4 +92,19 @@ def logout_view(request):
         return Response({'message': 'Logout bem-sucedido.'}, status=status.HTTP_200_OK)
     except Token.DoesNotExist:
         return Response({'message': 'Token Inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_info(request):
+    user = request.user
+    user_data = {
+        'id': user.id,
+        'nome': user.nome,
+        'email': user.email,
+        'funcao': user.funcao,
+        'imageUrl': user.imageUrl,
+        'agencia': user.agencia,
+    }
+    return Response(user_data, status=status.HTTP_200_OK)
 

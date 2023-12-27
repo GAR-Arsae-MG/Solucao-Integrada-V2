@@ -21,6 +21,7 @@ reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v P
 reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v GDAL_DATA /t REG_EXPAND_SZ /f /d "%GDAL_DATA%"
 reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v PROJ_LIB /t REG_EXPAND_SZ /f /d "%PROJ_LIB%"
 
+
 ```
 
 <p>Logo após deve-se verificar corretamente se o arquivo Settings.py está referenciando sua lib GDAL, caso contrário precisa referenciar o arquivo gdal(versão).dll</p>
@@ -28,6 +29,6 @@ reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v P
 
 ## Não se esqueça de sempre que for mudar algo no projeto backend, rode python manage.py makemigrations e python manage.py migrate para as mudanças serem registradas pelo framework.
 
-Para rodar o server é só digitar python manage.py runserver, no configenv.
+Para rodar o server é só digitar python manage.py runserver, no newvenv.
 
 A senha padrão para usuários é padronizado, permitindo uma senha não nula padrão.
