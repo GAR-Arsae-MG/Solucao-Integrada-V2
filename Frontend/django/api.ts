@@ -66,7 +66,8 @@ export async function getCurrentUser({email, senha}: INewUser) {
         
         } else {
             throw new Error('Credenciais inválidas')
-        }
+        } 
+        
 
     }   catch (error) {
         if (error.response) {
