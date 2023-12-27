@@ -69,7 +69,15 @@ export async function getCurrentUser({email, senha}: INewUser) {
         }
 
     }   catch (error) {
-        console.error(error)
+        if (error.response) {
+            console.error(error.response.data)
+            console.error(error.response.status)
+            console.error(error.response.headers)
+        }else if (error.request) {
+            console.error(error.request)
+        } else {
+            console.error('Erro', error.message)
+        }
         throw error
     }
 }
@@ -85,7 +93,16 @@ export async function createUser({email, senha, nome}: INewUser) {
             throw new Error('Erro ao criar usuário')
         }
     } catch (error) {
-        console.error(error)
+        if (error.response) {
+            console.error(error.response.data)
+            console.error(error.response.status)
+            console.error(error.response.headers)
+        }else if (error.request) {
+            console.error(error.request)
+        } else {
+            console.error('Erro', error.message)
+        }
+        throw error
     }
 }
 
@@ -100,7 +117,15 @@ export async function logoutUser(token: string) {
             throw new Error('Erro ao fazer logout')
         }
     } catch (error) {
-        console.error(error)
+        if (error.response) {
+            console.error(error.response.data)
+            console.error(error.response.status)
+            console.error(error.response.headers)
+        }else if (error.request) {
+            console.error(error.request)
+        } else {
+            console.error('Erro', error.message)
+        }
         throw error
     }
 }
