@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
 import { INewUser, IUser } from '../types/types'
 import { redirect } from 'react-router-dom'
@@ -69,7 +70,7 @@ export async function getCurrentUser({email, senha}: INewUser) {
         } 
         
 
-    }   catch (error) {
+    }   catch (error: any) {
         if (error.response) {
             console.error(error.response.data)
             console.error(error.response.status)
@@ -93,7 +94,7 @@ export async function createUser({email, senha, nome}: INewUser) {
         } else {
             throw new Error('Erro ao criar usuário')
         }
-    } catch (error) {
+    } catch (error: any) {
         if (error.response) {
             console.error(error.response.data)
             console.error(error.response.status)
@@ -117,7 +118,7 @@ export async function logoutUser(token: string) {
         } else {
             throw new Error('Erro ao fazer logout')
         }
-    } catch (error) {
+    } catch (error: any) {
         if (error.response) {
             console.error(error.response.data)
             console.error(error.response.status)
@@ -146,7 +147,7 @@ export async function getInfoUser(token:string): Promise<IUser> {
         } else {
             throw new Error('Erro ao buscar informações do usuário')
         }
-    } catch (error) {
+    } catch (error: any) {
         if (error.response) {
             console.error(error.response.data)
             console.error(error.response.status)

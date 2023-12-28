@@ -5,13 +5,16 @@ import { NextUIProvider } from '@nextui-org/react'
 import './index.css'
 import 'vite/modulepreload-polyfill'
 import { MapProvider } from 'react-map-gl'
+import QueryProvider from '../react-query/QueryProvider'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <NextUIProvider>
       <MapProvider>
-          <App />
+        <QueryProvider>
+            <App />
+        </QueryProvider>
       </MapProvider>
     </NextUIProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 )

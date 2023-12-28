@@ -10,9 +10,9 @@ export type IUser = {
 export type IContextType = {
     user: IUser,
     isLoading: boolean,
-    setUser: React.Dispatch<React.SetStateAction<IUser>>,
+    setUser: (user: IUser) => void,
     isAuthenticated: boolean,
-    checkAuthUser: () => Promise<boolean>
+    checkAuthUser: (email: string, senha: string) => Promise<boolean>
 }
 
 export type INewUser = {
