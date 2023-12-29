@@ -53,12 +53,10 @@ function Login() {
       }
     }
 
-
-
     return (
         <>
-          <div>
-            <Card className="w-[1200px] h-[800px] flex flex-col bg-slate-800" >
+          <div className='w-full h-full lg:w-96'>
+            <Card className="h-full flex flex-col bg-slate-800" >
               <CardBody className="overflow-auto scrollbar-hide">
                 <Tabs
                   fullWidth

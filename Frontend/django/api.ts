@@ -132,6 +132,30 @@ export async function logoutUser(token: string) {
     }
 }
 
+export async function revalidatePassword({email, senha}: INewUser) {
+    try {
+        const response = await api.post('/api/revalidate-password', {email: email, senha: senha})
+
+        if (response.status === 200) {
+            return (response.data) && redirect('/login')
+        } else {
+            throw new Error('Erro ao revalidar a senha')
+        }
+        
+    } catch (error: any) {
+        if (error.response) {
+            console.error(error.response.data)
+            console.error(error.response.status)
+            console.error(error.response.headers)
+        }else if (error.request) {
+            console.error(error.request)
+        } else {
+            console.error('Erro', error.message)
+        }
+        throw error
+    }
+}
+
 
 export async function getInfoUser(token:string): Promise<IUser> {
     try {

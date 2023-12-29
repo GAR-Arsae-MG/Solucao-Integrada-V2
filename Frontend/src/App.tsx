@@ -5,6 +5,7 @@ import { CadastroAtivo, CadastroUnidades, ListagemAtivos, ListagemUsuarios, Pain
 import CadastroUsuários from './_auth/CadastroUsuários'
 import AuthLayout from './_auth/AuthLayout'
 import { AuthProvider } from '../context/AuthContext'
+import RevalidarSenha from './_auth/revalidarSenha'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route element={<AuthLayout />}>
               <Route path='/login' Component={Login} />
               <Route path='/registro' Component={CadastroUsuários} />
+              <Route path='/revalidar-senha' Component={RevalidarSenha}/>
             </Route>
             
             <Route>

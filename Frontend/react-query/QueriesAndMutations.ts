@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { INewUser } from '../types/types'
-import { createUser, getAccounts, getCurrentUser, getGroups, getLocals, getUnits, logoutUser } from '../django/api'
+import { createUser, getAccounts, getCurrentUser, getGroups, getLocals, getUnits, logoutUser, revalidatePassword } from '../django/api'
 import { QUERY_KEYS } from './QueryKeys'
 
 export const useCreateUserAccount = () => {
@@ -21,6 +21,15 @@ export const useSignInAccount = () => {
 export const useSignOutAccount = () => {
     return useMutation({
         mutationFn: logoutUser
+    })
+}
+
+export const useRevalidatePassword = () => {
+    return useMutation({
+        mutationFn: (user: {
+            email: string
+            senha: string
+        }) => revalidatePassword(user)
     })
 }
 

@@ -1,36 +1,62 @@
-import { Card, CardBody, Input, Tab, Tabs, Image } from '@nextui-org/react'
+import { Card, CardBody, Input, Tab, Tabs, Image, Button, Spinner } from '@nextui-org/react'
 import { SignUpValidation } from '../../validation/FormValidation'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import * as z from 'zod'
 
 import LogoSGP from '../assets/Arsae-MG-_-logo_med.png'
 import openEye from '../assets/open-eye.svg'
 import closedEye from '../assets/olhos-fechados.png'
+import { useCreateUserAccount } from '../../react-query/QueriesAndMutations'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useAuthContext } from '../../context/AuthContext'
 
 const CadastroUsuários = () => {
-
-  const [email, setEmail] = useState('')
-  const [name, setName] = useState('')
-  const [password, setPassword] = useState('')
   const [show, setShow] = useState(false);
   const toggleVisbility = () => setShow(!show)
 
-  const handleEmail = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setEmail(event.target.value)
-  }
+  const { mutateAsync: signUpAccount } = useCreateUserAccount();
+  const { checkAuthUser, isLoading: isUserLoading } = useAuthContext()
 
-  const handleName = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setName(event.target.value)
-  }
+  const navigate = useNavigate()
 
-  const handlePassword = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setPassword(event.target.value)
+  const form = useForm<z.infer<typeof SignUpValidation>>({
+    resolver: zodResolver(SignUpValidation),
+    shouldUseNativeValidation: false,
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+    }
+  })
+
+  async function onSubmit(values: z.infer<typeof SignUpValidation>) {
+    const session = await signUpAccount({
+      nome: values.name,
+      email: values.email,
+      senha: values.password
+    })
+
+    if (!session) {
+      return alert("Credenciais inválidas, por favor, tente novamente.")
+    }
+
+    const isLoggedIn = await checkAuthUser(values.email, values.password)
+
+    if(isLoggedIn) {
+      form.reset()
+
+      navigate('/')
+    } else {
+      return alert("Credenciais inválidas, por favor, tente novamente.")
+    }
   }
 
   return (
     <>
-      <div>
-          <Card className='w-[1200px] h-[800px] flex flex-col bg-slate-800'>
+      <div className='w-full'>
+          <Card className=' h-[800px] flex flex-col bg-slate-800'>
             <CardBody className='overflow-auto scrollbar-hide'>
               <Tabs
                 fullWidth
@@ -48,32 +74,31 @@ const CadastroUsuários = () => {
 
                       <h3 className="text-8xl gap-4 p-4 text-white font-bold">Não é Cadastrado? Não se preocupe!</h3>
 
-                      <form method="post" className="gap-4 p-4 w-full">
+                      <form method="post" className="gap-4 p-4 w-full" onSubmit={form.handleSubmit(onSubmit)}>
 
                         <Input
+                          {...form.register('email', {required: true})}
                           label="E-mail"
                           placeholder="Digite seu e-mail"
-                          value={email}
-                          onChange={handleEmail}
                           required
                           className="p-10"
                         />
+                        {form.formState.errors.email && <p>{form.formState.errors.email.message}</p>}
 
-                        <Input 
+                        <Input
+                          {...form.register('name', {required: true})} 
                           label="Nome"
                           placeholder="Digite seu nome"
-                          value={name}
-                          onChange={handleName}
                           required
                           className="p-10"
-                        />
+                          />
+                          {form.formState.errors.name && <p>{form.formState.errors.name.message}</p>}
 
-                        <Input 
+                        <Input
+                          {...form.register('password', {required: true})} 
                           type={show ? "text" : "password"}
                           label="Senha"
                           placeholder="Digite sua senha"
-                          value={password}
-                          onChange={handlePassword}
                           required
                           className="p-10"
                           endContent={
@@ -86,6 +111,15 @@ const CadastroUsuários = () => {
                             </button>
                           }
                         />
+                        {form.formState.errors.password && <p>{form.formState.errors.password.message}</p>}
+
+                        <Button type="submit" color="success" className="w-full" disabled={isUserLoading}>
+                          {isUserLoading ? (
+                            <div className="flex justify-center gap-2">
+                              <Spinner size="md" color="secondary" />
+                            </div>
+                          ): 'Entrar'}
+                        </Button>
                       </form>
 
                       <div className="flex justify-between p-4 gap-4 text-slate-50 hover:text-blue-400">
