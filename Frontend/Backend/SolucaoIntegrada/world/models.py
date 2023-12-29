@@ -14,6 +14,12 @@ class UserManager(BaseUserManager):
         usuario.save(using=self._db)
         return usuario
     
+    def revalidate_password(self, email, novaSenha):
+        usuario = self.model.objects.get(email=email)
+        usuario.set_password(novaSenha)
+        usuario.save(using=self._db)
+        return usuario                
+    
     def create_superuser(self, email, senha=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
