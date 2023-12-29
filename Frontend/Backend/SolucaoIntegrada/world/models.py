@@ -32,6 +32,7 @@ class Usuarios(AbstractBaseUser, PermissionsMixin):
         ('U', 'Usuario'),
         ('A', 'Administrador'),
     )
+    id = models.AutoField(primary_key=True)
     nome = models.CharField(max_length=64)
     email = models.EmailField(max_length=64, unique=True)
     telefone = models.CharField(max_length=11)

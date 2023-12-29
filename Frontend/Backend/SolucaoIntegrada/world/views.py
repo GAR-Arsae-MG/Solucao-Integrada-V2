@@ -20,12 +20,15 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
 from world.models import Ativos, Localidades, unidades_do_sistema, Usuarios
+from django.conf import settings
 
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = Usuarios.objects.all().order_by('id')
     serializer_class = UserSerializer
+    print(settings.AUTH_USER_MODEL)
+    
     
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -50,11 +53,15 @@ def register(request):
     data = request.data
     if Usuarios.objects.filter(email=data['email']).exists():
         return JsonResponse({'message': 'Email já existe.'}, status=status.HTTP_400_BAD_REQUEST)
-    user = Usuarios.objects.create_user(
-        email=data['email'],
-        nome=data['nome'],
-        senha=data['senha'],
-    )
+    try:
+        user = Usuarios.objects.create_user(
+            email=data['email'],
+            nome=data['nome'],
+            senha=data['senha'],
+        )
+    except Exception as e:
+        return JsonResponse({'message': f'Erro ao criar usuário: {e}'}, status=status.HTTP_400_BAD_REQUEST)
+    Token.objects.create(user=user)
     payload = jwt_payload_handler(user)
     token = jwt_encode_handler(payload)
     

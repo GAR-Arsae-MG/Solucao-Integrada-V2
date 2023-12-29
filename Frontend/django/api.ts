@@ -86,7 +86,7 @@ export async function getCurrentUser({email, senha}: INewUser) {
     
 export async function createUser({email, senha, nome}: INewUser) {
     try {
-        const response = await api.post('/api/register', {email: email, senha: senha, nome: nome})
+        const response = await api.post('/api/register/', {email: email, senha: senha, nome: nome})
 
         if (response.status === 201) {
             return (response.data) && redirect('/login')
@@ -110,7 +110,7 @@ export async function createUser({email, senha, nome}: INewUser) {
 
 export async function logoutUser(token: string) {
     try {
-        const response = await api.post('/api/logout', {token: token})
+        const response = await api.post('/api/logout/', {token: token})
 
         if (response.status === 200) {
             redirect('/login')
@@ -134,7 +134,7 @@ export async function logoutUser(token: string) {
 
 export async function revalidatePassword({email, senha}: INewUser) {
     try {
-        const response = await api.post('/api/revalidate-password', {email: email, senha: senha})
+        const response = await api.post('/api/revalidate-password/', {email: email, senha: senha})
 
         if (response.status === 200) {
             return (response.data) && redirect('/login')
@@ -159,7 +159,7 @@ export async function revalidatePassword({email, senha}: INewUser) {
 
 export async function getInfoUser(token:string): Promise<IUser> {
     try {
-        const response = await api.get('/api/user-info', {
+        const response = await api.get('/api/user-info/', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
