@@ -82,8 +82,10 @@ function Login() {
                           placeholder="Digite seu e-mail"
                           required
                           className="p-10"
+                          autoComplete='email'
+                          errorMessage={form.formState.errors.email && <p>{form.formState.errors.email.message}</p>}
                         />
-                        {form.formState.errors.email && <p>{form.formState.errors.email.message}</p>}
+                        
 
                         <Input
                            {...form.register('password', {required: true})}
@@ -92,6 +94,7 @@ function Login() {
                           placeholder="Digite sua senha"
                           required
                           className="p-10"
+                          errorMessage={form.formState.errors.password && <p>{form.formState.errors.password.message}</p>}
                           endContent={
                             <button className="focus:outline-none " type="button" onClick={toggleVisbility} aria-label="Show password">
                               {show ? (
@@ -103,7 +106,7 @@ function Login() {
                             </button>
                           }
                         />
-                        {form.formState.errors.password && <p>{form.formState.errors.password.message}</p>}
+                        
 
                         <Button type="submit" color="success" className="w-full" disabled={isUserLoading}>
                           {isUserLoading ? (

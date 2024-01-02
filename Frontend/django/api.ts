@@ -63,7 +63,7 @@ export async function getCurrentUser({email, senha}: INewUser) {
         const response = await api.post('/api-token-auth/', {email: email, senha: senha})
 
         if (response.status === 200) {
-            return (response.data) && redirect('/')
+            return (response.data)
         
         } else {
             throw new Error('Credenciais inválidas')

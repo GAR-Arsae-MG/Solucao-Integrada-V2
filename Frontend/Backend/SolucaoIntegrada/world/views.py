@@ -82,6 +82,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'email': user.email,
                 'funcao': user.funcao,
                 'imageUrl': user.imageUrl,
+                'agencia': user.agencia,
                 'token': token.key
             }
             return Response(user_data, status=status.HTTP_200_OK)

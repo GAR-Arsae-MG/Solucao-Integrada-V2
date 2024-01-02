@@ -39,6 +39,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             if (currentAccount) {
                 setUser(currentAccount)
                 setIsAuthenticated(true)
+                localStorage.setItem('user', JSON.stringify(currentAccount))
+                navigate('/')
                 return true
             }
             return false
@@ -51,7 +53,11 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
 
     useEffect(() => {
-        if (!localStorage.getItem('cookieFallback')) {
+        const storedUser = localStorage.getItem('user')
+        if (storedUser) {
+            setUser(JSON.parse(storedUser))
+            setIsAuthenticated(true)
+        } else {
             navigate('/login')
         }
     }, [navigate])
