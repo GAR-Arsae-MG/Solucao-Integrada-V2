@@ -1,12 +1,11 @@
 
 import TopNav from '../../components/ui/TopNav';
-import { ChevronRightIcon, ChevronLeftIcon, PlusSquareIcon, CheckIcon, EditIcon } from '@chakra-ui/icons';
-import 'leaflet/dist/leaflet.css'
-import MapCadastro from '../../components/MapCadatro';
+import { ChevronRightIcon, ChevronLeftIcon, CheckIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Tabs, Tab, Input, Button, Card, CardBody, Divider, RadioGroup, Radio} from "@nextui-org/react";
 import { useForm, SubmitHandler } from 'react-hook-form';
+import Map from '../../components/ui/map';
 
 function CadastroAtivo() {
 
@@ -57,16 +56,6 @@ function CadastroAtivo() {
   const voltarParaStepAnterior = () => {
     setStep(step - 1);
   };
-
-  const [selectedLayer, setSelectedLayer] = useState(0);
-
-  function handleButtonESRI() {
-    setSelectedLayer(0);
-  }
-
-  function handleButtonOSM() {
-      setSelectedLayer(1);
-  }
 
   return(
     <>
@@ -341,24 +330,6 @@ function CadastroAtivo() {
                       </Button>
 
                       <Button
-                        color='primary'
-                        startContent={<PlusSquareIcon className={iconClasses} />}
-                        className='rounded-xl'
-                        onClick={handleButtonESRI}
-                      >
-                        ESRI(Satelite)
-                      </Button>
-
-                      <Button
-                        color='warning'
-                        startContent={<EditIcon className={iconClasses} />}
-                        className='rounded-xl'
-                        onClick={handleButtonOSM}
-                      >
-                        OSM(Cartográfico)
-                      </Button>
-
-                      <Button
                         color='success'
                         startContent={<CheckIcon className={iconClasses} />}
                         className='rounded-xl'
@@ -370,7 +341,7 @@ function CadastroAtivo() {
                   </form>
 
                   <div>
-                    <MapCadastro selectedLayer={selectedLayer} />
+                    <Map />
                   </div>
                 </Tab>
               )}

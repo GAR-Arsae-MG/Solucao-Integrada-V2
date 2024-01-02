@@ -2,9 +2,9 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.models import Group
-from world.serializers import LocalsSerializer, UserSerializer, GroupSerializer, SystemUnitsSerializer, AtivosSerializer
+from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
@@ -19,7 +19,7 @@ jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
-from world.models import Ativos, Localidades, unidades_do_sistema, Usuarios
+from world.models import Ativos_Administrativos, Ativos_Operacionais, Unidades, Usuarios
 from django.conf import settings
 
 # Create your views here.
@@ -34,17 +34,17 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     
-class LocalsViewSet(viewsets.ModelViewSet):
-    queryset = Localidades.objects.all().order_by('id')
-    serializer_class = LocalsSerializer
-    
-class SystemUnitsViewSet(viewsets.ModelViewSet):
-    queryset = unidades_do_sistema.objects.all().order_by('id')
-    serializer_class = SystemUnitsSerializer
+class UnitiesViewSet(viewsets.ModelViewSet):
+    queryset = Unidades.objects.all().order_by('id')
+    serializer_class = UnitiesSerializer
 
-class AtivosViewSet(viewsets.ModelViewSet):
-    queryset = Ativos.objects.all().order_by('id')
-    serializer_class = AtivosSerializer
+class AtivosAdminViewSet(viewsets.ModelViewSet):
+    queryset = Ativos_Administrativos.objects.all().order_by('id')
+    serializer_class = AtivosAdminSerializer
+    
+class AtivosOperationalViewSet(viewsets.ModelViewSet):
+    queryset = Ativos_Operacionais.objects.all().order_by('id')
+    serializer_class = AtivosOperacionaisSerializer
 
 
     

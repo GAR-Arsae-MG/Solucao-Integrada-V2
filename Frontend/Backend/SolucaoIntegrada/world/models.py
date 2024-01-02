@@ -58,22 +58,27 @@ class Usuarios(AbstractBaseUser, PermissionsMixin):
 
 
 # não está completo
-class Localidades(models.Model):
+class Unidades(models.Model):
     SISTEMAS = (
-        ('A', 'Água'),
-        ('E', 'Esgoto'),
+        ('A', 'Administrativo'),
+        ('O', 'operacional(Unidades de tratamento)'),
     )
-    localidade = models.CharField(max_length=50)
-    sistemas = models.IntegerField(choices=SISTEMAS, null=False, blank=False)
+    nome = models.CharField(max_length=50)
+    sistemas = models.CharField(choices=SISTEMAS, null=False, blank=False, default='Administrativo')
     TIPO = (
-        ('E', 'Enterrado'),
-        ('V', 'Visivel'),
+        ('S', 'Sede'),
+        ('F', 'Filial'),
+        ('TA', 'Tratamento de Água'),
+        ('TE', 'Tratamento de Esgoto'),
+        ('TB', 'Tratamento de Agua e Esgoto'),
     )
-    tipo = models.CharField(max_length=1, choices=TIPO, blank=False, null=False)
+    tipo = models.CharField(max_length=2, choices=TIPO, blank=False, null=False, default='Filial')
+    coordenada = models.PointField()
+    localidade = models.CharField(max_length=100)
 
 
 # não está completo
-class Ativos(models.Model):
+class Ativos_Operacionais(models.Model):
     STATUS = (
        ('P/A', 'Projeto em andamento'),
        ('P/P', 'Projeto paralisado'),
@@ -88,6 +93,11 @@ class Ativos(models.Model):
        ('D', 'Ativo desativado'),
     )
     nome_de_campo = models.CharField(max_length=64)
+    TIPO_ATIVO = (
+        ('V', 'Visivel'),
+        ('E', 'Enterrado'),
+    )
+    tipo_ativo = models.CharField(max_length=1, choices=TIPO_ATIVO, blank=False, null=False, default='V')
     classe = models.CharField(max_length=64)
     fase = models.CharField(max_length=64)
     TIPO_INVESTIMENTO = (
@@ -96,7 +106,6 @@ class Ativos(models.Model):
         ('A', 'Ampliação'),
         ('M', 'Melhorias'),
         ('R', 'Reposição de Ativos'),
-        ('A/O', 'Administrativo/Operacional'),
     )
     tipo_investimento = models.CharField(max_length=3, choices=TIPO_INVESTIMENTO, blank=False, null=False)
     ETAPA_DO_SERVICO = (
@@ -117,12 +126,13 @@ class Ativos(models.Model):
     valor_original = models.FloatField()
     vida_util_reg_anos = models.IntegerField()
     vida_util_reg_meses = models.IntegerField()
+    unidade = models.ForeignKey(Unidades, on_delete=models.CASCADE, blank=False, null=False)
     data_insercao = models.DateField()
     data_projeto = models.DateField()
     data_obra = models.DateField()
     data_operacao = models.DateField()
     criado_por = models.CharField(max_length=64)
-    status = models.CharField(max_length=3, choices=STATUS, blank=False, null=False)
+    status = models.CharField(max_length=3, choices=STATUS, blank=False, null=False, default='P/A')
     criado_em = models.DateTimeField(auto_now_add=True, editable=False)
     codigo = models.CharField(max_length=10, default="", unique=True)
     coordenada_x = models.PointField()
@@ -130,12 +140,43 @@ class Ativos(models.Model):
 
     def __str__(self):
      return self.codigo
-
-class unidades_do_sistema(models.Model):
-    nome = models.CharField(max_length=64)
-    id_localidade = models.IntegerField()
-    id_sistemas = models.IntegerField()
-    tipo = models.CharField(max_length=30)
+ 
+class Ativos_Administrativos(models.Model):
+    TIPO_ATIVO = (
+        ('A', 'Automóvel'),
+        ('M', 'Móvel'),
+        ('I', 'Imóvel'),
+        ('E', 'Eletrônico')
+    )
+    tipo_ativo = models.CharField(max_length=1, choices=TIPO_ATIVO, blank=False, null=False, default='I')
+    nome_ativo = models.CharField(max_length=64, blank=False, null=False)
+    código_ativo = models.CharField(max_length=64, blank=False, null=False)
+    CLASSE_ATIVO = (
+        ('P', 'Pessoal'),
+        ('C', 'Computador'),
+        ('I', 'Impressora'),
+        ('V', 'Veículo'),
+        ('E', 'Eletrodomestico'),
+        ('G', 'Geral')
+    )
+    proprietario = models.CharField(max_length=64, blank=False, null=False)
+    doacao = models.BooleanField()
+    valor_original = models.FloatField()
+    valor_atual = models.FloatField()
+    STATUS = (
+        ('F', 'Ativo Em Funcionamento'),
+        ('D', 'Ativo Desativado'),
+        ('R', 'Ativo Reservado'),
+        ('P', 'Ativo Paralisado'),
+        ('R', 'Ativo em Reforma/Reparo'),
+        ('C', 'Ativo Cancelado'),
+        ('O', 'Ativo Obsoleto'),
+        ('U', 'Ativo Fora de Uso')
+    )
+    status = models.CharField(max_length=3, choices=STATUS, blank=False, null=False, default='F')
+    data_insercao = models.DateField()
+    previsao_substituicao = models.DateField()
+    unidade = models.ForeignKey(Unidades, on_delete=models.CASCADE, blank=False, null=False)
     criado_por = models.CharField(max_length=64)
-    status = models.CharField(max_length=64)
-    criado_em = models.DateTimeField(default=timezone.now)
+    adquirido_por = models.CharField(max_length=64)
+    

@@ -20,15 +20,15 @@ from django.urls import include, path
 from django.conf import settings
 from rest_framework import routers
 
-from world.views import AtivosViewSet, LocalsViewSet, SystemUnitsViewSet, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info                                
+from world.views import UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
 router.register('usuarios', UserViewSet)
 router.register('grupos', GroupViewSet)
-router.register('ativos', AtivosViewSet)
-router.register('locais', LocalsViewSet)
-router.register('unidades', SystemUnitsViewSet)
+router.register('ativos-operacionais', AtivosOperationalViewSet)
+router.register('ativos-administrativos', AtivosAdminViewSet)
+router.register('unidades', UnitiesViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

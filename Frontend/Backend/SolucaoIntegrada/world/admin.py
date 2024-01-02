@@ -1,5 +1,5 @@
 from django.contrib import admin
-from world.models import Ativos, Localidades, Usuarios, unidades_do_sistema
+from world.models import Ativos_Administrativos, Unidades, Usuarios, Ativos_Operacionais
 
 # Register your models here.
 
@@ -12,30 +12,29 @@ class UsuariosAdmin(admin.ModelAdmin):
 admin.site.register(Usuarios, UsuariosAdmin)
 
 
-class localidadesAdmin(admin.ModelAdmin):
-    list_display = ('localidade', 'sistemas', 'tipo')
+class UnidadesAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'sistemas', 'tipo', 'localidade')
     list_display_links = ('localidade', )
-    search_fields = ('localidade',)
+    search_fields = ('nome',)
     list_filter = ('tipo',)
     
-admin.site.register(Localidades, localidadesAdmin)
+admin.site.register(Unidades, UnidadesAdmin)
 
 
 #Verificar se os campos choices de "models" devem ser inseridos no list display
-class ativosAdmin(admin.ModelAdmin):
-    list_display = ('nome_de_campo', 'classe','fase', 'tipo_investimento', 'etapa_do_servico', 'situacao_atual', 'proprietario', 'doacao', 'valor_original' , 'vida_util_reg_anos', 'vida_util_reg_meses', 
-                 'data_insercao', 'data_projeto', 'data_obra', 'data_operacao', 'criado_por', 'status', 'criado_em', 'codigo', 'coordenada_x', 'coordenada_y')
+class ativosOperacionaisAdmin(admin.ModelAdmin):
+    list_display = ('nome_de_campo', 'classe','fase', 'tipo_investimento', 'etapa_do_servico', 'situacao_atual', 'proprietario', 'doacao', 'valor_original' , 'unidade','vida_util_reg_anos', 'vida_util_reg_meses', 'data_insercao', 'data_projeto', 'data_obra', 'data_operacao', 'criado_por', 'status', 'criado_em', 'codigo', 'coordenada_x', 'coordenada_y')
     list_display_links = ('nome_de_campo', 'criado_por')
     search_fields = ('nome_do_campo', 'codigo')
     list_filter = ('classe', 'fase', 'status')
 
-admin.site.register(Ativos, ativosAdmin)
+admin.site.register(Ativos_Operacionais, ativosOperacionaisAdmin)
     
 
-class unidades_do_sistemaAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'id_localidade', 'id_sistemas', 'tipo', 'criado_por', 'status', 'criado_em')
-    list_display_links = ('nome', 'id_localidade')
-    search_fields = ('nome', 'id_sistemas')
-    list_filter = ('tipo', 'status')
+class ativosAdministrativosAdmin(admin.ModelAdmin):
+    list_display = ( 'tipo_ativo', 'nome_ativo', 'código_ativo', 'criado_por', 'status', 'adquirido_por', 'proprietario', 'doacao', 'valor_original', 'valor_atual', 'data_insercao', 'previsao_substituicao', 'unidade')
+    list_display_links = ('nome_ativo', 'proprietario')
+    search_fields = ('nome_ativo', 'codigo_ativo')
+    list_filter = ('tipo_ativo', 'status')
     
-admin.site.register(unidades_do_sistema, unidades_do_sistemaAdmin)
+admin.site.register(Ativos_Administrativos, ativosAdministrativosAdmin)

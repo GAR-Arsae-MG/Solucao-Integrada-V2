@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Group
-from world.models import Usuarios, Localidades, unidades_do_sistema, Ativos
+from world.models import Usuarios, Unidades, Ativos_Administrativos, Ativos_Operacionais
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -12,18 +12,18 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ['url', 'name']
         
-class LocalsSerializer(serializers.ModelSerializer):
+class UnitiesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Localidades
+        model = Unidades
         fields = '__all__'
 
-class SystemUnitsSerializer(serializers.ModelSerializer):
+class AtivosAdminSerializer(serializers.ModelSerializer):
     class Meta:
-        model = unidades_do_sistema
+        model = Ativos_Administrativos
         fields = '__all__'
 
-class AtivosSerializer(serializers.ModelSerializer):
+class AtivosOperacionaisSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Ativos
+        model = Ativos_Operacionais
         fields = '__all__'
 

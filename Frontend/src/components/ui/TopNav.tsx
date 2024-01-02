@@ -2,13 +2,14 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown,
 import LogoSGP  from '../../assets/logo_sgp.png'
 import PersonSVG from '../../assets/person-svgrepo-com.svg'
 import { useAuthContext } from "../../../context/AuthContext";
-import { logoutUser } from "../../../django/api";
 import { useNavigate } from "react-router-dom";
+import { useSignOutAccount } from "../../../react-query/QueriesAndMutations";
 
 
 function TopNav() {
     const { user, setUser } = useAuthContext()
     const navigate = useNavigate()
+    const signOutAccount = useSignOutAccount()
 
     return(
         <Navbar className=" gap-6 bg-slate-900" >
@@ -136,7 +137,7 @@ function TopNav() {
                         disableRipple
                         onClick={
                             async () => {
-                                await logoutUser(user!.token)
+                                await signOutAccount.mutate(user!.token)
                                 localStorage.removeItem('user')
                                 setUser(null)
                                 navigate('/login')
