@@ -2,10 +2,13 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown,
 import LogoSGP  from '../../assets/logo_sgp.png'
 import PersonSVG from '../../assets/person-svgrepo-com.svg'
 import { useAuthContext } from "../../../context/AuthContext";
+import { logoutUser } from "../../../django/api";
+import { useNavigate } from "react-router-dom";
 
 
 function TopNav() {
-    const { user } = useAuthContext()
+    const { user, setUser } = useAuthContext()
+    const navigate = useNavigate()
 
     return(
         <Navbar className=" gap-6 bg-slate-900" >
@@ -96,13 +99,13 @@ function TopNav() {
                                                 isBordered 
                                                 radius="full" 
                                                 size="md"
-                                                src={user.imageUrl || PersonSVG} 
+                                                src={user!.imageUrl || PersonSVG} 
                                             />
                                             <div className="flex flex-col gap-1 items-start justify-center">
-                                                <h4 className="text-small font-semibold leading-none text-default-600">{user.nome || 'Não Autenticado'}</h4>
-                                                <h5 className="text-small tracking-tight text-default-400">{user.agencia || 'Agência reguladora'}</h5>
-                                                <h6 className="text-small tracking-tight text-default-400">{user.funcao || 'usuario'}</h6>
-                                                <h6 className="text-small tracking-tight text-default-400">{user.email || 'email'}</h6>
+                                                <h4 className="text-small font-semibold leading-none text-default-600">{user!.nome || 'Não Autenticado'}</h4>
+                                                <h5 className="text-small tracking-tight text-default-400">{user!.agencia || 'Agência reguladora'}</h5>
+                                                <h6 className="text-small tracking-tight text-default-400">{user!.funcao || 'usuario'}</h6>
+                                                <h6 className="text-small tracking-tight text-default-400">{user!.email || 'email'}</h6>
                                             </div>
                                             
                                         </div>
@@ -131,6 +134,14 @@ function TopNav() {
                         variant="shadow"
                         aria-label="Clique Aqui"
                         disableRipple
+                        onClick={
+                            async () => {
+                                await logoutUser(user!.token)
+                                localStorage.removeItem('user')
+                                setUser(null)
+                                navigate('/login')
+                            }
+                        }
                     >
                         Sair
                     </Button>

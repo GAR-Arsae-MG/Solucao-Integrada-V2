@@ -95,6 +95,7 @@ function Login() {
                           required
                           className="p-10"
                           errorMessage={form.formState.errors.password && <p>{form.formState.errors.password.message}</p>}
+                          autoComplete='current-password'
                           endContent={
                             <button className="focus:outline-none " type="button" onClick={toggleVisbility} aria-label="Show password">
                               {show ? (

@@ -11,6 +11,7 @@ const INITIAL_USER = {
     funcao: '',
     imageUrl: '../src/assets/pessoa.svg',
     agencia: '',
+    token: '',
 }
 
 const INITIAL_STATE = {
@@ -24,7 +25,7 @@ const INITIAL_STATE = {
 const AuthContext = createContext<IContextType | undefined>(INITIAL_STATE)
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
-    const [user, setUser] = useState<IUser>(INITIAL_USER)
+    const [user, setUser] = useState<IUser | null>(INITIAL_USER)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
-import { INewUser, IUser } from '../types/types'
+import { INewUser } from '../types/types'
 import { redirect } from 'react-router-dom'
 
 export const api = axios.create({
@@ -142,35 +142,6 @@ export async function revalidatePassword({email, senha}: INewUser) {
             throw new Error('Erro ao revalidar a senha')
         }
         
-    } catch (error: any) {
-        if (error.response) {
-            console.error(error.response.data)
-            console.error(error.response.status)
-            console.error(error.response.headers)
-        }else if (error.request) {
-            console.error(error.request)
-        } else {
-            console.error('Erro', error.message)
-        }
-        throw error
-    }
-}
-
-
-export async function getInfoUser(token:string): Promise<IUser> {
-    try {
-        const response = await api.get('/api/user-info/', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-
-        if (response.status === 200) {
-            return response.data as IUser
-        
-        } else {
-            throw new Error('Erro ao buscar informações do usuário')
-        }
     } catch (error: any) {
         if (error.response) {
             console.error(error.response.data)

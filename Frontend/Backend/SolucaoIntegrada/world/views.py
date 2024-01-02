@@ -114,6 +114,7 @@ def get_user_info(request):
         'funcao': user.funcao,
         'imageUrl': user.imageUrl,
         'agencia': user.agencia,
+        'token': request.auth.key
     }
     return Response(user_data, status=status.HTTP_200_OK)
 

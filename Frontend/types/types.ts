@@ -4,13 +4,14 @@ export type IUser = {
     email: string,
     funcao: string,
     imageUrl?: string,
-    agencia: string
+    agencia: string,
+    token: string
 }
 
 export type IContextType = {
-    user: IUser,
+    user: IUser | null,
     isLoading: boolean,
-    setUser: (user: IUser) => void,
+    setUser: (user: IUser | null) => void,
     isAuthenticated: boolean,
     checkAuthUser: (email: string, senha: string) => Promise<boolean>
 }
