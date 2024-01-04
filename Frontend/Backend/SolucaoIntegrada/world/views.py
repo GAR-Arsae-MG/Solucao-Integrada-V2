@@ -81,7 +81,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'nome': user.nome,
                 'email': user.email,
                 'funcao': user.funcao,
-                'imageUrl': user.imageUrl,
+                'imagem': user.imagem,
                 'agencia': user.agencia,
                 'token': token.key
             }
@@ -112,7 +112,7 @@ def get_user_info(request):
         'nome': user.nome,
         'email': user.email,
         'funcao': user.funcao,
-        'imageUrl': user.imageUrl,
+        'imagem': user.imagem,
         'agencia': user.agencia,
         'token': request.auth.key
     }

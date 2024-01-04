@@ -100,7 +100,7 @@ function TopNav() {
                                                 isBordered 
                                                 radius="full" 
                                                 size="md"
-                                                src={user!.imageUrl || PersonSVG} 
+                                                src={user!.imagem || PersonSVG} 
                                             />
                                             <div className="flex flex-col gap-1 items-start justify-center">
                                                 <h4 className="text-small font-semibold leading-none text-default-600">{user!.nome || 'Não Autenticado'}</h4>

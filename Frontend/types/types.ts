@@ -3,7 +3,7 @@ export type IUser = {
     nome: string,
     email: string,
     funcao: string,
-    imageUrl?: string,
+    imagem?: string,
     agencia: string,
     token: string
 }
