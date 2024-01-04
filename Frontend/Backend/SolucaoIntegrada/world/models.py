@@ -42,7 +42,6 @@ class Usuarios(AbstractBaseUser, PermissionsMixin):
     criado_por = models.CharField(max_length=64)
     agencia = models.CharField(max_length=30, blank=True, null=True)
     imagem = models.ImageField(upload_to='data/images/', blank=True, null=True)
-    imageUrl = models.CharField(max_length=300, blank=True, null=True)
     groups = models.ManyToManyField(Group, related_name='usuarios_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='usuarios_permissions', blank=True)
     
@@ -70,9 +69,8 @@ class Unidades(models.Model):
         ('TB', 'Tratamento de Agua e Esgoto'),
     )
     tipo = models.CharField(max_length=2, choices=TIPO, blank=False, null=False, default='Filial')
-    longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
-    location = models.PointField("Localizado no Mapa", geography=True, blank=True, null=True, srid=4326, help_text="Point(longitude, latitude)")
+    longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
     localidade = models.CharField(max_length=100, null=True, blank=True)
 
 
@@ -134,8 +132,8 @@ class Ativos_Operacionais(models.Model):
     status = models.CharField(max_length=3, choices=STATUS, blank=False, null=False, default='P/A')
     criado_em = models.DateTimeField(auto_now_add=True, editable=False)
     codigo = models.CharField(max_length=10, default="", unique=True)
-    coordenada_x = models.PointField()
-    coordenada_y = models.PointField()
+    latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
+    longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
 
     def __str__(self):
      return self.codigo
