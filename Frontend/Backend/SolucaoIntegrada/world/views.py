@@ -81,7 +81,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'nome': user.nome,
                 'email': user.email,
                 'funcao': user.funcao,
-                'imagem': user.imagem,
+                'imagem': request.build_absolute_uri(user.imagem.url) if user.imagem else None,
                 'agencia': user.agencia,
                 'token': token.key
             }

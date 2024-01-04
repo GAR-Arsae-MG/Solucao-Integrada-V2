@@ -41,7 +41,7 @@ class Usuarios(AbstractBaseUser, PermissionsMixin):
     criado_em = models.DateTimeField(default=timezone.now)
     criado_por = models.CharField(max_length=64)
     agencia = models.CharField(max_length=30, blank=True, null=True)
-    imagem = models.ImageField(upload_to='data/images/', blank=True, null=True)
+    imagem = models.ImageField(upload_to='images/', blank=True, null=True)
     groups = models.ManyToManyField(Group, related_name='usuarios_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='usuarios_permissions', blank=True)
     

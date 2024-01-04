@@ -18,6 +18,7 @@ from django import views
 from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework import routers
 
 from world.views import UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
@@ -39,3 +40,6 @@ urlpatterns = [
     path('api/user-info/', get_user_info, name='get_user_info'),
     path('api/revalidate-password/', revalidatePassword.as_view(), name='revalidate_password'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
