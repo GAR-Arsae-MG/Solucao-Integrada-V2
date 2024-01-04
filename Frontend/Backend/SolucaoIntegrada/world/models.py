@@ -72,6 +72,9 @@ class Unidades(models.Model):
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
     longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
     localidade = models.CharField(max_length=100, null=True, blank=True)
+    
+    def __str__(self):
+        return self.nome
 
 
 # não está completo
@@ -120,7 +123,7 @@ class Ativos_Operacionais(models.Model):
     situacao_atual = models.CharField(max_length=64)
     proprietario = models.CharField(max_length=64)
     doacao = models.BooleanField()
-    valor_original = models.FloatField()
+    valor_original = models.DecimalField(max_digits=10, decimal_places=2)
     vida_util_reg_anos = models.IntegerField()
     vida_util_reg_meses = models.IntegerField()
     unidade = models.ForeignKey(Unidades, on_delete=models.CASCADE, blank=False, null=False)
@@ -158,8 +161,8 @@ class Ativos_Administrativos(models.Model):
     )
     proprietario = models.CharField(max_length=64, blank=False, null=False)
     doacao = models.BooleanField()
-    valor_original = models.FloatField()
-    valor_atual = models.FloatField()
+    valor_original = models.DecimalField(max_digits=10, decimal_places=2)
+    valor_atual = models.DecimalField(max_digits=10, decimal_places=2)
     STATUS = (
         ('F', 'Ativo Em Funcionamento'),
         ('D', 'Ativo Desativado'),
