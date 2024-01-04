@@ -4,7 +4,7 @@ from world.models import Ativos_Administrativos, Unidades, Usuarios, Ativos_Oper
 # Register your models here.
 
 class UsuariosAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nome', 'email', 'is_staff', 'telefone', 'funcao', 'criado_em', 'criado_por')
+    list_display = ('id', 'nome', 'email', 'is_staff', 'telefone', 'funcao', 'imageUrl', 'imagem', 'criado_em', 'criado_por')
     list_display_links = ('nome', 'email')
     search_fields = ('nome', 'email', 'funcao')
     list_filter = ('funcao', 'criado_por', 'criado_em')
