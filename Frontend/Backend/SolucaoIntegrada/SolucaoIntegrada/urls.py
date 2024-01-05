@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 
-from world.views import UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
+from world.views import FuncoesView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
@@ -39,6 +39,7 @@ urlpatterns = [
     path('api/logout/', logout_view, name='logout'),
     path('api/user-info/', get_user_info, name='get_user_info'),
     path('api/revalidate-password/', revalidatePassword.as_view(), name='revalidate_password'),
+    path('funcoes/', FuncoesView.as_view(), name='funcoes'),
 ]
 
 if settings.DEBUG:

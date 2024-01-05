@@ -21,3 +21,15 @@ export type INewUser = {
     senha: string,
     nome?: string
 }
+
+export type IGetUser = {
+    id: string,
+    email: string,
+    nome: string,
+    funcao: string,
+    criado_em: Date,
+    criado_por?: string,
+    agencia: string,
+    imagem?: string,
+    groups?: string,
+}

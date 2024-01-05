@@ -1,15 +1,31 @@
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Card, CardHeader, Tooltip, Avatar} from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Card, CardHeader, Tooltip, Avatar, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Select, SelectItem} from "@nextui-org/react";
 import LogoSGP  from '../../assets/logo_sgp.png'
 import PersonSVG from '../../assets/person-svgrepo-com.svg'
 import { useAuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useSignOutAccount } from "../../../react-query/QueriesAndMutations";
+import { getFuncoes } from "../../../django/api";
+import { useEffect, useState } from "react";
 
 
 function TopNav() {
     const { user, setUser } = useAuthContext()
     const navigate = useNavigate()
     const signOutAccount = useSignOutAccount()
+    const {isOpen, onOpen, onOpenChange} = useDisclosure()
+
+    const [funcoes, setFuncoes] = useState([])
+
+    useEffect(() => {
+        const fetchFuncoes = async () => {
+            const funcoes = await getFuncoes()
+            setFuncoes(funcoes)
+        }
+
+        fetchFuncoes()
+    }, [])
+    
+ 
 
     return(
         <Navbar className=" gap-6 bg-slate-900" >
@@ -91,6 +107,7 @@ function TopNav() {
             <NavbarContent justify="end">
                 <NavbarItem className="lg:flex">
                     <Tooltip
+                        closeDelay={5000}
                         content={
                             <>
                                 <Card>
@@ -107,11 +124,125 @@ function TopNav() {
                                                 <h5 className="text-small tracking-tight text-default-400">{user!.agencia || 'Agência reguladora'}</h5>
                                                 <h6 className="text-small tracking-tight text-default-400">{user!.funcao || 'usuario'}</h6>
                                                 <h6 className="text-small tracking-tight text-default-400">{user!.email || 'email'}</h6>
+                                                <Button
+                                                    onClick={() => onOpen()}
+                                                >
+                                                    Mudar Informações
+                                                </Button>
                                             </div>
                                             
                                         </div>
                                     </CardHeader>
                                 </Card>
+                            
+                                <Modal
+                                isOpen={isOpen}
+                                onOpenChange={onOpenChange}
+                                aria-labelledby="modal-title"
+                                aria-describedby="modal-description"
+                                placement="bottom"
+                                >
+                                <ModalContent
+                                    className=" sm:max-w-[600px] flex flex-col items-start"
+                                >
+                                    {(onClose) => (
+                                        <>
+                                            <ModalHeader
+                                                className="flex flex-col gap-2 items-center justify-center"
+                                            >
+                                                <h1>Editar Informações</h1>
+                                                <p>Edite aqui suas informações de perfil</p>
+                                            </ModalHeader>
+
+                                            <ModalBody>
+                                                <div className="w-full flex justify-start items-center gap-4 py-4">
+                                                    <Avatar 
+                                                        isBordered
+                                                        radius="md"
+                                                        color="success"
+                                                        src={user!.imagem || PersonSVG}
+                                                        size="sm"
+                                                        className="w-52 h-52"
+                                                    />
+
+                                                    <Input 
+                                                        type="file"
+                                                        id="image"
+                                                        className="mt-2"
+                                                    />
+                                                </div>
+
+                                                <div className="grid gap-4 py-4">
+                                                    <div className="grid grid-cols-2 items-center gap-4">
+                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                            <Input 
+                                                                label='Nome'
+                                                                type="text"
+                                                                labelPlacement="outside-left"
+                                                                className="col-span-3 text-white"
+                                                            >
+                                                                {user!.nome}
+                                                            </Input>
+                                                        </div>
+
+                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                            <Input 
+                                                                label='Agência'
+                                                                type="text"
+                                                                labelPlacement="outside-left"
+                                                                className="col-span-3"
+                                                            >
+                                                                {user!.agencia}
+                                                            </Input>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 items-center gap-4">
+                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                            <Input 
+                                                                label='Email'
+                                                                type="text"
+                                                                labelPlacement="outside-left"
+                                                                className="col-span-3"
+                                                            >
+                                                                {user!.email}
+                                                            </Input>
+                                                        </div>
+
+                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                            <Select
+                                                                label='Função'
+                                                                labelPlacement="outside-left"
+                                                                className="col-span-3"
+                                                            >
+                                                                {funcoes.map((funcao, index) => (
+                                                                    <SelectItem key={index}>{funcao}</SelectItem>
+                                                                ))}
+                                                            </Select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ModalBody>
+
+                                            <ModalFooter>
+                                                <Button
+                                                    variant="shadow"
+                                                    
+                                                >
+                                                    Fechar e Registrar Mudanças
+                                                </Button>
+
+                                                <Button
+                                                    variant="shadow"
+                                                    onClick={onClose}
+                                                >
+                                                    Fechar
+                                                </Button>
+                                            </ModalFooter>
+                                        </>
+                                    )}
+                                </ModalContent>
+                                </Modal>
                             </>
                         }
 

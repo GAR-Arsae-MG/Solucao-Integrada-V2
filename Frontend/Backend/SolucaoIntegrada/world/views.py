@@ -1,7 +1,7 @@
 import json
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.views import View
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.models import Group
 from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer
@@ -129,3 +129,11 @@ class revalidatePassword(APIView):
         except Usuario.DoesNotExist:
             return Response({'detail': 'Email inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class FuncoesView(View):
+    def get(self, request):
+        try:
+            funcoes = [funcao[1] for funcao in Usuarios.FUNCAO]
+            return JsonResponse(list(funcoes), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)

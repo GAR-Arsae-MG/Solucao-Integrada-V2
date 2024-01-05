@@ -1,70 +1,85 @@
 import React, { useCallback } from 'react'
 import TopNav from '../../components/ui/TopNav'
-import { Card, CardBody, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react'
-import { columns, users } from '../../components/data'
+import { Card, CardBody, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react'
+import { columns } from '../../components/data'
 import { EyeIcon } from '../../components/ui/EyeIcon';
 import { EditIcon } from '../../components/ui/EditIcon';
 import { DeleteIcon } from '../../components/ui/DeleteIcon';
+import { IGetUser } from '../../../types/types';
+import { useGetUsers } from '../../../react-query/QueriesAndMutations';
 
-type User = typeof users[0];
+
 
 function ListagemUsuarios() {
+    const { data: users, isLoading, isError } = useGetUsers()
 
- const renderCell = useCallback((user:User , columnKey: React.Key) => {
-        const cellValue = user[columnKey as keyof User]
+ const renderCell = useCallback((user:IGetUser , columnKey: React.Key) => {
+        let cellValue = user[columnKey as keyof IGetUser]
+
+        if (cellValue instanceof Date) {
+            cellValue = cellValue.toLocaleString()
+        }
+
+        if (cellValue === undefined) {
+            cellValue = 'N/A'
+        }
 
         switch(columnKey) {
-            case 'email':
+            case 'name':
                 return(
                     <User
-                        avatarProps={{radius:'lg', src: user.avatar}}
+                        avatarProps={{radius:'lg', src: user.imagem}}
                         description={user.nome}
-                        name={cellValue}
+                        name={user.nome}
                     >
-                        {user.email}
+                        {user.nome}
                     </User>
+                )
+
+            case 'email':
+                return(
+                    <div className='flex flex-col'>
+                        <p className='text-bold text-sm'>{user.email}</p>
+                    </div>
                 );
 
             case 'role': 
                 return (
-                    <div className='flex flex-col '>
-                        <p className='text-bold text-sm capitalize'>{cellValue}</p>
-                        <p className='text-bold text-sm capitalize text-default-400'>{user.funcao}</p>
+                    <div className='flex flex-col'>
+                        <p className='text-bold text-sm capitalize'>{user.funcao}</p>
                     </div>
                 );
             
             case 'agency': 
             return (
                 <div className='flex flex-col '>
-                    <p className='text-bold text-sm capitalize'>{cellValue}</p>
-                    <p className='text-bold text-sm capitalize text-default-400'>{user.time}</p>
+                    <p className='text-bold text-sm capitalize'>{user.agencia}</p>
                 </div>
             );
 
-            case 'tel': 
+            case 'criado_por': 
             return (
                 <div className='flex flex-col '>
-                    <p className='text-bold text-sm capitalize'>{cellValue}</p>
-                    <p className='text-bold text-sm capitalize text-default-400'>{user.telefone}</p>
+                    <p className='text-bold text-sm capitalize'>{user.criado_por}</p>
                 </div>
             );
 
             case 'actions':
                 return(
                     <div className='relative flex items-center gap-2'>
-                        <Tooltip content='Details'>
+                        <Tooltip content='Detalhes'>
                             <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
                                 <EyeIcon />
                             </span>
                         </Tooltip>
 
-                        <Tooltip content="Edit user">
+                        <Tooltip content="Editar usuário">
                             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                                 <EditIcon />
                             </span>
                         </Tooltip>
 
-                        <Tooltip color="danger" content="Delete user">
+                        <Tooltip color="danger" content="Deletar Usuário">
                             <span className="text-lg text-danger cursor-pointer active:opacity-50">
                                 <DeleteIcon />
                             </span>
@@ -75,6 +90,23 @@ function ListagemUsuarios() {
                 return cellValue
         }
     }, [])
+
+    if (isLoading) {
+        return (
+            <div className='flex items-center justify-center'>
+                <Spinner />
+                <p>Carregando...</p> 
+            </div>
+        )
+    }
+
+    if (isError) {
+        return (
+            <div className='flex items-center justify-center'>
+                <p>Erro ao buscar os usuários.</p>
+            </div>
+        )
+    }
 
   return (
 

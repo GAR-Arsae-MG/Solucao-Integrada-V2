@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
-import { INewUser } from '../types/types'
+import { IGetUser, INewUser } from '../types/types'
 import { redirect } from 'react-router-dom'
 
 export const api = axios.create({
@@ -10,7 +10,7 @@ export const api = axios.create({
 export async function getAccounts() {
     try {
         const response = await api.get('/usuarios/')
-        return response.data as JSON
+        return response.data as IGetUser[]
     } catch (error) {
         console.error(error)
         throw error
@@ -54,6 +54,16 @@ export async function getAtivos() {
     } catch (error) {
         console.error(error)
         throw error
+    }
+}
+
+export async function getFuncoes() {
+    try {
+        const response = await api.get('/funcoes/')
+        const funcoes = response.data
+        return funcoes
+    } catch (error) {
+        console.error('Erro ao buscar funções')
     }
 }
 
