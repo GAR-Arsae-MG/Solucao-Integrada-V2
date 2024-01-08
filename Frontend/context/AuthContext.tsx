@@ -9,6 +9,7 @@ const INITIAL_USER = {
     nome: '',
     email: '',
     funcao: '',
+    funcao_display: '',
     imagem: '../src/assets/pessoa.svg',
     agencia: '',
     token: '',

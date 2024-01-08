@@ -67,6 +67,16 @@ export async function getFuncoes() {
     }
 }
 
+export async function getFiltros() {
+    try {
+        const response = await api.get('/filtros/')
+        const filtros = response.data
+        return filtros
+    } catch (error) {
+        console.error('Erro ao buscar filtros')
+    }
+}
+
 
 export async function getCurrentUser({email, senha}: INewUser) {
     try {

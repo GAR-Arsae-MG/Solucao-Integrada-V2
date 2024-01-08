@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import TopNav from '../../components/ui/TopNav'
-import { Card, CardBody, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react'
+import { Card, CardBody, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react'
 import { columns } from '../../components/data'
 import { EyeIcon } from '../../components/ui/EyeIcon';
 import { EditIcon } from '../../components/ui/EditIcon';
@@ -46,7 +46,7 @@ function ListagemUsuarios() {
             case 'role': 
                 return (
                     <div className='flex flex-col'>
-                        <p className='text-bold text-sm capitalize'>{user.funcao}</p>
+                        <p className='text-bold text-sm capitalize'>{user.funcao_display}</p>
                     </div>
                 );
             
@@ -114,6 +114,46 @@ function ListagemUsuarios() {
         <TopNav />
 
         <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-tr'>
+            <Card className='max-w-full w-[1200px]'>
+                <CardBody className='overflow-auto scrollbar-hide'>
+                    <div>
+                        <p className='text-3xl font-bold text-gray-900 flex flex-col items-center text-center gap-4 p-4'>Listagem de Usuários</p>
+                    </div>
+
+                    <div className='flex flex-col'>
+                        <div className='inline-flex justify-between gap-4' >
+                            <Select
+                                label='Agência'
+                                color='primary'
+                            >
+                                <SelectItem
+                                    key={'Arsae'}
+                                >
+                                    Arsae-MG
+                                </SelectItem>
+
+                                <SelectItem
+                                    key={'Sanarj'}
+                                >
+                                    Sanarj
+                                </SelectItem>
+                            </Select>
+
+                            <Select
+                                label='Criado por'
+                                color='success'
+                            >
+                                <SelectItem
+                                    key={'Admin'}
+                                >
+                                    Admin
+                                </SelectItem>
+                            </Select>
+                        </div>
+                    </div>
+                </CardBody>
+            </Card>
+
             <Card className='max-w-full w-[1200px] h-[680px]'>
                 <CardBody className='overflow-auto scrollbar-hide'>
                     <Table aria-label='Tabela de usuários Dinâmica'>

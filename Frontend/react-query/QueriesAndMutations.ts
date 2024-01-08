@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { INewUser } from '../types/types'
-import { createUser, getAccounts, getCurrentUser, getGroups, getLocals, getUnits, logoutUser, revalidatePassword } from '../django/api'
+import { createUser, getAccounts, getCurrentUser, getFiltros, getGroups, getLocals, getUnits, logoutUser, revalidatePassword } from '../django/api'
 import { QUERY_KEYS } from './QueryKeys'
 
 export const useCreateUserAccount = () => {
@@ -60,5 +60,15 @@ export const useGetSystemUnits = () => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_UNITS],
         queryFn: getUnits
+    })
+}
+
+export const useGetFilters = () => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_FILTERS],
+        queryFn: getFiltros,
+        staleTime: 1000 * 60 * 5,
+        retry: 1,
+        refetchOnWindowFocus: false
     })
 }

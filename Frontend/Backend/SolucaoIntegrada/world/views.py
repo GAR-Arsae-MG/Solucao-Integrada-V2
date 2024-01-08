@@ -4,7 +4,7 @@ from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.models import Group
-from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer
+from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer, FiltrosSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
@@ -19,7 +19,7 @@ jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
-from world.models import Ativos_Administrativos, Ativos_Operacionais, Unidades, Usuarios
+from world.models import Ativos_Administrativos, Ativos_Operacionais, Filtros, Unidades, Usuarios
 from django.conf import settings
 
 # Create your views here.
@@ -46,7 +46,9 @@ class AtivosOperationalViewSet(viewsets.ModelViewSet):
     queryset = Ativos_Operacionais.objects.all().order_by('id')
     serializer_class = AtivosOperacionaisSerializer
 
-
+class FiltrosViewset(viewsets.ModelViewSet):
+    queryset = Filtros.objects.all().order_by('id')
+    serializer_class = FiltrosSerializer
     
 @api_view(['POST'])
 def register(request):
@@ -81,6 +83,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'nome': user.nome,
                 'email': user.email,
                 'funcao': user.funcao,
+                'funcao_display': user.get_funcao_display(),
                 'imagem': request.build_absolute_uri(user.imagem.url) if user.imagem else None,
                 'agencia': user.agencia,
                 'token': token.key
@@ -112,6 +115,7 @@ def get_user_info(request):
         'nome': user.nome,
         'email': user.email,
         'funcao': user.funcao,
+        'funcao_display': user.get_funcao_display(),
         'imagem': user.imagem,
         'agencia': user.agencia,
         'token': request.auth.key

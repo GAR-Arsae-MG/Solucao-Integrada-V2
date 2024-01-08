@@ -3,6 +3,7 @@ export type IUser = {
     nome: string,
     email: string,
     funcao: string,
+    funcao_display: string,
     imagem?: string,
     agencia: string,
     token: string
@@ -27,6 +28,7 @@ export type IGetUser = {
     email: string,
     nome: string,
     funcao: string,
+    funcao_display: string,
     criado_em: Date,
     criado_por?: string,
     agencia: string,

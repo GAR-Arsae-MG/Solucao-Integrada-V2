@@ -1,4 +1,28 @@
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Card, CardHeader, Tooltip, Avatar, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Select, SelectItem} from "@nextui-org/react";
+import { 
+    Navbar, 
+    NavbarBrand, 
+    NavbarContent, 
+    NavbarItem, 
+    Link, 
+    Button, 
+    Dropdown, 
+    DropdownTrigger, 
+    DropdownMenu, 
+    DropdownItem, 
+    Card, 
+    CardHeader, 
+    Tooltip, 
+    Avatar, 
+    useDisclosure, 
+    Modal, 
+    ModalContent, 
+    ModalHeader, 
+    ModalBody, 
+    ModalFooter, 
+    Input, 
+    Select, 
+    SelectItem
+} from "@nextui-org/react";
 import LogoSGP  from '../../assets/logo_sgp.png'
 import PersonSVG from '../../assets/person-svgrepo-com.svg'
 import { useAuthContext } from "../../../context/AuthContext";
@@ -122,7 +146,8 @@ function TopNav() {
                                             <div className="flex flex-col gap-1 items-start justify-center">
                                                 <h4 className="text-small font-semibold leading-none text-default-600">{user!.nome || 'Não Autenticado'}</h4>
                                                 <h5 className="text-small tracking-tight text-default-400">{user!.agencia || 'Agência reguladora'}</h5>
-                                                <h6 className="text-small tracking-tight text-default-400">{user!.funcao || 'usuario'}</h6>
+                                                <h6 className="text-small tracking-tight text-default-400">{user!.funcao || 'U'}</h6>
+                                                <h6 className="text-small tracking-tight text-default-400">{user!.funcao_display || 'Usuário'}</h6>
                                                 <h6 className="text-small tracking-tight text-default-400">{user!.email || 'email'}</h6>
                                                 <Button
                                                     onClick={() => onOpen()}
