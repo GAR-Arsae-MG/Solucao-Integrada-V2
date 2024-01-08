@@ -6,12 +6,13 @@ import { EyeIcon } from '../../components/ui/EyeIcon';
 import { EditIcon } from '../../components/ui/EditIcon';
 import { DeleteIcon } from '../../components/ui/DeleteIcon';
 import { IGetUser } from '../../../types/types';
-import { useGetUsers } from '../../../react-query/QueriesAndMutations';
+import { useGetFilters, useGetUsers } from '../../../react-query/QueriesAndMutations';
 
 
 
 function ListagemUsuarios() {
     const { data: users, isLoading, isError } = useGetUsers()
+    const { data: filtros, isLoading: isFilterLoading, isError: isFilterError } = useGetFilters()
 
  const renderCell = useCallback((user:IGetUser , columnKey: React.Key) => {
         let cellValue = user[columnKey as keyof IGetUser]
@@ -126,17 +127,19 @@ function ListagemUsuarios() {
                                 label='Agência'
                                 color='primary'
                             >
-                                <SelectItem
-                                    key={'Arsae'}
-                                >
-                                    Arsae-MG
-                                </SelectItem>
-
-                                <SelectItem
-                                    key={'Sanarj'}
-                                >
-                                    Sanarj
-                                </SelectItem>
+                               {isFilterLoading ? (
+                                    <p>Carregando...</p>
+                               ): isFilterError ? (
+                                    <p>Erro ao buscar as agências.</p>
+                               ): (
+                                    filtros.agencias?.map((agencia: string) => (
+                                        <SelectItem
+                                            key={agencia}
+                                        >
+                                            {agencia}
+                                        </SelectItem>
+                                    ))
+                               )}
                             </Select>
 
                             <Select

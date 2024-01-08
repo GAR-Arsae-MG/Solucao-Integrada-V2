@@ -160,6 +160,7 @@ class Ativos_Administrativos(models.Model):
         ('E', 'Eletrodomestico'),
         ('G', 'Geral')
     )
+    classe_ativo = models.CharField(max_length=1, choices=CLASSE_ATIVO, blank=False, null=False, default='G')
     proprietario = models.CharField(max_length=64, blank=False, null=False)
     doacao = models.BooleanField()
     valor_original = models.DecimalField(max_digits=10, decimal_places=2)
@@ -182,46 +183,43 @@ class Ativos_Administrativos(models.Model):
     adquirido_por = models.CharField(max_length=64)
     
 class Filtros(models.Model):
-    def get_agencias(self):
-        return Usuarios.objects.values_list('agencia', flat=True).distinct()
+    usuario = models.ForeignKey(Usuarios,on_delete=models.CASCADE, blank=True, null=True)
+    ativos_op = models.ForeignKey(Ativos_Operacionais, on_delete=models.CASCADE, blank=True, null=True)
+    ativos_ad = models.ForeignKey(Ativos_Administrativos, on_delete=models.CASCADE, blank=True, null=True)
+    unidade = models.ForeignKey(Unidades, on_delete=models.CASCADE, blank=True, null=True)
     
-    def get_funcoes(self):
-        return Usuarios.objects.values_list('funcao', flat=True).distinct()
+    @property
+    def funcao(self):
+        return self.usuario.get_funcao_display()
     
-    def get_is_staff(self):
-        return Usuarios.objects.values_list('is_staff', flat=True).distinct()
+    @property
+    def agencia(self):
+        return self.usuario.agencia
     
-    def get_unidades(self):
-        return Unidades.objects.values_list('nome', flat=True).distinct()
-        
+    @property
+    def criado_por(self):
+        return self.usuario.criado_por
     
-    def get_tipo_unidades(self):
-        return Unidades.objects.values_list('tipo', flat=True).distinct()
+    @property
+    def sistemas(self):
+        return self.unidade.sistemas
     
-    def get_sistemas(self):
-        return Unidades.objects.values_list('sistemas', flat=True).distinct()
+    @property
+    def unidade_tipo(self):
+        return self.unidade.tipo
     
-    def get_ap_status(self):
-        return Ativos_Operacionais.objects.values_list('status', flat=True).distinct()
+    @property
+    def ativos_op_status(self):
+        return self.ativos_op.status
     
-    def get_ap_etapa_do_servico(self):
-        return Ativos_Operacionais.objects.values_list('etapa-_do_servico', flat=True).distinct()
+    @property
+    def ativos_ad_status(self):
+        return self.ativos_ad.status
     
-    def get_ap_tipo_ativo(self):
-        return Ativos_Operacionais.objects.values_list('tipo_ativo', flat=True).distinct()
+    @property
+    def ativos_op_tipo_investimento(self):
+        return self.ativos_op.tipo_investimento
     
-    def get_ap_tipo_investimento(self):
-        return Ativos_Operacionais.objects.values_list('tipo_investimento', flat=True).distinct()
-    
-    def get_ad_status(self):
-        return Ativos_Administrativos.objects.values_list('status', flat=True).distinct()
-    
-    def get_ad_classe_ativo(self):
-        return Ativos_Administrativos.objects.values_list('classe_ativo', flat=True).distinct()
-    
-    def get_ad_tipo_ativo(self):
-        return Ativos_Administrativos.objects.values_list('tipo_ativo', flat=True).distinct()
-        
-    
-    
-    
+    @property
+    def ativos_ad_classe_ativo(self):
+        return self.ativos_ad.classe_ativo

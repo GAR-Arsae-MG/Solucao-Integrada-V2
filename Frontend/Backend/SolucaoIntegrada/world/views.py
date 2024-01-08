@@ -46,7 +46,7 @@ class AtivosOperationalViewSet(viewsets.ModelViewSet):
     queryset = Ativos_Operacionais.objects.all().order_by('id')
     serializer_class = AtivosOperacionaisSerializer
 
-class FiltrosViewset(viewsets.ModelViewSet):
+class FiltrosViewSet(viewsets.ModelViewSet):
     queryset = Filtros.objects.all().order_by('id')
     serializer_class = FiltrosSerializer
     
