@@ -4,7 +4,7 @@ from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.models import Group
-from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer, FiltrosSerializer
+from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
@@ -14,21 +14,21 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
-from world.models import Ativos_Administrativos, Ativos_Operacionais, Filtros, Unidades, Usuarios
-from django.conf import settings
+from world.models import Ativos_Administrativos, Ativos_Operacionais, Unidades, Usuarios
 
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = Usuarios.objects.all().order_by('id')
     serializer_class = UserSerializer
-    print(settings.AUTH_USER_MODEL)
-    
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['funcao', 'is_staff', 'agencia']
     
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -37,18 +37,23 @@ class GroupViewSet(viewsets.ModelViewSet):
 class UnitiesViewSet(viewsets.ModelViewSet):
     queryset = Unidades.objects.all().order_by('id')
     serializer_class = UnitiesSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['tipo', 'sistemas']
+    
 
 class AtivosAdminViewSet(viewsets.ModelViewSet):
     queryset = Ativos_Administrativos.objects.all().order_by('id')
     serializer_class = AtivosAdminSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['tipo_ativo', 'classe_ativo', 'status']
+    
     
 class AtivosOperationalViewSet(viewsets.ModelViewSet):
     queryset = Ativos_Operacionais.objects.all().order_by('id')
     serializer_class = AtivosOperacionaisSerializer
-
-class FiltrosViewSet(viewsets.ModelViewSet):
-    queryset = Filtros.objects.all().order_by('id')
-    serializer_class = FiltrosSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['tipo_ativo', 'tipo_investimento', 'status', 'etapa_do_servico']
+    
     
 @api_view(['POST'])
 def register(request):

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { INewUser } from '../types/types'
-import { createUser, getAccounts, getCurrentUser, getFiltros, getGroups, getLocals, getUnits, logoutUser, revalidatePassword } from '../django/api'
+import { createUser, getAccounts, getCurrentUser, getUsersFilters, getGroups, getUnits, logoutUser, revalidatePassword } from '../django/api'
 import { QUERY_KEYS } from './QueryKeys'
 
 export const useCreateUserAccount = () => {
@@ -42,13 +43,6 @@ export const useGetUsers = () => {
     })
 }
 
-export const useGetLocals = () => {
-    return useQuery({
-        queryKey: [QUERY_KEYS.GET_LOCALS],
-        queryFn: getLocals
-    })
-}
-
 export const useGetGroups = () => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_GROUPS],
@@ -63,10 +57,10 @@ export const useGetSystemUnits = () => {
     })
 }
 
-export const useGetFilters = () => {
+export const useGetUsersFilters = (filters: any) => {
     return useQuery({
-        queryKey: [QUERY_KEYS.GET_FILTERS],
-        queryFn: getFiltros,
+        queryKey: [QUERY_KEYS.GET_USERS_FILTERS, filters],
+        queryFn:() => getUsersFilters(filters),
         staleTime: 1000 * 60 * 5,
         retry: 1,
         refetchOnWindowFocus: false

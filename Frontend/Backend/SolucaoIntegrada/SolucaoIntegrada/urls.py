@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 
-from world.views import FiltrosViewSet, FuncoesView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
+from world.views import FuncoesView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
@@ -30,7 +30,6 @@ router.register('grupos', GroupViewSet)
 router.register('ativos-operacionais', AtivosOperationalViewSet)
 router.register('ativos-administrativos', AtivosAdminViewSet)
 router.register('unidades', UnitiesViewSet)
-router.register('filtros', FiltrosViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

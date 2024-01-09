@@ -17,16 +17,6 @@ export async function getAccounts() {
     }
 }
 
-export async function getLocals() {
-    try {
-        const response = await api.get('/locais/')
-        return response.data as JSON
-    } catch (error) {
-        console.error(error)
-        throw error
-    }
-}
-
 export async function getGroups() {
     try {
         const response = await api.get('/grupos/')
@@ -47,9 +37,19 @@ export async function getUnits() {
     }
 }
 
-export async function getAtivos() {
+export async function getAtivosAdmin() {
     try {
-        const response = await api.get('/ativos/')
+        const response = await api.get('/ativos-administrativos/')
+        return response.data as JSON
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getAtivosOp() {
+    try {
+        const response = await api.get('/ativos-operacionais/')
         return response.data as JSON
     } catch (error) {
         console.error(error)
@@ -64,16 +64,6 @@ export async function getFuncoes() {
         return funcoes
     } catch (error) {
         console.error('Erro ao buscar funções')
-    }
-}
-
-export async function getFiltros() {
-    try {
-        const response = await api.get('/filtros/')
-        const filtros = response.data
-        return filtros
-    } catch (error) {
-        console.error('Erro ao buscar filtros')
     }
 }
 
@@ -172,6 +162,46 @@ export async function revalidatePassword({email, senha}: INewUser) {
         } else {
             console.error('Erro', error.message)
         }
+        throw error
+    }
+}
+
+export async function getUsersFilters(filters: any) {
+    try {
+        const response = await api.get('/usuarios/', {params: filters})
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getUnitiesFilters(filters: any) {
+    try {
+        const response = await api.get('/unidades/', {params: filters})
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getAtivosAdminFilters(filters: any) {
+    try {
+        const response = await api.get('/ativos-administrativos/', {params: filters})
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getAtivosOpFilters(filters: any) {
+    try {
+        const response = await api.get('/ativos-operacionais/', {params: filters})
+        return response.data
+    } catch (error) {
+        console.error(error)
         throw error
     }
 }

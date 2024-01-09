@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import TopNav from '../../components/ui/TopNav'
 import { Card, CardBody, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react'
 import { columns } from '../../components/data'
@@ -6,13 +6,36 @@ import { EyeIcon } from '../../components/ui/EyeIcon';
 import { EditIcon } from '../../components/ui/EditIcon';
 import { DeleteIcon } from '../../components/ui/DeleteIcon';
 import { IGetUser } from '../../../types/types';
-import { useGetFilters, useGetUsers } from '../../../react-query/QueriesAndMutations';
+import { useGetUsersFilters, useGetUsers } from '../../../react-query/QueriesAndMutations';
+import { getFuncoes, getUsersFilters } from '../../../django/api';
 
 
 
 function ListagemUsuarios() {
+    const [selectedFuncao, setSelectedFuncao] = useState('')
+    const [funcoes, setFuncoes] = useState<string[]>([])
+    //const [isStaff, setIsStaff] = useState('')
+
+    useEffect(() => {
+        const fetchFuncoes = async () => {
+            const funcoes = await getFuncoes()
+            setFuncoes(funcoes)
+        }
+        fetchFuncoes()
+    })
+
     const { data: users, isLoading, isError } = useGetUsers()
-    const { data: filtros, isLoading: isFilterLoading, isError: isFilterError } = useGetFilters()
+    
+    //const {data: filtrosIsStaff, isLoading: isStaffLoading, isError: isStaffError } = useGetUsersFilters({ is_staff: isStaff})
+
+    const handleSelectChange = (value: string) => {
+        setSelectedFuncao(value);
+
+        getUsersFilters(value)
+    };
+
+    const { isLoading: isFuncaoLoading, isError: isFuncaoError } = useGetUsersFilters({ funcao: selectedFuncao})
+
 
  const renderCell = useCallback((user:IGetUser , columnKey: React.Key) => {
         let cellValue = user[columnKey as keyof IGetUser]
@@ -124,34 +147,48 @@ function ListagemUsuarios() {
                     <div className='flex flex-col'>
                         <div className='inline-flex justify-between gap-4' >
                             <Select
-                                label='Agência'
+                                label='Funcão'
                                 color='primary'
+                                value={selectedFuncao}
+                                onChange={(e) => handleSelectChange(e.target.value)}
                             >
-                               {isFilterLoading ? (
+                               {isFuncaoLoading ? (
                                     <p>Carregando...</p>
-                               ): isFilterError ? (
+                               ): isFuncaoError ? (
                                     <p>Erro ao buscar as agências.</p>
                                ): (
-                                    filtros.agencias?.map((agencia: string) => (
+                                    funcoes.map((funcao) => (
                                         <SelectItem
-                                            key={agencia}
+                                            key={funcao}
+                                            value={funcao}
                                         >
-                                            {agencia}
+                                            {funcao}
                                         </SelectItem>
                                     ))
                                )}
                             </Select>
 
-                            <Select
-                                label='Criado por'
+                            { /*<Select
+                                label='Admin de Sistema'
                                 color='success'
+                                value={isStaff.toString()}
+                                onChange={(e) => setIsStaff(e.target.value)}
                             >
-                                <SelectItem
-                                    key={'Admin'}
-                                >
-                                    Admin
-                                </SelectItem>
-                            </Select>
+                                {isStaffLoading ? (
+                                    <p>Carregando...</p>
+                                ): isStaffError ? (
+                                    <p>Erro ao buscar as opções.</p>
+                                ) : (
+                                    isStaffOptions.map((option) => (
+                                        <SelectItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            {option.label}
+                                        </SelectItem>
+                                    ))
+                                )}
+                            </Select> */}
                         </div>
                     </div>
                 </CardBody>

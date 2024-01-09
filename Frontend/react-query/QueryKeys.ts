@@ -4,5 +4,5 @@ export enum QUERY_KEYS {
     GET_GROUPS = 'groups',
     GET_UNITS = 'units',
     GET_CURRENT_USER = 'usuario',
-    GET_FILTERS = 'filtros',
+    GET_USERS_FILTERS = 'filtros-usuarios',
 }
