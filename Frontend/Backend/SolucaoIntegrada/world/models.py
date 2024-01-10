@@ -74,7 +74,9 @@ class Unidades(models.Model):
     tipo = models.CharField(max_length=2, choices=TIPO, blank=False, null=False, default='Filial')
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
     longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
-    localidade = models.CharField(max_length=100, null=True, blank=True)
+    Município = models.CharField(max_length=100, null=True, blank=True)
+    localidade = models.CharField("Sede Municipal",  max_length=100, null=True, blank=True, help_text="Distrito/Localidade")
+    Endereco = models.CharField(max_length=120, null=True, blank=True)
     
     def __str__(self):
         return self.nome
@@ -138,6 +140,9 @@ class Ativos_Operacionais(models.Model):
     codigo = models.CharField(max_length=10, default="", unique=True)
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
     longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
+    Município = models.CharField(max_length=100, null=True, blank=True)
+    localidade = models.CharField("Sede Municipal",  max_length=100, null=True, blank=True, help_text="Distrito/Localidade")
+    Endereco = models.CharField(max_length=120, null=True, blank=True)
 
     def __str__(self):
      return self.codigo
@@ -181,4 +186,5 @@ class Ativos_Administrativos(models.Model):
     unidade = models.ForeignKey(Unidades, on_delete=models.CASCADE, blank=False, null=False)
     criado_por = models.CharField(max_length=64)
     adquirido_por = models.CharField(max_length=64)
+    
     
