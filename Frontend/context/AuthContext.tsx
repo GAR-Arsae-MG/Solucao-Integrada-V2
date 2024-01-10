@@ -60,7 +60,11 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             setUser(JSON.parse(storedUser))
             setIsAuthenticated(true)
         } else {
-            navigate('/login')
+            const currentPath = window.location.pathname
+
+            if (currentPath !== '/registro' && currentPath !== '/revalidar-senha') {
+                navigate('/login')
+            }
         }
     }, [navigate])
 
