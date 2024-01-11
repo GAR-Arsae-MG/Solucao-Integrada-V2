@@ -67,6 +67,16 @@ export async function getFuncoes() {
     }
 }
 
+export async function getStaff() {
+    try {
+        const response = await api.get('/staff/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
 
 export async function getCurrentUser({email, senha}: INewUser) {
     try {
@@ -168,21 +178,51 @@ export async function revalidatePassword({email, senha}: INewUser) {
 
 export async function getUsersFilters(filters: any) {
     try {
-        const response = await api.get('/usuarios/', {params: filters})
+
+        const currentParams = new URLSearchParams(window.location.search)
+
+        for (const key in filters) {
+            currentParams.append(key, filters[key])
+        }
+
+        for (const key in filters) {
+            if (currentParams.has(key)) {
+                currentParams.set(key, filters[key])
+            }
+        }
+
+        const newUrl = `/usuarios/?${currentParams.toString()}`
+
+        const response = await api.get(newUrl)
         return response.data
     } catch (error) {
         console.error(error)
-        throw error
+        throw new Error('Erro ao filtrar usuários')
     }
 }
 
 export async function getUnitiesFilters(filters: any) {
     try {
-        const response = await api.get('/unidades/', {params: filters})
+
+        const currentParams = new URLSearchParams(window.location.search)
+
+        for (const key in filters) {
+            currentParams.append(key, filters[key])
+        }
+
+        for (const key in filters) {
+            if (currentParams.has(key)) {
+                currentParams.set(key, filters[key])
+            }
+        }
+
+        const newUrl = `/unidades/?${currentParams.toString()}`
+
+        const response = await api.get(newUrl)
         return response.data
     } catch (error) {
         console.error(error)
-        throw error
+        throw new Error('Erro ao filtrar unidades')
     }
 }
 

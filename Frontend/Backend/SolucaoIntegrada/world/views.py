@@ -138,6 +138,7 @@ class revalidatePassword(APIView):
         except Usuario.DoesNotExist:
             return Response({'detail': 'Email inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
 
+# Views para retornar valores específicos dos models.
 
 class FuncoesView(View):
     def get(self, request):
@@ -146,3 +147,8 @@ class FuncoesView(View):
             return JsonResponse(list(funcoes), safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class StaffView(View):
+    def get(self, request):
+        return JsonResponse([True, False], safe=False, status=status.HTTP_200_OK)
+    

@@ -1,17 +1,37 @@
-import React, { useCallback } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useCallback, useEffect, useState } from 'react'
 import TopNav from '../../components/ui/TopNav'
-import { Card, CardBody, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react'
+import { Card, CardBody, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react'
 import { columns } from '../../components/data'
 import { EyeIcon } from '../../components/ui/EyeIcon';
 import { EditIcon } from '../../components/ui/EditIcon';
 import { DeleteIcon } from '../../components/ui/DeleteIcon';
 import { IGetUser } from '../../../types/types';
-import { useGetUsers } from '../../../react-query/QueriesAndMutations';
+import { useGetUsers, useGetUsersFilters } from '../../../react-query/QueriesAndMutations';
+import { getFuncoes } from '../../../django/api';
 
 
 function ListagemUsuarios() {
 
     const { data: users, isLoading, isError } = useGetUsers()
+
+    const [funcoes, setFuncoes] = useState([])
+    const [selectedFuncao, setSelectedFuncao] = useState(null)
+
+    const { refetch } = useGetUsersFilters({funcao: selectedFuncao})
+
+    useEffect(() => {
+        const fetchFuncoes = async () => {
+            const funcoes = await getFuncoes()
+            setFuncoes(funcoes)
+        }
+        fetchFuncoes()
+    }, [])
+
+    const handleChange = (event: any) => {
+        setSelectedFuncao(event.target.value)
+        refetch()
+    }
 
  const renderCell = useCallback((user:IGetUser , columnKey: React.Key) => {
         let cellValue = user[columnKey as keyof IGetUser]
@@ -114,6 +134,34 @@ function ListagemUsuarios() {
         <TopNav />
 
         <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-tr'>
+
+            <Card className='max-w-full w-[1200px] h-[300px]'>
+                <CardBody>
+                    <p className='text-3xl font-bold text-center'>Listagem de usuários</p>
+                    <p className='text-xl text-center'>Filtros</p>
+
+                    <div className=' gap-4 p-4'>
+                        <div>
+                            <Select
+                                label='Função'
+                                onChange={handleChange}
+                                color='success'
+                            >
+                                {funcoes.map((funcao: string) => (
+                                    <SelectItem
+                                        key={funcao.charAt(0).toUpperCase()}
+                                        value={funcao.charAt(0).toUpperCase()}
+                                    >
+                                        {funcao}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+                        </div>
+                    </div>
+                </CardBody>
+            </Card>
+
+
             <Card className='max-w-full w-[1200px] h-[680px]'>
                 <CardBody className='overflow-auto scrollbar-hide'>
                     <Table aria-label='Tabela de usuários Dinâmica'>

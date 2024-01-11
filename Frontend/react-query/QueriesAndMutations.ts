@@ -63,6 +63,8 @@ export const useGetUsersFilters = (filters: any) => {
         queryFn:() => getUsersFilters(filters),
         staleTime: 1000 * 60 * 5,
         retry: 1,
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        enabled: !!filters,
+        refetchOnMount: true
     })
 }
