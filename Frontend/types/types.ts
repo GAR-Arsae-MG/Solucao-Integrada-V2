@@ -35,3 +35,5 @@ export type IGetUser = {
     imagem?: string,
     groups?: string,
 }
+
+//Adicionar os types dos ativos e unidades.

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@tanstack/react-query'
+
+import { createUser, getAccounts, getAtivosAdmin, getAtivosOp, getCurrentUser, getGroups, getUnits, getUsersFilters, logoutUser, revalidatePassword } from '../django/api'
 import { INewUser } from '../types/types'
-import { createUser, getAccounts, getCurrentUser, getUsersFilters, getGroups, getUnits, logoutUser, revalidatePassword } from '../django/api'
 import { QUERY_KEYS } from './QueryKeys'
 
 export const useCreateUserAccount = () => {
@@ -50,10 +51,24 @@ export const useGetGroups = () => {
     })
 }
 
-export const useGetSystemUnits = () => {
+export const useGetAtivosAdmin = (filters: {tipo_ativo?: string, classe_ativo?: string, status?: string}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_ATIVOS_ADMIN],
+        queryFn:() => getAtivosAdmin(filters)
+    })
+}
+
+export const useGetAtivosOp = (filters: {tipo_ativo?: string, tipo_investimento?: string, status?: string, etapa_do_servico?: string}) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_ATIVOS_OP],
+        queryFn:() => getAtivosOp(filters)
+    })
+}
+
+export const useGetUnits = (filters: {tipo?: string, sistemas?: string}) => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_UNITS],
-        queryFn: getUnits
+        queryFn:() => getUnits(filters)
     })
 }
 

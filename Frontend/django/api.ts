@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios'
-import { IGetUser, INewUser } from '../types/types'
 import { redirect } from 'react-router-dom'
+
+import { IGetUser, INewUser } from '../types/types'
 
 export const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/',
@@ -35,9 +36,16 @@ export async function getGroups() {
     }
 }
 
-export async function getUnits() {
+export async function getUnits(filters: {tipo?: string, sistemas?: string}) {
+    const stringFilters = {
+        tipo: filters.tipo || '',
+        sistemas: filters.sistemas || ''
+    }
+
+    const params = new URLSearchParams(stringFilters)
+
     try {
-        const response = await api.get('/unidades/')
+        const response = await api.get(`/unidades/?${params.toString()}`)
         return response.data as JSON
     } catch (error) {
         console.error(error)
@@ -45,9 +53,17 @@ export async function getUnits() {
     }
 }
 
-export async function getAtivosAdmin() {
+export async function getAtivosAdmin(filters: {tipo_ativo?: string, classe_ativo?: string, status?: string}) {
+    const stringFilters = {
+        tipo_ativo: filters.tipo_ativo || '',
+        classe_ativo: filters.classe_ativo || '',
+        status: filters.status || ''
+    }
+
+    const params = new URLSearchParams(stringFilters)
+
     try {
-        const response = await api.get('/ativos-administrativos/')
+        const response = await api.get(`/ativos-administrativos/?${params.toString()}`)
         return response.data as JSON
     } catch (error) {
         console.error(error)
@@ -55,9 +71,18 @@ export async function getAtivosAdmin() {
     }
 }
 
-export async function getAtivosOp() {
+export async function getAtivosOp(filters: {tipo_ativo?: string, tipo_investimento?: string, status?: string, etapa_do_servico?: string}) {
+    const stringFilters = {
+        situacao_ativo: filters.tipo_ativo || '',
+        tipo_investimento: filters.tipo_investimento || '',
+        status: filters.status || '',
+        etapa_do_servico: filters.etapa_do_servico || ''
+    }
+
+    const params = new URLSearchParams(stringFilters)
+
     try {
-        const response = await api.get('/ativos-operacionais/')
+        const response = await api.get(`/ativos-operacionais/?${params.toString()}`)
         return response.data as JSON
     } catch (error) {
         console.error(error)
