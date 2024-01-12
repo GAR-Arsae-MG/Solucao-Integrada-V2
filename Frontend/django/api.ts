@@ -65,6 +65,8 @@ export async function getAtivosOp() {
     }
 }
 
+// Rotas de Parâmetros dos models
+
 export async function getFuncoes() {
     try {
         const response = await api.get('/funcoes/')
@@ -85,6 +87,7 @@ export async function getStaff() {
     }
 }
 
+// Rotas de AUTENTICAÇÃO/API
 
 export async function getCurrentUser({email, senha}: INewUser) {
     try {
@@ -183,6 +186,8 @@ export async function revalidatePassword({email, senha}: INewUser) {
         throw error
     }
 }
+
+// Rotas de Filtros
 
 export async function getUsersFilters(filters: any) {
     try {
