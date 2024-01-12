@@ -12,13 +12,11 @@ import { getFuncoes } from '../../../django/api';
 
 
 function ListagemUsuarios() {
-
-    const { data: users, isLoading, isError } = useGetUsers()
-
     const [funcoes, setFuncoes] = useState([])
-    const [selectedFuncao, setSelectedFuncao] = useState(null)
+    const [selectedFuncao, setSelectedFuncao] = useState('')
 
-    const { refetch } = useGetUsersFilters({funcao: selectedFuncao})
+    const { data: users, isLoading: isUserLoading, isError: isUserError, refetch: refetchUsers } = useGetUsers({funcao: selectedFuncao})
+    const { refetch: refetchFilters } = useGetUsersFilters({funcao: selectedFuncao})
 
     useEffect(() => {
         const fetchFuncoes = async () => {
@@ -28,9 +26,10 @@ function ListagemUsuarios() {
         fetchFuncoes()
     }, [])
 
-    const handleChange = (event: any) => {
+    const handleChange = async (event: any) => {
         setSelectedFuncao(event.target.value)
-        refetch()
+        await refetchFilters()
+        refetchUsers()
     }
 
  const renderCell = useCallback((user:IGetUser , columnKey: React.Key) => {
@@ -111,23 +110,6 @@ function ListagemUsuarios() {
         }
     }, [])
 
-    if (isLoading) {
-        return (
-            <div className='flex items-center justify-center'>
-                <Spinner />
-                <p>Carregando...</p> 
-            </div>
-        )
-    }
-
-    if (isError) {
-        return (
-            <div className='flex items-center justify-center'>
-                <p>Erro ao buscar os usuários.</p>
-            </div>
-        )
-    }
-
   return (
 
     <>
@@ -164,23 +146,34 @@ function ListagemUsuarios() {
 
             <Card className='max-w-full w-[1200px] h-[680px]'>
                 <CardBody className='overflow-auto scrollbar-hide'>
-                    <Table aria-label='Tabela de usuários Dinâmica'>
-                        <TableHeader columns={columns}>
-                            {(column) => (
-                                <TableColumn key={column.uid} align={column.uid === 'actions' ? 'center': 'start'}>
-                                    {column.name}
-                                </TableColumn>
-                            )}
-                        </TableHeader>
+                    {isUserLoading ? (
+                        <>
+                            <Spinner />
+                            <p>Carregando...</p>
+                        </>
+                    ): isUserError ? (
+                        <>
+                            <p>Erro ao buscar os usuários.</p>
+                        </>
+                    ): (
+                        <Table aria-label='Tabela de usuários Dinâmica'>
+                            <TableHeader columns={columns}>
+                                {(column) => (
+                                    <TableColumn key={column.uid} align={column.uid === 'actions' ? 'center': 'start'}>
+                                        {column.name}
+                                    </TableColumn>
+                                )}
+                            </TableHeader>
 
-                        <TableBody items={users}>
-                            {(item) => (
-                                <TableRow key={item.id}>
-                                    {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                            <TableBody items={users}>
+                                {(item) => (
+                                    <TableRow key={item.id}>
+                                        {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    )}
                 </CardBody>
             </Card>
         </div>

@@ -7,9 +7,17 @@ export const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/',
 })
 
-export async function getAccounts() {
+export async function getAccounts(filters: {funcao?: string, is_staff?: boolean, agencia?: string}) {
+    const stringFilters = {
+        funcao: filters.funcao || '',
+        is_staff: filters.is_staff?.toString() || '',
+        agencia: filters.agencia || ''
+    }
+    
+    const params = new URLSearchParams(stringFilters)
+
     try {
-        const response = await api.get('/usuarios/')
+        const response = await api.get(`/usuarios/?${params.toString()}`)
         return response.data as IGetUser[]
     } catch (error) {
         console.error(error)

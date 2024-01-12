@@ -36,10 +36,10 @@ export const useRevalidatePassword = () => {
 
 //Queries de consulta
 
-export const useGetUsers = () => {
+export const useGetUsers = (filters: {funcao?: string, is_staff?: boolean, agencia?: string}) => {
     return useQuery({
-        queryKey: [QUERY_KEYS.GET_USERS],
-        queryFn: getAccounts
+        queryKey: [QUERY_KEYS.GET_USERS, filters],
+        queryFn:() => getAccounts(filters)
     })
 }
 
