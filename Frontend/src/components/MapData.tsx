@@ -1,182 +1,234 @@
-type LatLngTuple = [number, number];
-type LatLngExpression = LatLngTuple | LatLngTuple[];
+import { useCallback } from "react";
+import { IGetOpAtivo } from "../../types/types";
+import { Tooltip } from "@nextui-org/react";
+import { EyeIcon } from "./ui/EyeIcon";
+import { EditIcon } from "./ui/EditIcon";
+import { DeleteIcon } from "./ui/DeleteIcon";
 
-export interface MapItem {
-  id: number;
-  nomeAtivo: string,
-  tipo: string;
-  sistema: string;
-  tipo2: string;
-  coordenadas: LatLngExpression;
-  valorOriginal: number;
-  valorResidual: number,
-  data: string;
+export const AtivosOp = (ativoOp: IGetOpAtivo, columnKey: React.Key) => {
+
+    const AtivoOpRenderCell = useCallback(() => {
+      let cellValue = ativoOp[columnKey as keyof IGetOpAtivo]
+  
+      if (cellValue instanceof Date) {
+          cellValue = cellValue.toLocaleDateString()
+      }
+  
+      if (cellValue === undefined) {
+          cellValue = 'N/A'
+      }
+  
+      switch(columnKey) {
+          case 'code':
+              return(
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.codigo}</p>
+                  </div>
+              )
+          
+          case 'campName':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.nome_de_campo}</p>
+                  </div>
+              )
+  
+          case 'class': 
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.classe}</p>
+                  </div>
+              )
+  
+          case 'phase':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.fase}</p>
+                  </div>
+              )
+  
+          case 'createdAt':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.criado_em.toLocaleDateString()}</p>
+                  </div>
+              )
+  
+          case 'createdBy':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.criado_por}</p>
+                  </div>
+              )
+  
+          case 'insertionDate':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.data_insercao.toLocaleDateString()}</p>
+                  </div>
+              )
+  
+          case 'projectDate':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.data_projeto.toLocaleDateString()}</p>
+                  </div>
+              )
+  
+          case 'obraDate': 
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.data_obra.toLocaleDateString()}</p>
+                  </div>
+              )
+          
+          case 'operationDate':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.data_operacao.toLocaleDateString()}</p>
+                  </div>
+              )
+  
+          case 'investimentType':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.tipo_investimento}</p>
+                  </div>
+              )
+  
+          case 'serviceStep':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.etapa_do_servico}</p>
+                  </div>
+              )
+  
+          case 'currentSituation':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.situacao_atual}</p>
+                  </div>
+              )
+  
+          case 'owner':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.proprietario}</p>
+                  </div>
+              )
+  
+          case 'originalValue':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.valor_original}</p>
+                  </div>
+              )
+  
+          case 'donation':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.doacao}</p>
+                  </div>
+              )
+  
+          case 'utilLifeYears':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.vida_util_reg_anos}</p>
+                  </div>
+              )
+  
+          case 'utilLifeMonths':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.vida_util_reg_meses}</p>
+                  </div>
+              )
+  
+          case 'status': 
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.status}</p>
+                  </div>
+              )
+              
+          case 'latitude':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.latitude}</p>
+                  </div>
+              )
+  
+          case 'longitude':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.longitude}</p>
+                  </div>
+              )
+  
+          case 'locality':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.localidade}</p>
+                  </div>
+              )
+  
+          case 'address':
+              return (
+                  <div className='flex flex-col'>
+                      <p className='text-bold text-sm capitalize'>{cellValue}</p>
+                      <p className='text-bold text-sm capitalize text-default-400'>{ativoOp.Endereco}</p>
+                  </div>
+              )
+              
+          case 'actions': 
+              return (
+                  <div className='relative flex items-center gap-2'>
+                  <Tooltip content='Detalhes'>
+                      <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
+                          <EyeIcon />
+                      </span>
+                  </Tooltip>
+  
+                  <Tooltip content="Editar Ativo">
+                      <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                          <EditIcon />
+                      </span>
+                  </Tooltip>
+  
+                  <Tooltip color="danger" content="Apagar Ativo">
+                      <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                          <DeleteIcon />
+                      </span>
+                  </Tooltip>
+              </div>
+              )
+          default:
+              return cellValue   
+      }
+      }, [ativoOp, columnKey])
+
+      return AtivoOpRenderCell()
 }
-
-export const columns = [
-    {name: "NOME ATIVO", uid: "name"},
-    {name: "TIPO", uid: "type"},
-    {name: "TIPO 2", uid: "Secondtype"},
-    {name: "VALOR ORIGINAL", uid: "originalValue"},
-    {name: "VALOR RESIDUAL", uid: "ResidualValue"},
-    {name: "DATA", uid: "data"},
-    {name: "ACTIONS", uid: "actions"}
-  ];
-
-export const MapData: MapItem[] = [
-    {
-    "id":0,  
-    nomeAtivo: 'z-01',
-    tipo:"enterrado",
-    sistema:"agua",
-    tipo2:"linear",
-    coordenadas:[
-        [-19.947128, -45.165717],
-        [-19.951, -45.165717],
-        [-19.947128, -45.17],
-    ],
-    valorOriginal:1000,
-    valorResidual: 1000,
-    data:"05/20/2023"
-    },
-
-    {
-    id:1, 
-    nomeAtivo: 'A-293',
-    tipo:"enterrado",
-    sistema:"agua",
-    tipo2:"linear",
-    coordenadas:[
-        [-19.95, -45.17],
-        [-19.95, -45.172],
-        [-19.94, -45.18],
-    ],
-    valorOriginal: 33, 
-    valorResidual: 100,
-    data:"05/21/2023"
-    },
-
-    {
-    id:2, 
-    nomeAtivo: 'X-78',
-    tipo:"enterrado",
-    sistema:"agua",
-    tipo2:"pontual",
-    coordenadas:[-19.95, -45.17],
-    valorOriginal: 43, 
-    valorResidual: 57,
-    data:"05/22/2023"
-    },
-
-    {
-    "id":3, 
-    nomeAtivo: 'A-200',
-    tipo:"enterrado",
-    sistema:"agua",
-    tipo2:"pontual",
-    coordenadas:[-19.947128, -45.17],
-    valorOriginal: 20, 
-    valorResidual: 80,
-    data:"05/23/2023"
-    },
-
-    {
-    "id":4, 
-    nomeAtivo: 'Q-100',
-    tipo:"enterrado",
-    sistema:"esgoto",
-    tipo2:"linear",
-    coordenadas:[
-        [-19.9428, -45.1657],
-        [-19.951, -45.1657],
-        [-19.9428, -45.17],
-    ],
-    valorOriginal: 25.5, 
-    valorResidual: 75,
-    data:"05/24/2023"
-    },
-
-    {
-    id:5, 
-    nomeAtivo: 'M-69',
-    tipo:"enterrado",
-    sistema:"esgoto",
-    tipo2:"pontual",
-    coordenadas:[-19.951, -45.1657],
-    valorOriginal: 22.9, 
-    valorResidual: 80,
-    data:"05/25/2023"
-    },
-
-    {
-    id:6, 
-    nomeAtivo: 'L-003',
-    tipo:"enterrado",
-    sistema:"esgoto",
-    tipo2:"pontual",
-    coordenadas:[-19.9428, -45.17],
-    valorOriginal: 20.3,
-    valorResidual: 270,
-    data:"05/26/2023"
-    },
-
-    {
-    id:8, 
-    nomeAtivo: 'C-24',
-    tipo:"visivel",
-    sistema:"agua",
-    tipo2:"pontual",
-    coordenadas:[-19.8422, -45.15],
-    valorOriginal: 15.1, 
-    valorResidual: 2476,
-    data:"05/28/2023"
-    },
-
-    {
-    id:9, 
-    nomeAtivo: 'K-46',
-    tipo:"visivel",
-    sistema:"agua",
-    tipo2:"pontual",
-    coordenadas:[-19.8332, -45.178],
-    valorOriginal: 12.5, 
-    valorResidual: 800,
-    data:"05/29/2023"
-    },
-
-    {
-    id:11, 
-    nomeAtivo: 'S-67',
-    tipo2:"visivel",
-    sistema:"esgoto",
-    tipo:"pontual",
-    coordenadas:[-19.7334, -45.19],
-    valorOriginal: 7.3, 
-    valorResidual: 900, 
-    data:"05/31/2023"
-    },
-
-    {
-    id:12, 
-    nomeAtivo: 'G-6',
-    tipo:"visivel",
-    sistema:"esgoto",
-    tipo2:"pontual",
-    coordenadas:[-19.9762, -45.1338],
-    valorOriginal: 4.7, 
-    valorResidual: 77,
-    data:"06/01/2023"
-    },
-
-    {
-    id:14, 
-    nomeAtivo: 'Z-40',
-    tipo:"visivel",
-    sistema:"outro",
-    tipo2:"pontual",
-    coordenadas:[-19.9992, -45.168],
-    valorOriginal: 20.3, 
-    valorResidual: 300,
-    data:"06/03/2023"
-    }
-];
