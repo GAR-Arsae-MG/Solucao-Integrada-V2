@@ -2,7 +2,7 @@
 import axios from 'axios'
 import { redirect } from 'react-router-dom'
 
-import { IGetUser, INewUser } from '../types/types'
+import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, INewUser } from '../types/types'
 
 export const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/',
@@ -46,7 +46,7 @@ export async function getUnits(filters: {tipo?: string, sistemas?: string}) {
 
     try {
         const response = await api.get(`/unidades/?${params.toString()}`)
-        return response.data as JSON
+        return response.data as IGetUnity[]
     } catch (error) {
         console.error(error)
         throw error
@@ -64,7 +64,7 @@ export async function getAtivosAdmin(filters: {tipo_ativo?: string, classe_ativo
 
     try {
         const response = await api.get(`/ativos-administrativos/?${params.toString()}`)
-        return response.data as JSON
+        return response.data as IGetAdminAtivo[]
     } catch (error) {
         console.error(error)
         throw error
@@ -83,7 +83,7 @@ export async function getAtivosOp(filters: {tipo_ativo?: string, tipo_investimen
 
     try {
         const response = await api.get(`/ativos-operacionais/?${params.toString()}`)
-        return response.data as JSON
+        return response.data as IGetOpAtivo[]
     } catch (error) {
         console.error(error)
         throw error
