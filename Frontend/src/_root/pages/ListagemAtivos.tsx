@@ -2,9 +2,8 @@ import { ChevronDownIcon, EditIcon } from '@chakra-ui/icons'
 import { Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip } from '@nextui-org/react'
 import { useCallback, useMemo, useState } from 'react'
 
-import { useGetAtivosOp } from '../../../react-query/QueriesAndMutations'
+import { useGetAtivosOp, useGetAtivosOpFilters } from '../../../react-query/QueriesAndMutations'
 import { IGetOpAtivo } from '../../../types/types'
-import { TopContent } from '../../components/ativosData'
 import { DeleteIcon } from '../../components/ui/DeleteIcon'
 import { EyeIcon } from '../../components/ui/EyeIcon'
 import TopNav from '../../components/ui/TopNav'
@@ -16,6 +15,7 @@ const ListagemAtivos = () => {
     const [statusOp, setStatusOp] = useState('')
     const [etapaServicoOp, setEtapaServicoOp] = useState('')
     const {data: ativoOp, isLoading: isAtivoOpLoading, isError: isAtivoOpError, refetch: refetchAtivoOp} = useGetAtivosOp({tipo_ativo: tipoAtivoOp, tipo_investimento: tipoInvestimentoOp, status: statusOp, etapa_do_servico: etapaServicoOp})
+    const {refetch: refetchFilters} = useGetAtivosOpFilters({tipo_ativo: tipoAtivoOp, tipo_investimento: tipoInvestimentoOp, status: statusOp, etapa_do_servico: etapaServicoOp})
 
     const INITIAL_TABLE_COLUMNS = ['code', 'campName', 'class', 'actions']
     

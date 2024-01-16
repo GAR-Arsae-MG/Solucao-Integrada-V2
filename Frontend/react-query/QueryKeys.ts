@@ -7,4 +7,7 @@ export enum QUERY_KEYS {
     GET_UNITS = 'units',
     GET_CURRENT_USER = 'usuario',
     GET_USERS_FILTERS = 'filtros-usuarios',
+    GET_ATIVOS_OP_FILTERS = 'filtros-ativos-op',
+    GET_ATIVOS_ADMIN_FILTERS = 'filtros-ativos-admin',
+    GET_UNITS_FILTERS = 'filtros-units'
 }

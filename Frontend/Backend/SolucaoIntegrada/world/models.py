@@ -80,6 +80,14 @@ class Unidades(models.Model):
     
     def __str__(self):
         return self.nome
+    
+    def get_tipo_display(self):
+        tipo_dict = dict(Unidades.TIPO)
+        return tipo_dict.get(self.tipo)
+    
+    def get_sistemas_display(self):
+        sistemas_dict = dict(Unidades.SISTEMAS)
+        return sistemas_dict.get(self.sistemas)
 
 class Ativos_Operacionais(models.Model):
     STATUS = (
@@ -147,6 +155,22 @@ class Ativos_Operacionais(models.Model):
     def __str__(self):
      return self.codigo
  
+    def get_status_display(self):
+        status_dict = dict(Ativos_Operacionais.STATUS)
+        return status_dict.get(self.status)
+    
+    def get_tipo_ativo_display(self):
+        tipo_ativo_dict = dict(Ativos_Operacionais.TIPO_ATIVO)
+        return tipo_ativo_dict.get(self.tipo_ativo)
+    
+    def get_tipo_investimento_display(self):
+        tipo_investimento_dict = dict(Ativos_Operacionais.TIPO_INVESTIMENTO)
+        return tipo_investimento_dict.get(self.tipo_investimento)
+    
+    def get_etapa_do_servico_display(self):
+        etapa_do_servico_dict = dict(Ativos_Operacionais.ETAPA_DO_SERVICO)
+        return etapa_do_servico_dict.get(self.etapa_do_servico)
+ 
 class Ativos_Administrativos(models.Model):
     TIPO_ATIVO = (
         ('A', 'Automóvel'),
@@ -186,5 +210,17 @@ class Ativos_Administrativos(models.Model):
     unidade = models.ForeignKey(Unidades, on_delete=models.CASCADE, blank=False, null=False)
     criado_por = models.CharField(max_length=64)
     adquirido_por = models.CharField(max_length=64)
+    
+    def get_tipo_ativo_display(self):
+        tipo_ativo_dict = dict(Ativos_Administrativos.TIPO_ATIVO)
+        return tipo_ativo_dict.get(self.tipo_ativo)
+    
+    def get_classe_ativo_display(self):
+        classe_ativo_dict = dict(Ativos_Administrativos.CLASSE_ATIVO)
+        return classe_ativo_dict.get(self.classe_ativo)
+    
+    def get_status_display(self):
+        status_dict = dict(Ativos_Administrativos.STATUS)
+        return status_dict.get(self.status)
     
     

@@ -152,3 +152,77 @@ class StaffView(View):
     def get(self, request):
         return JsonResponse([True, False], safe=False, status=status.HTTP_200_OK)
     
+class UnitiesSistemasView(View):
+    def get(self, request):
+        try:
+            sistemas = [sistema[1] for sistema in Unidades.SISTEMAS]
+            return JsonResponse(list(sistemas), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class UnitiesTypesView(View):
+    def get(self, request):
+        try:
+            tipos = [tipo[1] for tipo in Unidades.TIPO]
+            return JsonResponse(list(tipos), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class AtivosOpTipoAtivoView(View):
+    def get(self, request):
+        try:
+            tipos = [tipo[1] for tipo in Ativos_Operacionais.TIPO_ATIVO]
+            return JsonResponse(list(tipos), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AtivosOpTipoInvestimentoView(View):
+    def get(self, request):
+        try:
+            tipos = [tipo[1] for tipo in Ativos_Operacionais.TIPO_INVESTIMENTO]
+            return JsonResponse(list(tipos), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class AtivosOpStatusView(View):
+    def get(self, request):
+        try:
+            status = [status[1] for status in Ativos_Operacionais.STATUS]
+            return JsonResponse(list(status), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class AtivosOpEtapaServicoView(View):
+    def get(self, request):
+        try:
+            etapas = [etapa[1] for etapa in Ativos_Operacionais.ETAPA_DO_SERVICO]
+            return JsonResponse(list(etapas), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class AtivosAdmStatusView(View):
+    def get(self, request):
+        try:
+            status = [status[1] for status in Ativos_Administrativos.STATUS]
+            return JsonResponse(list(status), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class AtivosAdmTipoAtivoView(View):
+    def get(self, request):
+        try:
+            tipos = [tipo[1] for tipo in Ativos_Administrativos.TIPO_ATIVO]
+            return JsonResponse(list(tipos), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+class AtivosAdmClasseAtivoView(View):
+    def get(self, request):
+        try:
+            classes = [classe[1] for classe in Ativos_Administrativos.CLASSE_ATIVO]
+            return JsonResponse(list(classes), safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+            
+    

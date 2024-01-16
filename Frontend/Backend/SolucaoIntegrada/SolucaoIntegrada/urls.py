@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 
-from world.views import FuncoesView, StaffView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
+from world.views import AtivosOpStatusView, AtivosOpTipoAtivoView, AtivosOpTipoInvestimentoView, FuncoesView, StaffView, UnitiesSistemasView, UnitiesTypesView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
@@ -39,8 +39,18 @@ urlpatterns = [
     path('api/logout/', logout_view, name='logout'),
     path('api/user-info/', get_user_info, name='get_user_info'),
     path('api/revalidate-password/', revalidatePassword.as_view(), name='revalidate_password'),
+    
     path('funcoes/', FuncoesView.as_view(), name='funcoes'),
     path('staff/', StaffView.as_view(), name='staff'),
+    
+    path('unidade-sistemas/', UnitiesSistemasView.as_view(), name='sistemasUnidades'),
+    path('unidade-tipos/', UnitiesTypesView.as_view(), name='unidadeTipos'),
+    
+    path('ativos-op-tipo_ativo/', AtivosOpTipoAtivoView.as_view(), name='ativosOpTipoAtivo'),
+    path('ativos-op-tipo_investimento/', AtivosOpTipoInvestimentoView.as_view(), name='ativosOpTipoInvestimento'),
+    path('ativos-op-status', AtivosOpStatusView.as_view(), name='ativosOpStatus'),
+    
+    
 ]
 
 if settings.DEBUG:
