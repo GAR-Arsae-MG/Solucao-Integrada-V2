@@ -43,9 +43,14 @@ class AtivosAdminSerializer(serializers.ModelSerializer):
         return obj.get_status_display()
 
 class AtivosOperacionaisSerializer(serializers.ModelSerializer):
+    status_display = serializers.SerializerMethodField()
+    tipo_ativo_display = serializers.SerializerMethodField()
+    tipo_investimento_display = serializers.SerializerMethodField()
+    etapa_do_servico_display = serializers.SerializerMethodField()
+    
     class Meta:
         model = Ativos_Operacionais
-        fields = '__all__'
+        fields = [f.name for f in Ativos_Operacionais._meta.get_fields()] + ['status_display', 'tipo_ativo_display', 'tipo_investimento_display', 'etapa_do_servico_display']
         
     def get_status_display(self, obj):
         return obj.get_status_display()
