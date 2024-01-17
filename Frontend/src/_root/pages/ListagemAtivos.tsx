@@ -7,7 +7,6 @@ import { useGetAtivosOp, useGetAtivosOpFilters } from '../../../react-query/Quer
 import { IGetOpAtivo } from '../../../types/types'
 import { DeleteIcon } from '../../components/ui/DeleteIcon'
 import { EyeIcon } from '../../components/ui/EyeIcon'
-import TopNav from '../../components/ui/TopNav'
 import { AtivosOpColumns } from '../../constants/Columns'
 import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento } from '../../../django/api'
 
@@ -347,138 +346,134 @@ const ListagemAtivos = () => {
 
   return (
     <>
-        <TopNav />
+        <Card className='max-w-full w-[1200px] h-[300px] bg-slate-900'>
+            <CardBody>
+                <h1 className='text-3xl font-bold text-center text-white'>Ativos Operacionais Dinâmicos</h1>
+                <p className='text-xl text-center text-red-900'>Filtros</p>
 
-        <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-tr'>
-
-            <Card className='max-w-full w-[1200px] h-[300px] bg-slate-900'>
-                <CardBody>
-                    <h1 className='text-3xl font-bold text-center text-white'>Ativos Operacionais Dinâmicos</h1>
-                    <p className='text-xl text-center text-red-900'>Filtros</p>
-
-                    <div className='gap-4 p-4'>
-                        <div className='flex flex-1 justify-between w-full p-4 gap-4'>
-                            <Select
-                                label='Status'
-                                onChange={handleOpStatusChange}
-                                color='primary'
-                            >
-                                {statusOp.map((status: string) => (
-                                    <SelectItem
-                                        key={status.charAt(0).toUpperCase()}
-                                        value={status.charAt(0).toUpperCase()}
-                                    >
-                                        {status}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-
-                            <Select
-                                label='Tipo de Ativo'
-                                onChange={handleOpTipoAtivoChange}
-                                color='primary'
-                            >
-                                {tipoAtivoOp.map((tipoAtivo: string) => (
-                                    <SelectItem
-                                        key={tipoAtivo.charAt(0).toUpperCase()}
-                                        value={tipoAtivo.charAt(0).toUpperCase()}
-                                    >
-                                        {tipoAtivo}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-
-                            <Select
-                                label='Tipo de Investimento'
-                                onChange={handleOpTipoInvestimentoChange}
-                                color='primary'
-                            >
-                                {tipoInvestimentoOp.map((tipoInvestimento: string) => (
-                                    <SelectItem
-                                        key={tipoInvestimento.charAt(0).toUpperCase()}
-                                        value={tipoInvestimento.charAt(0).toUpperCase()}
-                                    >
-                                        {tipoInvestimento}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-                        </div>
-
-                        <div className='flex flex-1 justify-between w-full p-4 gap-4'>
-                            <Select
-                                label='Etapa de Serviço'
-                                onChange={handleOpEtapaServicoChange}
-                                color='primary'
-                            >
-                                {etapaServicoOp.map((etapaServico: string) => (
-                                    <SelectItem
-                                        key={etapaServico.charAt(0).toUpperCase()}
-                                        value={etapaServico.charAt(0).toUpperCase()}
-                                    >
-                                        {etapaServico}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-
-                            <Button
-                                className='w-full'
-                                onClick={clearFilters}
-                                color='danger'
-                            >
-                                Limpar filtros
-                            </Button>      
-                        </div>
-                    </div>
-                </CardBody>
-            </Card>
-
-            <Card className='max-w-full w-[1200px] h-[750px]'>
-                <CardBody className='overflow-auto scrollbar-hide'>
-                    {isAtivoOpLoading ? (
-                        <>
-                            <Spinner />
-                            <p>Carregando, por favor, espere...</p>
-                        </>
-                    ): isAtivoOpError ? (
-                        <>
-                            <p>Erro ao buscar os usuários.</p>
-                        </>
-                    ): (
-                        <Table 
-                            aria-label='Tabela de Ativos operacionais Dinâmica'
-                            topContent={topContentAtivosOp} 
+                <div className='gap-4 p-4'>
+                    <div className='flex flex-1 justify-between w-full p-4 gap-4'>
+                        <Select
+                            label='Status'
+                            onChange={handleOpStatusChange}
+                            color='primary'
                         >
-                            <TableHeader columns={headerOpColumns}>
-                                {(column) => (
-                                    <TableColumn
-                                        key={column.uid}
-                                        align={column.uid === 'actions' ? 'center':'start'}
-                                        className='text-center'
-                                    >
-                                        {column.name}
-                                    </TableColumn>
-                                )}
-                            </TableHeader>
+                            {statusOp.map((status: string) => (
+                                <SelectItem
+                                    key={status.charAt(0).toUpperCase()}
+                                    value={status.charAt(0).toUpperCase()}
+                                >
+                                    {status}
+                                </SelectItem>
+                            ))}
+                        </Select>
 
-                            <TableBody 
-                                items={ativoOp} 
-                                emptyContent={'Sem dados para mostrar abaixo!'}
-                                
-                            >
-                                {(item) => (
-                                    <TableRow
-                                        key={item.codigo}
-                                        className='text-center'
-                                    >
-                                        {(columnKey) => <TableCell>{AtivoOpRenderCell(item, columnKey)}</TableCell>}
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    )}
-                </CardBody>
-            </Card>
-        </div>
+                        <Select
+                            label='Tipo de Ativo'
+                            onChange={handleOpTipoAtivoChange}
+                            color='primary'
+                        >
+                            {tipoAtivoOp.map((tipoAtivo: string) => (
+                                <SelectItem
+                                    key={tipoAtivo.charAt(0).toUpperCase()}
+                                    value={tipoAtivo.charAt(0).toUpperCase()}
+                                >
+                                    {tipoAtivo}
+                                </SelectItem>
+                            ))}
+                        </Select>
+
+                        <Select
+                            label='Tipo de Investimento'
+                            onChange={handleOpTipoInvestimentoChange}
+                            color='primary'
+                        >
+                            {tipoInvestimentoOp.map((tipoInvestimento: string) => (
+                                <SelectItem
+                                    key={tipoInvestimento.charAt(0).toUpperCase()}
+                                    value={tipoInvestimento.charAt(0).toUpperCase()}
+                                >
+                                    {tipoInvestimento}
+                                </SelectItem>
+                            ))}
+                        </Select>
+                    </div>
+
+                    <div className='flex flex-1 justify-between w-full p-4 gap-4'>
+                        <Select
+                            label='Etapa de Serviço'
+                            onChange={handleOpEtapaServicoChange}
+                            color='primary'
+                        >
+                            {etapaServicoOp.map((etapaServico: string) => (
+                                <SelectItem
+                                    key={etapaServico.charAt(0).toUpperCase()}
+                                    value={etapaServico.charAt(0).toUpperCase()}
+                                >
+                                    {etapaServico}
+                                </SelectItem>
+                            ))}
+                        </Select>
+
+                        <Button
+                            className='w-full'
+                            onClick={clearFilters}
+                            color='danger'
+                        >
+                            Limpar filtros
+                        </Button>      
+                    </div>
+                </div>
+            </CardBody>
+        </Card>
+
+        <Card className='max-w-full w-[1200px] h-[750px]'>
+            <CardBody className='overflow-auto scrollbar-hide'>
+                {isAtivoOpLoading ? (
+                    <>
+                        <Spinner />
+                        <p>Carregando, por favor, espere...</p>
+                    </>
+                ): isAtivoOpError ? (
+                    <>
+                        <p>Erro ao buscar os usuários.</p>
+                    </>
+                ): (
+                    <Table 
+                        aria-label='Tabela de Ativos operacionais Dinâmica'
+                        topContent={topContentAtivosOp} 
+                    >
+                        <TableHeader columns={headerOpColumns}>
+                            {(column) => (
+                                <TableColumn
+                                    key={column.uid}
+                                    align={column.uid === 'actions' ? 'center':'start'}
+                                    className='text-center'
+                                >
+                                    {column.name}
+                                </TableColumn>
+                            )}
+                        </TableHeader>
+
+                        <TableBody 
+                            items={ativoOp} 
+                            emptyContent={'Sem dados para mostrar abaixo!'}
+                            
+                        >
+                            {(item) => (
+                                <TableRow
+                                    key={item.codigo}
+                                    className='text-center'
+                                >
+                                    {(columnKey) => <TableCell>{AtivoOpRenderCell(item, columnKey)}</TableCell>}
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
+            </CardBody>
+        </Card>
+        
     </>
   )
 }

@@ -9,7 +9,6 @@ import { columns } from '../../components/data';
 import { DeleteIcon } from '../../components/ui/DeleteIcon';
 import { EditIcon } from '../../components/ui/EditIcon';
 import { EyeIcon } from '../../components/ui/EyeIcon';
-import TopNav from '../../components/ui/TopNav';
 
 function ListagemUsuarios() {
     const [funcoes, setFuncoes] = useState([])
@@ -143,102 +142,99 @@ function ListagemUsuarios() {
   return (
 
     <>
-        <TopNav />
 
-        <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-tr'>
+        <Card className='max-w-full w-[1200px] h-[300px] bg-slate-900'>
+            <CardBody>
+                <p className='text-3xl font-bold text-center text-gray-200'>Listagem de usuários</p>
+                <p className='text-xl text-center text-red-900'>Filtros</p>
 
-            <Card className='max-w-full w-[1200px] h-[300px] bg-slate-900'>
-                <CardBody>
-                    <p className='text-3xl font-bold text-center text-gray-200'>Listagem de usuários</p>
-                    <p className='text-xl text-center text-red-900'>Filtros</p>
+                <div className=' gap-4 p-4'>
+                    <div className='flex flex-1 justify-between w-full p-4 gap-4'>
+                        <Select
+                            label='Função'
+                            onChange={handleFuncoesChange}
+                            color='primary'
+                        >
+                            {funcoes.map((funcao: string) => (
+                                <SelectItem
+                                    key={funcao.charAt(0).toUpperCase()}
+                                    value={funcao.charAt(0).toUpperCase()}
+                                >
+                                    {funcao}
+                                </SelectItem>
+                            ))}
+                        </Select>
 
-                    <div className=' gap-4 p-4'>
-                        <div className='flex flex-1 justify-between w-full p-4 gap-4'>
-                            <Select
-                                label='Função'
-                                onChange={handleFuncoesChange}
-                                color='primary'
-                            >
-                                {funcoes.map((funcao: string) => (
-                                    <SelectItem
-                                        key={funcao.charAt(0).toUpperCase()}
-                                        value={funcao.charAt(0).toUpperCase()}
-                                    >
-                                        {funcao}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-
-                            <Select
-                                label="Perfil Administrativo?"
-                                onChange={handleStaffChange}
-                                color='success'
-                            >
-                                {staff.map((staff: boolean) => (
-                                    <SelectItem
-                                        key={staff.toString()}
-                                        value={staff.toString()}
-                                    >
-                                        {staff ? 'Sim': 'Não'}
-                                    </SelectItem>
-                                ))}
-                            </Select>
-                        </div>
-
-                        <div className='flex flex-1 justify-between w-full p-4 gap-4'>
-                            <Input 
-                                label='Agencia'
-                                onChange={handleAgenciaChange}
-                                value={selectedAgencia}
-                                placeholder='Escreva o nome completo da agência'
-                            />
-
-                            <Button
-                                className='w-full'
-                                onClick={clearFilters}
-                                color='danger'
-                            >
-                                Limpar filtros
-                            </Button>
-                        </div>
+                        <Select
+                            label="Perfil Administrativo?"
+                            onChange={handleStaffChange}
+                            color='success'
+                        >
+                            {staff.map((staff: boolean) => (
+                                <SelectItem
+                                    key={staff.toString()}
+                                    value={staff.toString()}
+                                >
+                                    {staff ? 'Sim': 'Não'}
+                                </SelectItem>
+                            ))}
+                        </Select>
                     </div>
-                </CardBody>
-            </Card>
+
+                    <div className='flex flex-1 justify-between w-full p-4 gap-4'>
+                        <Input 
+                            label='Agencia'
+                            onChange={handleAgenciaChange}
+                            value={selectedAgencia}
+                            placeholder='Escreva o nome completo da agência'
+                        />
+
+                        <Button
+                            className='w-full'
+                            onClick={clearFilters}
+                            color='danger'
+                        >
+                            Limpar filtros
+                        </Button>
+                    </div>
+                </div>
+            </CardBody>
+        </Card>
 
 
-            <Card className='max-w-full w-[1200px] h-[680px]'>
-                <CardBody className='overflow-auto scrollbar-hide'>
-                    {isUserLoading ? (
-                        <>
-                            <Spinner />
-                            <p>Carregando...</p>
-                        </>
-                    ): isUserError ? (
-                        <>
-                            <p>Erro ao buscar os usuários.</p>
-                        </>
-                    ): (
-                        <Table aria-label='Tabela de usuários Dinâmica'>
-                            <TableHeader columns={columns}>
-                                {(column) => (
-                                    <TableColumn key={column.uid} align={column.uid === 'actions' ? 'center': 'start'}>
-                                        {column.name}
-                                    </TableColumn>
-                                )}
-                            </TableHeader>
+        <Card className='max-w-full w-[1200px] h-[680px]'>
+            <CardBody className='overflow-auto scrollbar-hide'>
+                {isUserLoading ? (
+                    <>
+                        <Spinner />
+                        <p>Carregando...</p>
+                    </>
+                ): isUserError ? (
+                    <>
+                        <p>Erro ao buscar os usuários.</p>
+                    </>
+                ): (
+                    <Table aria-label='Tabela de usuários Dinâmica'>
+                        <TableHeader columns={columns}>
+                            {(column) => (
+                                <TableColumn key={column.uid} align={column.uid === 'actions' ? 'center': 'start'}>
+                                    {column.name}
+                                </TableColumn>
+                            )}
+                        </TableHeader>
 
-                            <TableBody items={users}>
-                                {(item) => (
-                                    <TableRow key={item.id}>
-                                        {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    )}
-                </CardBody>
-            </Card>
-        </div>
+                        <TableBody items={users}>
+                            {(item) => (
+                                <TableRow key={item.id}>
+                                    {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
+            </CardBody>
+        </Card>
+        
     </>
   )
 }

@@ -1,5 +1,4 @@
 
-import TopNav from '../../components/ui/TopNav';
 import { ChevronRightIcon, ChevronLeftIcon, CheckIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -59,9 +58,6 @@ function CadastroAtivo() {
 
   return(
     <>
-      <TopNav />
-      
-      <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-br'>
         <Card className='max-w-full w-[1200px] h-[680px]'>
           <CardBody className='overflow-auto scrollbar-hide' >
             <Tabs
@@ -348,7 +344,7 @@ function CadastroAtivo() {
             </Tabs>
           </CardBody>
         </Card>
-      </div>
+      
     </>
   )
 }

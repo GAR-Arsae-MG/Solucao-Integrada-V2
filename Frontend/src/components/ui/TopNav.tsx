@@ -107,9 +107,17 @@ function TopNav() {
                     <DropdownItem
                         key="Ativos_list"
                         href="/listagemAtivos"
-                        description="Uma lista dos ativos atuais"
+                        description="Uma lista dos ativos Operacionais"
                     >
-                        Lista de Ativos
+                        Lista de Ativos Operacionais
+                    </DropdownItem>
+
+                    <DropdownItem
+                        key="Ativos_list"
+                        href="/ListagemAtivosAdministrativos"
+                        description="Uma lista dos ativos Administrativos"
+                    >
+                        Lista de Ativos Administrativos
                     </DropdownItem>
 
                     </DropdownMenu>
