@@ -112,6 +112,46 @@ export async function getStaff() {
     }
 }
 
+export async function getOpTipoAtivo() {
+    try {
+        const response = await api.get('/ativos-op-tipo_ativo/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getOpTipoInvestimento() {
+    try {
+        const response = await api.get('/ativos-op-tipo_investimento/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getOpStatus() {
+    try {
+        const response = await api.get('/ativos-op-status/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getOpEtapaServico() {
+    try {
+        const response = await api.get('/ativos-op-etapa_servico/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
 // Rotas de AUTENTICAÇÃO/API
 
 export async function getCurrentUser({email, senha}: INewUser) {

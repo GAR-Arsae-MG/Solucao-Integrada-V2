@@ -188,8 +188,8 @@ class AtivosOpTipoInvestimentoView(View):
 class AtivosOpStatusView(View):
     def get(self, request):
         try:
-            status = [status[1] for status in Ativos_Operacionais.STATUS]
-            return JsonResponse(list(status), safe=False, status=status.HTTP_200_OK)
+            statusOP = [statusOP[1] for statusOP in Ativos_Operacionais.STATUS]
+            return JsonResponse(list(statusOP), safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
         

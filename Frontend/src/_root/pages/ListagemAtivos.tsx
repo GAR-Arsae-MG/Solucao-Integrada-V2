@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChevronDownIcon, EditIcon } from '@chakra-ui/icons'
-import { Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Selection, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip } from '@nextui-org/react'
-import { useCallback, useMemo, useState } from 'react'
+import { Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Select, SelectItem, Selection, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip } from '@nextui-org/react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useGetAtivosOp, useGetAtivosOpFilters } from '../../../react-query/QueriesAndMutations'
 import { IGetOpAtivo } from '../../../types/types'
@@ -8,14 +9,19 @@ import { DeleteIcon } from '../../components/ui/DeleteIcon'
 import { EyeIcon } from '../../components/ui/EyeIcon'
 import TopNav from '../../components/ui/TopNav'
 import { AtivosOpColumns } from '../../constants/Columns'
+import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento } from '../../../django/api'
 
 const ListagemAtivos = () => {
-    const [tipoAtivoOp, setTipoAtivoOp] = useState('')
-    const [tipoInvestimentoOp, setTipoInvestimentoOp] = useState('')
-    const [statusOp, setStatusOp] = useState('')
-    const [etapaServicoOp, setEtapaServicoOp] = useState('')
-    const {data: ativoOp, isLoading: isAtivoOpLoading, isError: isAtivoOpError, refetch: refetchAtivoOp} = useGetAtivosOp({tipo_ativo: tipoAtivoOp, tipo_investimento: tipoInvestimentoOp, status: statusOp, etapa_do_servico: etapaServicoOp})
-    const {refetch: refetchFilters} = useGetAtivosOpFilters({tipo_ativo: tipoAtivoOp, tipo_investimento: tipoInvestimentoOp, status: statusOp, etapa_do_servico: etapaServicoOp})
+    const [tipoAtivoOp, setTipoAtivoOp] = useState([])
+    const [selectedTipoAtivoOp, setSelectedTipoAtivoOp] = useState('')
+    const [tipoInvestimentoOp, setTipoInvestimentoOp] = useState([])
+    const [selectedTipoInvestimentoOp, setSelectedTipoInvestimentoOp] = useState('')
+    const [statusOp, setStatusOp] = useState([])
+    const [selectedStatusOp, setSelectedStatusOp] = useState('')
+    const [etapaServicoOp, setEtapaServicoOp] = useState([])
+    const [selectedEtapaServicoOp, setSelectedEtapaServicoOp] = useState('')
+    const {data: ativoOp, isLoading: isAtivoOpLoading, isError: isAtivoOpError, refetch: refetchAtivoOp} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
+    const {refetch: refetchFilters} = useGetAtivosOpFilters({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
 
     const INITIAL_TABLE_COLUMNS = ['code', 'campName', 'class', 'actions']
     
@@ -64,6 +70,65 @@ const ListagemAtivos = () => {
 
     }, [visibleColumns])
 
+    useEffect(() => {
+        const fetchOpStatus = async () => {
+            const opStatus = await getOpStatus()
+            setStatusOp(opStatus)
+        }
+        fetchOpStatus()
+
+        const fetchOpEtapaServico = async () => {
+            const opEtapaServico = await getOpEtapaServico()
+            setEtapaServicoOp(opEtapaServico)
+        }
+        fetchOpEtapaServico()
+
+        const fetchOpTipoAtivo = async () => {
+            const opTipoAtivo = await getOpTipoAtivo()
+            setTipoAtivoOp(opTipoAtivo)
+        }
+        fetchOpTipoAtivo()
+
+        const fetchOpTipoInvestimento = async () => {
+            const opTipoInvestimento = await getOpTipoInvestimento()
+            setTipoInvestimentoOp(opTipoInvestimento)
+        }
+        fetchOpTipoInvestimento()
+    }, [])
+
+    const handleOpStatusChange = async (event: any) => {
+        setSelectedStatusOp(event.target.value)
+        await refetchFilters()
+        refetchAtivoOp()
+    }
+
+    const handleOpEtapaServicoChange = async (event: any) => {
+        setSelectedEtapaServicoOp(event.target.value)
+        await refetchFilters()
+        refetchAtivoOp()
+    }
+
+    const handleOpTipoAtivoChange = async (event: any) => {
+        setSelectedTipoAtivoOp(event.target.value)
+        await refetchFilters()
+        refetchAtivoOp()
+    }
+
+    const handleOpTipoInvestimentoChange = async (event: any) => {
+        setSelectedTipoInvestimentoOp(event.target.value)
+        await refetchFilters()
+        refetchAtivoOp()
+    }
+
+    const clearFilters = async () => {
+        setSelectedStatusOp('')
+        setSelectedEtapaServicoOp('')
+        setSelectedTipoAtivoOp('')
+        setSelectedTipoInvestimentoOp('')
+        await refetchAtivoOp()
+        refetchFilters()
+    }
+
 
     const AtivoOpRenderCell = useCallback((ativoOp: IGetOpAtivo, columnKey: React.Key) => {
         let cellValue = ativoOp[columnKey as keyof IGetOpAtivo]
@@ -95,6 +160,7 @@ const ListagemAtivos = () => {
                 return (
                     <div className='flex flex-col'>
                         <p className='text-bold text-sm capitalize text-black'>{ativoOp.classe}</p>
+                        
                     </div>
                 )
     
@@ -151,6 +217,15 @@ const ListagemAtivos = () => {
                 return (
                     <div className='flex flex-col'>
                         <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_investimento}</p>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_investimento_display}</p>
+                    </div>
+                )
+
+            case 'activeType':
+                return (
+                    <div className='flex flex-col'>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_ativo}</p>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_ativo_display}</p>
                     </div>
                 )
     
@@ -158,6 +233,7 @@ const ListagemAtivos = () => {
                 return (
                     <div className='flex flex-col'>
                         <p className='text-bold text-sm capitalize text-black'>{ativoOp.etapa_do_servico}</p>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.etapa_do_servico_display}</p>
                     </div>
                 )
     
@@ -206,7 +282,8 @@ const ListagemAtivos = () => {
             case 'status': 
                 return (
                     <div className='flex flex-col'>
-                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.status}</p>
+                        <p className='text-bold text-sm capitalize text-primary-400'>{ativoOp.status}</p>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.status_display}</p>
                     </div>
                 )
                 
@@ -271,6 +348,34 @@ const ListagemAtivos = () => {
 
         <div className='flex flex-col w-full items-center gap-4 p-4 min-h-screen from-purple-900 via-indigo-800 to-indigo-500 bg-gradient-to-tr'>
 
+            <Card className='max-w-full w-[1200px] h-[300px] bg-slate-900'>
+                <CardBody>
+                    <h1 className='text-3xl font-bold text-center text-white'>Ativos Operacionais Dinâmicos</h1>
+                    <p className='text-xl text-center text-red-900'>Filtros</p>
+
+                    <div className='gap-4 p-4'>
+                        <div className='flex flex-1 justify-between w-full p-4 gap-4'>
+                            <Select
+                                label='Status'
+                                onChange={handleOpStatusChange}
+                                color='primary'
+                            >
+                                {statusOp.map((status: string) => (
+                                    <SelectItem
+                                        key={status.charAt(0).toUpperCase()}
+                                        value={status.charAt(0).toUpperCase()}
+                                    >
+                                        {status}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+
+                            
+                        </div>
+                    </div>
+                </CardBody>
+            </Card>
+
             <Card className='max-w-full w-[1200px] h-[750px]'>
                 <CardBody className='overflow-auto scrollbar-hide'>
                     {isAtivoOpLoading ? (
@@ -292,7 +397,7 @@ const ListagemAtivos = () => {
                                     <TableColumn
                                         key={column.uid}
                                         align={column.uid === 'actions' ? 'center':'start'}
-                                        
+                                        className='text-center'
                                     >
                                         {column.name}
                                     </TableColumn>
@@ -307,6 +412,7 @@ const ListagemAtivos = () => {
                                 {(item) => (
                                     <TableRow
                                         key={item.codigo}
+                                        className='text-center'
                                     >
                                         {(columnKey) => <TableCell>{AtivoOpRenderCell(item, columnKey)}</TableCell>}
                                     </TableRow>

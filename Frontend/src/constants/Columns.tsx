@@ -7,6 +7,7 @@ export const AtivosOpColumns = [
     {name: "DATA DE OPERAÇÃO", uid: "operationDate"},
     {name: "FASE", uid: "phase"},
     {name: 'TIPO DE INVESTIMENTO', uid: 'investimentType',  },
+    {name: 'TIPO DE ATIVO', uid: 'activeType'},
     {name: 'ETAPA DO SERVIÇO', uid: 'serviceStep',  },
     {name: "SITUAÇÃO ATUAL" , uid: "currentSituation",  },
     {name: "PROPRIETÁRIO", uid: "owner",  },

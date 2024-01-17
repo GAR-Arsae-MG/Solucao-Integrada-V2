@@ -91,4 +91,8 @@ export type IGetOpAtivo = {
     longitude: number,
     localidade?: string,
     Endereco?: string,
+    status_display: string,
+    tipo_ativo_display: string,
+    tipo_investimento_display: string,
+    etapa_do_servico_display: string
 }

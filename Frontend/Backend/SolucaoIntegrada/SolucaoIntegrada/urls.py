@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 
-from world.views import AtivosOpStatusView, AtivosOpTipoAtivoView, AtivosOpTipoInvestimentoView, FuncoesView, StaffView, UnitiesSistemasView, UnitiesTypesView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
+from world.views import AtivosOpEtapaServicoView, AtivosOpStatusView, AtivosOpTipoAtivoView, AtivosOpTipoInvestimentoView, FuncoesView, StaffView, UnitiesSistemasView, UnitiesTypesView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
@@ -48,8 +48,8 @@ urlpatterns = [
     
     path('ativos-op-tipo_ativo/', AtivosOpTipoAtivoView.as_view(), name='ativosOpTipoAtivo'),
     path('ativos-op-tipo_investimento/', AtivosOpTipoInvestimentoView.as_view(), name='ativosOpTipoInvestimento'),
-    path('ativos-op-status', AtivosOpStatusView.as_view(), name='ativosOpStatus'),
-    
+    path('ativos-op-status/', AtivosOpStatusView.as_view(), name='ativosOpStatus'),
+    path('ativos-op-etapa_servico/', AtivosOpEtapaServicoView.as_view(), name='ativosOpEtapaServico'),
     
 ]
 
