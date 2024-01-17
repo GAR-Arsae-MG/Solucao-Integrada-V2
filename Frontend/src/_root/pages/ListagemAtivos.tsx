@@ -20,8 +20,7 @@ const ListagemAtivos = () => {
     const [selectedStatusOp, setSelectedStatusOp] = useState('')
     const [etapaServicoOp, setEtapaServicoOp] = useState([])
     const [selectedEtapaServicoOp, setSelectedEtapaServicoOp] = useState('')
-    const {data: ativoOp, isLoading: isAtivoOpLoading, isError: isAtivoOpError, refetch: refetchAtivoOp} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
-    const {refetch: refetchFilters} = useGetAtivosOpFilters({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
+    
 
     const INITIAL_TABLE_COLUMNS = ['code', 'campName', 'class', 'actions']
     
@@ -69,6 +68,10 @@ const ListagemAtivos = () => {
         )
 
     }, [visibleColumns])
+
+    const {data: ativoOp, isLoading: isAtivoOpLoading, isError: isAtivoOpError, refetch: refetchAtivoOp} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
+    
+    const {refetch: refetchFilters} = useGetAtivosOpFilters({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
 
     useEffect(() => {
         const fetchOpStatus = async () => {
@@ -370,7 +373,60 @@ const ListagemAtivos = () => {
                                 ))}
                             </Select>
 
-                            
+                            <Select
+                                label='Tipo de Ativo'
+                                onChange={handleOpTipoAtivoChange}
+                                color='primary'
+                            >
+                                {tipoAtivoOp.map((tipoAtivo: string) => (
+                                    <SelectItem
+                                        key={tipoAtivo.charAt(0).toUpperCase()}
+                                        value={tipoAtivo.charAt(0).toUpperCase()}
+                                    >
+                                        {tipoAtivo}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+
+                            <Select
+                                label='Tipo de Investimento'
+                                onChange={handleOpTipoInvestimentoChange}
+                                color='primary'
+                            >
+                                {tipoInvestimentoOp.map((tipoInvestimento: string) => (
+                                    <SelectItem
+                                        key={tipoInvestimento.charAt(0).toUpperCase()}
+                                        value={tipoInvestimento.charAt(0).toUpperCase()}
+                                    >
+                                        {tipoInvestimento}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+                        </div>
+
+                        <div className='flex flex-1 justify-between w-full p-4 gap-4'>
+                            <Select
+                                label='Etapa de Serviço'
+                                onChange={handleOpEtapaServicoChange}
+                                color='primary'
+                            >
+                                {etapaServicoOp.map((etapaServico: string) => (
+                                    <SelectItem
+                                        key={etapaServico.charAt(0).toUpperCase()}
+                                        value={etapaServico.charAt(0).toUpperCase()}
+                                    >
+                                        {etapaServico}
+                                    </SelectItem>
+                                ))}
+                            </Select>
+
+                            <Button
+                                className='w-full'
+                                onClick={clearFilters}
+                                color='danger'
+                            >
+                                Limpar filtros
+                            </Button>      
                         </div>
                     </div>
                 </CardBody>

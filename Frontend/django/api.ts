@@ -306,7 +306,22 @@ export async function getUnitiesFilters(filters: any) {
 
 export async function getAtivosAdminFilters(filters: any) {
     try {
-        const response = await api.get('/ativos-administrativos/', {params: filters})
+        const currentParams = new URLSearchParams(window.location.search)
+
+        for (const key in filters) {
+            currentParams.append(key, filters[key])
+        }
+
+        for (const key in filters) {
+            if (currentParams.has(key)) {
+                currentParams.set(key, filters[key])
+            }
+        }
+
+        const newUrl = `/ativos-administrativos/?${currentParams.toString()}`
+
+        const response = await api.get(newUrl)
+
         return response.data
     } catch (error) {
         console.error(error)
@@ -316,7 +331,22 @@ export async function getAtivosAdminFilters(filters: any) {
 
 export async function getAtivosOpFilters(filters: any) {
     try {
-        const response = await api.get('/ativos-operacionais/', {params: filters})
+        const currentParams = new URLSearchParams(window.location.search)
+
+        for (const key in filters) {
+            currentParams.append(key, filters[key])
+        }
+
+        for (const key in filters) {
+            if (currentParams.has(key)) {
+                currentParams.set(key, filters[key])
+            }
+        }
+
+        const newUrl = `/ativos-operacionais/?${currentParams.toString()}`
+
+        const response = await api.get(newUrl)
+
         return response.data
     } catch (error) {
         console.error(error)

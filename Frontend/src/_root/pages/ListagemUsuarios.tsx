@@ -19,6 +19,7 @@ function ListagemUsuarios() {
     const [selectedAgencia, setSelectedAgencia] = useState('')
     
     const { data: users, isLoading: isUserLoading, isError: isUserError, refetch: refetchUsers } = useGetUsers({funcao: selectedFuncao, is_staff: selectedStaff, agencia: selectedAgencia})
+    
     const { refetch: refetchFilters } = useGetUsersFilters({funcao: selectedFuncao, is_staff: selectedStaff, agencia: selectedAgencia})
 
     useEffect(() => {
