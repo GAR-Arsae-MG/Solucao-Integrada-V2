@@ -70,7 +70,7 @@ const ListagemAtivos = () => {
     }, [visibleColumns])
 
     const {data: ativoOp, isLoading: isAtivoOpLoading, isError: isAtivoOpError, refetch: refetchAtivoOp} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
-    
+
     const {refetch: refetchFilters} = useGetAtivosOpFilters({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
 
     useEffect(() => {
@@ -320,7 +320,7 @@ const ListagemAtivos = () => {
                 
             case 'actions': 
                 return (
-                    <div className='relative flex items-center gap-2'>
+                    <div className='relative flex items-center text-center justify-center gap-2'>
                     <Tooltip content='Detalhes'>
                         <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
                             <EyeIcon />
