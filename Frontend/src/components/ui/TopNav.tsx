@@ -56,7 +56,7 @@ function TopNav() {
 
             <div>
                 <NavbarBrand
-                    rel="/painel"
+                    rel="/"
                 >
                     <img src={LogoSGP} className="h-14 justify-start"/>
                     <p className="font-bold text-inherit"></p>
