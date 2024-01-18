@@ -45,15 +45,15 @@ const Footer = () => {
                             <div>
                                 <h3 className='text-white uppercase'>Sobre</h3>
 
-                                <a href="" className='block mt-2 text-sm text-gray-400 hover:underline'>A Arsae</a>
+                                <a href="https://www.arsae.mg.gov.br/sobre/" className='block mt-2 text-sm text-gray-400 hover:underline'>A Arsae</a>
                                 <a href="" className='block mt-2 text-sm text-gray-400 hover:underline'>O Projeto</a>
                             </div>
 
                             <div>
                                 <h3 className='text-white uppercase'>Normas</h3>
 
-                                <a href="" className='block mt-2 text-sm text-gray-400 hover:underline'>Transparencia</a>
-                                <a href="" className='block mt-2 text-sm text-gray-400 hover:underline'>Compliance</a>
+                                <a href="https://www.arsae.mg.gov.br/wp-content/uploads/2022/06/2.-Politica-Anticorrupcao_-cartilha-1.pdf" className='block mt-2 text-sm text-gray-400 hover:underline'>Política Anticorrupção</a>
+                                <a href="https://www.arsae.mg.gov.br/wp-content/uploads/2022/10/Plano-de-Compliance-Integridade-1.pdf" className='block mt-2 text-sm text-gray-400 hover:underline'>Compliance</a>
                             </div>
 
                             <div>
