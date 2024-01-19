@@ -8,6 +8,8 @@ import { AuthProvider } from '../context/AuthContext'
 import RevalidarSenha from './_auth/revalidarSenha'
 import ListagemAtivosAdmin from './_root/pages/ListagemAtivosAdmin'
 import RootLayout from './_root/RootLayout'
+import About from './_root/pages/About'
+import ListagemUnidades from './_root/pages/ListagemUnidades'
 
 function App() {
   return (
@@ -27,8 +29,10 @@ function App() {
               <Route path='/cadastroAtivos' Component={CadastroAtivo} />
               <Route index Component={Painel} />
               <Route path='/listagemAtivos' Component={ListagemAtivos} />
-              <Route path='/ListagemUsuarios' Component={ListagemUsuarios} />
-              <Route path='/ListagemAtivosAdministrativos' Component={ListagemAtivosAdmin} />
+              <Route path='/listagemUsuarios' Component={ListagemUsuarios} />
+              <Route path='/listagemAtivosAdministrativos' Component={ListagemAtivosAdmin} />
+              <Route path='/listagemUnidades' Component={ListagemUnidades} />
+              <Route path='/SobreProjeto' Component={About} />
             </Route>
           </Routes>
       </AuthProvider>

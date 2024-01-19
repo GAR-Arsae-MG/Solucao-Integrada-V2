@@ -152,6 +152,36 @@ export async function getOpEtapaServico() {
     }
 }
 
+export async function getAdminStatus() {
+    try {
+        const response = await api.get('/ativos-admin-status/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getAdminClasseAtivo() {
+    try {
+        const response = await api.get('/ativos-admin-classe_ativo/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getAdminTipoAtivo() {
+    try {
+        const response = await api.get('/ativos-admin-tipo_ativo/')
+        return response.data 
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
 // Rotas de AUTENTICAÇÃO/API
 
 export async function getCurrentUser({email, senha}: INewUser) {

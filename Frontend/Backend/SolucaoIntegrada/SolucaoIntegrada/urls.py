@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 
-from world.views import AtivosOpEtapaServicoView, AtivosOpStatusView, AtivosOpTipoAtivoView, AtivosOpTipoInvestimentoView, FuncoesView, StaffView, UnitiesSistemasView, UnitiesTypesView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
+from world.views import AtivosAdmClasseAtivoView, AtivosAdmStatusView, AtivosAdmTipoAtivoView, AtivosOpEtapaServicoView, AtivosOpStatusView, AtivosOpTipoAtivoView, AtivosOpTipoInvestimentoView, FuncoesView, StaffView, UnitiesSistemasView, UnitiesTypesView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
@@ -51,6 +51,9 @@ urlpatterns = [
     path('ativos-op-status/', AtivosOpStatusView.as_view(), name='ativosOpStatus'),
     path('ativos-op-etapa_servico/', AtivosOpEtapaServicoView.as_view(), name='ativosOpEtapaServico'),
     
+    path('ativos-admin-status/', AtivosAdmStatusView.as_view(), name='ativosAdminStatus'),
+    path('ativos-admin-tipo_ativo/', AtivosAdmTipoAtivoView.as_view(), name='ativosAdminTipoAtivo'),
+    path('ativos-admin-classe_ativo/', AtivosAdmClasseAtivoView.as_view(), name='ativosAdminClasseAtivo'),
 ]
 
 if settings.DEBUG:

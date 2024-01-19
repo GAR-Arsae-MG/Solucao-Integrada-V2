@@ -49,15 +49,18 @@ export type IGetUnity = {
 }
 
 export type IGetAdminAtivo = {
-    tipo_ativo: string
+    tipo_ativo: string,
+    tipo_ativo_display: string,
     nome_ativo: string,
     código_ativo: string,
     classe_ativo: string,
+    classe_ativo_display: string,
     proprietario: string,
     doacao: boolean,
     valor_original: number,
     valor_atual: number,
     status: string,
+    status_display: string,
     data_insercao: Date,
     previsao_substituicao: Date,
     unidade: string,

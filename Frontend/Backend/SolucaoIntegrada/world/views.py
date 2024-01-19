@@ -204,8 +204,8 @@ class AtivosOpEtapaServicoView(View):
 class AtivosAdmStatusView(View):
     def get(self, request):
         try:
-            status = [status[1] for status in Ativos_Administrativos.STATUS]
-            return JsonResponse(list(status), safe=False, status=status.HTTP_200_OK)
+            statusAdmin = [statusAdmin[1] for statusAdmin in Ativos_Administrativos.STATUS]
+            return JsonResponse(list(statusAdmin), safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
         

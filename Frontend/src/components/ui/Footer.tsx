@@ -46,7 +46,7 @@ const Footer = () => {
                                 <h3 className='text-white uppercase'>Sobre</h3>
 
                                 <a href="https://www.arsae.mg.gov.br/sobre/" className='block mt-2 text-sm text-gray-400 hover:underline'>A Arsae</a>
-                                <a href="" className='block mt-2 text-sm text-gray-400 hover:underline'>O Projeto</a>
+                                <a href="/SobreProjeto" className='block mt-2 text-sm text-gray-400 hover:underline'>O Projeto</a>
                             </div>
 
                             <div>
@@ -78,7 +78,7 @@ const Footer = () => {
                 <hr className='h-px my-6 bg-gray-700 border-none' />
 
                 <div>
-                    <p className='text-center text-gray-400'>© Arsae 2024 - Todos os direitos reservados</p>
+                    <p className='text-center text-gray-400'>© Arsae 2009 - {new Date().getFullYear()} - Todos os direitos reservados</p>
                 </div>
             </div>
         </footer>

@@ -18,9 +18,12 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name']
         
 class UnitiesSerializer(serializers.ModelSerializer):
+    tipo_display = serializers.SerializerMethodField()
+    sistemas_display = serializers.SerializerMethodField()
+    
     class Meta:
         model = Unidades
-        fields = '__all__'
+        fields = ['nome','sistemas', 'sistemas_display', 'tipo', 'tipo_display','latitude', 'longitude','Município', 'localidade','Endereco']
         
     def get_tipo_display(self, obj):
         return obj.get_tipo_display()
@@ -29,17 +32,21 @@ class UnitiesSerializer(serializers.ModelSerializer):
         return obj.get_sistemas_display()
 
 class AtivosAdminSerializer(serializers.ModelSerializer):
+    tipo_ativo_display = serializers.SerializerMethodField()
+    classe_ativo_display = serializers.SerializerMethodField()
+    status_display = serializers.SerializerMethodField()
+    
     class Meta:
         model = Ativos_Administrativos
-        fields = '__all__'
+        fields = [f.name for f in Ativos_Administrativos._meta.get_fields()] + ['tipo_ativo_display', 'classe_ativo_display', 'status_display']
         
-    def tipo_ativo_display(self, obj):
+    def get_tipo_ativo_display(self, obj):
         return obj.get_tipo_ativo_display()
     
-    def classe_ativo_display(self, obj):
+    def get_classe_ativo_display(self, obj):
         return obj.get_classe_ativo_display()
     
-    def status_display(self, obj):
+    def get_status_display(self, obj):
         return obj.get_status_display()
 
 class AtivosOperacionaisSerializer(serializers.ModelSerializer):

@@ -9,6 +9,8 @@ import { DeleteIcon } from '../../components/ui/DeleteIcon'
 import { EyeIcon } from '../../components/ui/EyeIcon'
 import { AtivosOpColumns } from '../../constants/Columns'
 import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento } from '../../../django/api'
+import { MapPinIcon, MapPinned } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const ListagemAtivos = () => {
     const [tipoAtivoOp, setTipoAtivoOp] = useState([])
@@ -24,6 +26,8 @@ const ListagemAtivos = () => {
     const INITIAL_TABLE_COLUMNS = ['code', 'campName', 'class', 'actions']
     
     const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_TABLE_COLUMNS))
+
+    const navigate = useNavigate()
     
     const headerOpColumns = useMemo(() => {
         if (visibleColumns === 'all') return AtivosOpColumns
@@ -62,11 +66,29 @@ const ListagemAtivos = () => {
                         </Dropdown>
 
                     </div>
+
+                    <div className='flex gap-3'>
+                        <Tooltip content='Ir para lista de Ativos Administrativos'>
+                            <Button
+                            onClick={() => navigate('/listagemAtivosAdministrativos')}
+                            >
+                                <MapPinIcon />
+                            </Button>
+                        </Tooltip>
+
+                        <Tooltip content='Ir para lista de Unidades'>
+                            <Button
+                            onClick={() => navigate('/listagemUnidades')}
+                            >
+                                <MapPinned />
+                            </Button>
+                        </Tooltip>
+                    </div>
                 </div>
             </div>
         )
 
-    }, [visibleColumns])
+    }, [navigate, visibleColumns])
 
     const {data: ativoOp, isLoading: isAtivoOpLoading, isError: isAtivoOpError, refetch: refetchAtivoOp} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
 

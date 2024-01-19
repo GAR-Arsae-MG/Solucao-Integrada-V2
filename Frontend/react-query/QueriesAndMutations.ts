@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { createUser, getAccounts, getAtivosAdmin, getAtivosOp, getAtivosOpFilters, getCurrentUser, getGroups, getUnits, getUsersFilters, logoutUser, revalidatePassword } from '../django/api'
+import { createUser, getAccounts, getAtivosAdmin, getAtivosAdminFilters, getAtivosOp, getAtivosOpFilters, getCurrentUser, getGroups, getUnits, getUsersFilters, logoutUser, revalidatePassword } from '../django/api'
 import { INewUser } from '../types/types'
 import { QUERY_KEYS } from './QueryKeys'
 
@@ -88,6 +88,18 @@ export const useGetAtivosOpFilters = (filters: any) => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_ATIVOS_OP_FILTERS, filters],
         queryFn: () => getAtivosOpFilters(filters),
+        staleTime: 1000 * 60 * 5,
+        retry: 1,
+        refetchOnWindowFocus: false,
+        enabled: !!filters,
+        retryOnMount: true
+    })
+}
+
+export const useGetAtivosAdminfilters = (filters: any) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_ATIVOS_ADMIN_FILTERS, filters],
+        queryFn: () => getAtivosAdminFilters(filters),
         staleTime: 1000 * 60 * 5,
         retry: 1,
         refetchOnWindowFocus: false,
