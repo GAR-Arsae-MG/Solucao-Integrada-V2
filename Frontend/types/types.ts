@@ -39,13 +39,16 @@ export type IGetUser = {
 //Adicionar os types dos ativos e unidades.
 
 export type IGetUnity = {
+    id: number,
     sistemas: string,
+    sistemas_display: string,
     tipo: string,
+    tipo_display: string,
     latitude: number,
     longitude: number,
-    Municipio?: string,
+    Município?: string,
     localidade?: string,
-    endereco?: string
+    Endereco?: string
 }
 
 export type IGetAdminAtivo = {

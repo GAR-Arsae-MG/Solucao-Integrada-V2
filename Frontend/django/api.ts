@@ -182,6 +182,26 @@ export async function getAdminTipoAtivo() {
     }
 }
 
+export async function getUnitSistemas() {
+    try {
+        const response = await api.get('/unidade-sistemas/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export async function getUnitTipos() {
+    try {
+        const response = await api.get('/unidade-tipos/')
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
 // Rotas de AUTENTICAÇÃO/API
 
 export async function getCurrentUser({email, senha}: INewUser) {

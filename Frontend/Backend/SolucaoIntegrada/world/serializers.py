@@ -23,7 +23,7 @@ class UnitiesSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Unidades
-        fields = ['nome','sistemas', 'sistemas_display', 'tipo', 'tipo_display','latitude', 'longitude','Município', 'localidade','Endereco']
+        fields = ['id','nome','sistemas', 'sistemas_display', 'tipo', 'tipo_display','latitude', 'longitude','Município', 'localidade','Endereco']
         
     def get_tipo_display(self, obj):
         return obj.get_tipo_display()

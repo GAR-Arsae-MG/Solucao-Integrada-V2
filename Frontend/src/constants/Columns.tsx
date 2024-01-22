@@ -42,3 +42,14 @@ export const ativosAdminColumns = [
   {name: 'ADQUIRIDO POR', uid: 'acquiredBy'},
   {name: 'ACTIONS', uid: 'actions'}
 ]
+
+export const UnidadesColumns = [
+  {name: 'SISTEMAS', uid: 'systems'},
+  {name: 'TIPO', uid:'type' },
+  {name:'LATITUDE' , uid: 'latitude'},
+  {name:'LONGITUDE' , uid:'longitude' },
+  {name:'MUNICÍPIO' , uid:'município' },
+  {name: 'LOCALIDADE', uid:'locality' },
+  {name:'ENDERECO' , uid: 'address'},
+  {name:'ACTIONS' , uid:'actions' },
+]

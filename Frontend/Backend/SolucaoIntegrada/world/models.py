@@ -58,6 +58,7 @@ class Usuarios(AbstractBaseUser, PermissionsMixin):
         return funcao_dict.get(self.funcao)
 
 class Unidades(models.Model):
+    id = models.AutoField(primary_key=True)
     SISTEMAS = (
         ('A', 'Administrativo'),
         ('O', 'operacional(Unidades de tratamento)'),
