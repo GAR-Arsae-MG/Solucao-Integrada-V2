@@ -14,6 +14,7 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -137,6 +138,16 @@ class revalidatePassword(APIView):
             return Response({'detail': 'Senha revalidada com sucesso.'}, status=status.HTTP_200_OK)
         except Usuario.DoesNotExist:
             return Response({'detail': 'Email inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class UpdateCurrentUserView(APIView):
+    def put(self, request):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Views para retornar valores específicos dos models.
 

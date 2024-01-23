@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { createUser, getAccounts, getAtivosAdmin, getAtivosAdminFilters, getAtivosOp, getAtivosOpFilters, getCurrentUser, getGroups, getUnitiesFilters, getUnits, getUsersFilters, logoutUser, revalidatePassword } from '../django/api'
-import { INewUser } from '../types/types'
+import { createUser, getAccounts, getAtivosAdmin, getAtivosAdminFilters, getAtivosOp, getAtivosOpFilters, getCurrentUser, getGroups, getUnitiesFilters, getUnits, getUsersFilters, logoutUser, revalidatePassword, updateCurrentUser } from '../django/api'
+import { IGetUser, INewUser } from '../types/types'
 import { QUERY_KEYS } from './QueryKeys'
 
 export const useCreateUserAccount = () => {
     return useMutation({
         mutationFn: (user: INewUser) => createUser(user)
+    })
+}
+
+export const useUpdateUserAccount = () => {
+    return useMutation({
+        mutationFn: (userData: IGetUser) => updateCurrentUser(userData)
     })
 }
 

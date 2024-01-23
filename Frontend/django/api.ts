@@ -90,6 +90,31 @@ export async function getAtivosOp(filters: {tipo_ativo?: string, tipo_investimen
     }
 }
 
+
+//Rotas HTTP dos models
+
+export const updateExternalUser = async (userId: number, userData: IGetUser) => {
+    try {
+        const response = await api.put(`/usuarios/${userId}/`, userData)
+        return response.data as IGetUser
+    } catch (error) {
+        console.error(error)
+        alert('Erro ao atualizar o usuário')
+        throw error
+    }
+}
+
+export const deleteExternalUser = async (userId: number) => {
+    try {
+        const response = await api.delete(`/usuarios/${userId}/`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao deletar o usuário');
+        throw error;
+    }
+}
+
 // Rotas de Parâmetros dos models
 
 export async function getFuncoes() {
@@ -227,6 +252,17 @@ export async function getCurrentUser({email, senha}: INewUser) {
             console.error('Erro', error.message)
         }
         throw error
+    }
+}
+
+export const updateCurrentUser = async (userData: IGetUser) => {
+    try {
+        const response = await api.put(`api/updateCurrentUser/`, userData);
+        return response.data as IGetUser;
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao atualizar o usuário atual');
+        throw error;
     }
 }
     
