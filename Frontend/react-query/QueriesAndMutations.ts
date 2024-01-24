@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { createUser, getAccounts, getAtivosAdmin, getAtivosAdminFilters, getAtivosOp, getAtivosOpFilters, getCurrentUser, getGroups, getUnitiesFilters, getUnits, getUsersFilters, logoutUser, revalidatePassword, updateCurrentUser } from '../django/api'
+import { createUser, deleteExternalUser, getAccounts, getAtivosAdmin, getAtivosAdminFilters, getAtivosOp, getAtivosOpFilters, getCurrentUser, getGroups, getUnitiesFilters, getUnits, getUsersFilters, logoutUser, revalidatePassword, updateCurrentUser, updateExternalUser } from '../django/api'
 import { IGetUser, INewUser } from '../types/types'
 import { QUERY_KEYS } from './QueryKeys'
 
@@ -38,6 +38,20 @@ export const useRevalidatePassword = () => {
             email: string
             senha: string
         }) => revalidatePassword(user)
+    })
+}
+
+//Queries HTTP relacionadas aos models
+
+export const useUpdateExternalUser = () => {
+    return useMutation({
+        mutationFn: ({ userId, userData }: { userId: number; userData: IGetUser }) => updateExternalUser(userId, userData)
+    })
+}
+
+export const useDeleteExternalUser = () => {
+    return useMutation({
+        mutationFn: (userId: number) => deleteExternalUser(userId)
     })
 }
 
