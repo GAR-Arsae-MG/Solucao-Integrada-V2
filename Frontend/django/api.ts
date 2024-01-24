@@ -2,7 +2,7 @@
 import axios from 'axios'
 import { redirect } from 'react-router-dom'
 
-import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, INewUser } from '../types/types'
+import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, INewUser, IUser } from '../types/types'
 
 export const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/',
@@ -255,10 +255,10 @@ export async function getCurrentUser({email, senha}: INewUser) {
     }
 }
 
-export const updateCurrentUser = async (userData: IGetUser) => {
+export const updateCurrentUser = async (userData: IUser) => {
     try {
         const response = await api.put(`api/updateCurrentUser/`, userData);
-        return response.data as IGetUser;
+        return response.data as IUser;
     } catch (error) {
         console.error(error);
         alert('Erro ao atualizar o usuário atual');

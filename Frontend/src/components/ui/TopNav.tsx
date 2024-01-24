@@ -27,9 +27,11 @@ import LogoSGP  from '../../assets/logo_sgp.png'
 import PersonSVG from '../../assets/person-svgrepo-com.svg'
 import { useAuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useSignOutAccount } from "../../../react-query/QueriesAndMutations";
+import { useSignOutAccount, useUpdateUserAccount } from "../../../react-query/QueriesAndMutations";
 import { getFuncoes } from "../../../django/api";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { IUser } from "../../../types/types";
 
 
 function TopNav() {
@@ -37,8 +39,10 @@ function TopNav() {
     const navigate = useNavigate()
     const signOutAccount = useSignOutAccount()
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
+    const {register, handleSubmit } = useForm<IUser>()
 
     const [funcoes, setFuncoes] = useState([])
+
 
     useEffect(() => {
         const fetchFuncoes = async () => {
@@ -48,6 +52,21 @@ function TopNav() {
 
         fetchFuncoes()
     }, [])
+
+    const updateUserAccount = useUpdateUserAccount()
+
+    const handleUpdatedUser = async (data: IUser) => {
+
+        await updateUserAccount.mutate(data)
+
+        setUser({
+            ...user,
+            ...data,
+            id: user!.id || '',
+            funcao_display: user!.funcao_display || '',
+            token: user!.token || '',
+        })
+    }
     
  
 
@@ -180,98 +199,111 @@ function TopNav() {
                                 >
                                     {(onClose) => (
                                         <>
-                                            <ModalHeader
-                                                className="flex flex-col gap-2 items-center justify-center"
-                                            >
-                                                <h1>Editar Informações</h1>
-                                                <p>Edite aqui suas informações de perfil</p>
-                                            </ModalHeader>
+                                            <form
+                                                onSubmit={handleSubmit(handleUpdatedUser)}
+                                            >  
+                                                <ModalHeader
+                                                    className="flex flex-col gap-2 items-center justify-center"
+                                                >
+                                                    <h1>Editar Informações</h1>
+                                                    <p>Edite aqui suas informações de perfil</p>
+                                                </ModalHeader>
 
-                                            <ModalBody>
-                                                <div className="w-full flex justify-start items-center gap-4 py-4">
-                                                    <Avatar 
-                                                        isBordered
-                                                        radius="md"
-                                                        color="success"
-                                                        src={user!.imagem || PersonSVG}
-                                                        size="sm"
-                                                        className="w-52 h-52"
-                                                    />
+                                                <ModalBody>
+                                                    <div className="w-full flex justify-start items-center gap-4 py-4">
+                                                        <Avatar 
+                                                            isBordered
+                                                            radius="md"
+                                                            color="success"
+                                                            src={user!.imagem || PersonSVG}
+                                                            size="sm"
+                                                            className="w-52 h-52"
+                                                        />
 
-                                                    <Input 
-                                                        type="file"
-                                                        id="image"
-                                                        className="mt-2"
-                                                    />
-                                                </div>
-
-                                                <div className="grid gap-4 py-4">
-                                                    <div className="grid grid-cols-2 items-center gap-4">
-                                                        <div className="grid grid-cols-4 items-center gap-4">
-                                                            <Input 
-                                                                label='Nome'
-                                                                type="text"
-                                                                labelPlacement="outside-left"
-                                                                className="col-span-3 text-white"
-                                                            >
-                                                                {user!.nome}
-                                                            </Input>
-                                                        </div>
-
-                                                        <div className="grid grid-cols-4 items-center gap-4">
-                                                            <Input 
-                                                                label='Agência'
-                                                                type="text"
-                                                                labelPlacement="outside-left"
-                                                                className="col-span-3"
-                                                            >
-                                                                {user!.agencia}
-                                                            </Input>
-                                                        </div>
+                                                        <Input
+                                                            {...register('imagem')} 
+                                                            type="file"
+                                                            id="image"
+                                                            className="mt-2"
+                                                            
+                                                        />
                                                     </div>
 
-                                                    <div className="grid grid-cols-2 items-center gap-4">
-                                                        <div className="grid grid-cols-4 items-center gap-4">
-                                                            <Input 
-                                                                label='Email'
-                                                                type="text"
-                                                                labelPlacement="outside-left"
-                                                                className="col-span-3"
-                                                            >
-                                                                {user!.email}
-                                                            </Input>
+                                                    <div className="grid gap-4 py-4">
+                                                        <div className="grid grid-cols-2 items-center gap-4">
+                                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                                <Input
+                                                                    {...register('nome')} 
+                                                                    label='Nome'
+                                                                    type="text"
+                                                                    labelPlacement="outside-left"
+                                                                    className="col-span-3 text-white"
+                                                                    defaultValue={user!.nome}
+                                                                >
+                                                                    {user!.nome}
+                                                                </Input>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                                <Input 
+                                                                    {...register('agencia')}
+                                                                    label='Agência'
+                                                                    type="text"
+                                                                    labelPlacement="outside-left"
+                                                                    className="col-span-3"
+                                                                    defaultValue={user!.agencia}
+                                                                >
+                                                                    {user!.agencia}
+                                                                </Input>
+                                                            </div>
                                                         </div>
 
-                                                        <div className="grid grid-cols-4 items-center gap-4">
-                                                            <Select
-                                                                label='Função'
-                                                                labelPlacement="outside-left"
-                                                                className="col-span-3"
-                                                            >
-                                                                {funcoes.map((funcao, index) => (
-                                                                    <SelectItem key={index}>{funcao}</SelectItem>
-                                                                ))}
-                                                            </Select>
+                                                        <div className="grid grid-cols-2 items-center gap-4">
+                                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                                <Input 
+                                                                    {...register('email')}
+                                                                    label='Email'
+                                                                    type="text"
+                                                                    labelPlacement="outside-left"
+                                                                    className="col-span-3"
+                                                                    defaultValue={user!.email}
+                                                                >
+                                                                    {user!.email}
+                                                                </Input>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                                <Select
+                                                                    {...register('funcao')}
+                                                                    label='Função'
+                                                                    labelPlacement="outside-left"
+                                                                    className="col-span-3"
+                                                                >
+                                                                    {funcoes.map((funcao, index) => (
+                                                                        <SelectItem key={index}>{funcao}</SelectItem>
+                                                                    ))}
+                                                                </Select>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </ModalBody>
+                                                </ModalBody>
 
-                                            <ModalFooter>
-                                                <Button
-                                                    variant="shadow"
-                                                    
-                                                >
-                                                    Fechar e Registrar Mudanças
-                                                </Button>
+                                                <ModalFooter>
+                                                    <Button
+                                                        variant="shadow"
+                                                        type="submit"
+                                                    >
+                                                        Fechar e Registrar Mudanças
+                                                    </Button>
 
-                                                <Button
-                                                    variant="shadow"
-                                                    onClick={onClose}
-                                                >
-                                                    Fechar
-                                                </Button>
-                                            </ModalFooter>
+                                                    <Button
+                                                        variant="shadow"
+                                                        onClick={onClose}
+                                                    >
+                                                        Fechar
+                                                    </Button>
+                                                </ModalFooter>
+                                            </form>  
                                         </>
                                     )}
                                 </ModalContent>

@@ -36,6 +36,14 @@ export type IGetUser = {
     groups?: string,
 }
 
+export type IUpdateUser =  {
+    nome: string,
+    email: string,
+    funcao: string,
+    agencia: string,
+    imagem: string
+}
+
 //Adicionar os types dos ativos e unidades.
 
 export type IGetUnity = {
