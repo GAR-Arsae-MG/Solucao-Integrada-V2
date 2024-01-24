@@ -64,7 +64,7 @@ function TopNav() {
             ...data,
             id: user!.id || '',
             funcao_display: user!.funcao_display || '',
-            token: user!.token || '',
+            token: user!.token
         })
     }
     
@@ -283,6 +283,20 @@ function TopNav() {
                                                                         <SelectItem key={index}>{funcao}</SelectItem>
                                                                     ))}
                                                                 </Select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="grid grid-cols-2 items-center gap-4">
+                                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                                <span>Token de Autenticação:</span>
+
+
+                                                                <p
+                                                                    {...register('token')}
+                                                                    className="text-default-400 underline"
+                                                                >
+                                                                    {user!.token}
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     </div>

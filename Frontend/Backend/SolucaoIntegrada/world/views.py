@@ -138,15 +138,26 @@ class revalidatePassword(APIView):
             return Response({'detail': 'Senha revalidada com sucesso.'}, status=status.HTTP_200_OK)
         except Usuario.DoesNotExist:
             return Response({'detail': 'Email inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+@api_view(['GET', 'PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated]) 
 class UpdateCurrentUserView(APIView):
     def put(self, request):
         user = request.user
-        serializer = UserSerializer(user, data=request.data, partial=True)
+        
+        data = request.data.copy()
+        
+        for field in ['email','funcao', 'imagem']:
+            if field in data and data[field] == getattr(user, field):
+                del data[field]
+        
+        serializer = UserSerializer(user, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
 
 # Views para retornar valores específicos dos models.
