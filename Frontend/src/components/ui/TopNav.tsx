@@ -201,6 +201,7 @@ function TopNav() {
                                         <>
                                             <form
                                                 onSubmit={handleSubmit(handleUpdatedUser)}
+                                                encType="multipart/form-data"
                                             >  
                                                 <ModalHeader
                                                     className="flex flex-col gap-2 items-center justify-center"

@@ -11,6 +11,20 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         
     def get_funcao_display(self, obj):
         return obj.get_funcao_display()
+    
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuarios
+        fields = ['email', 'nome', 'funcao', 'agencia', 'imagem']
+        
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.nome = validated_data.get('nome', instance.nome)
+        instance.funcao = validated_data.get('funcao', instance.funcao)
+        instance.agencia = validated_data.get('agencia', instance.agencia)
+        instance.imagem = validated_data.get('imagem', instance.imagem)
+        instance.save()
+        return instance
         
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

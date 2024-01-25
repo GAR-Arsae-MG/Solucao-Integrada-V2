@@ -39,7 +39,7 @@ urlpatterns = [
     path('api/logout/', logout_view, name='logout'),
     path('api/user-info/', get_user_info, name='get_user_info'),
     path('api/revalidate-password/', revalidatePassword.as_view(), name='revalidate_password'),
-    path('api/updateCurrentUser/', UpdateCurrentUserView, name='update_current_user'),
+    path('api/updateCurrentUser/', UpdateCurrentUserView.as_view(), name='update_current_user'),
     
     path('funcoes/', FuncoesView.as_view(), name='funcoes'),
     path('staff/', StaffView.as_view(), name='staff'),

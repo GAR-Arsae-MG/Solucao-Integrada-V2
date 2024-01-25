@@ -4,7 +4,7 @@ from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.models import Group
-from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer
+from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer, UserUpdateSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
@@ -12,6 +12,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
 from rest_framework.authentication import TokenAuthentication
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
@@ -139,26 +140,29 @@ class revalidatePassword(APIView):
         except Usuario.DoesNotExist:
             return Response({'detail': 'Email inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated]) 
-class UpdateCurrentUserView(APIView):
-    def put(self, request):
-        user = request.user
-        
-        data = request.data.copy()
-        
-        for field in ['email','funcao', 'imagem']:
-            if field in data and data[field] == getattr(user, field):
-                del data[field]
-        
-        serializer = UserSerializer(user, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        print(serializer.errors)
-        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
+class UpdateCurrentUserView(APIView):
+    def get_object(self):
+        return self.request.user
+    
+    def put(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            user = self.get_object()
+            data = request.data.copy()
+            
+            for field in data:
+                if getattr(user, field) == data[field]:
+                    del data[field]
+                    
+            serializer = UserUpdateSerializer(user, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            print('Nenhum usuário autenticado.')
+            return Response({'detail': 'Nenhum usuário autenticado.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 # Views para retornar valores específicos dos models.
 

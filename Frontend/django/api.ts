@@ -6,7 +6,10 @@ import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, INewUser, IUser } fro
 
 export const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/',
+    withCredentials: true
 })
+
+
 
 export async function getAccounts(filters: {funcao?: string, is_staff?: boolean, agencia?: string}) {
     const stringFilters = {
@@ -257,6 +260,7 @@ export async function getCurrentUser({email, senha}: INewUser) {
 
 export const updateCurrentUser = async (userData: IUser) => {
     try {
+
         const response = await api.put(`api/updateCurrentUser/`, userData);
         return response.data as IUser;
     } catch (error) {

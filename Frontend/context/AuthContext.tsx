@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react"
 import { IContextType, IUser } from "../types/types"
 import { useNavigate } from "react-router-dom"
 import { getCurrentUser } from "../django/api"
+import axios from "axios"
 
 
 const INITIAL_USER = {
@@ -32,6 +33,17 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
     const navigate = useNavigate()
 
+    const setAuthTokens = (authToken: string) => {
+        localStorage.setItem('authToken', authToken);
+        axios.defaults.headers.common['Authorization'] = `Token ${authToken}`;
+    };
+
+    const clearAuthTokens = () => {
+        localStorage.removeItem('authToken');
+        delete axios.defaults.headers.common['Authorization'];
+  
+    };
+
      const checkAuthUser = async (email: string, senha: string): Promise<boolean> => {
         setIsLoading(true)
 
@@ -42,6 +54,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 setUser(currentAccount)
                 setIsAuthenticated(true)
                 localStorage.setItem('user', JSON.stringify(currentAccount))
+                setAuthTokens(currentAccount.token)
                 navigate('/')
                 return true
             }
@@ -56,16 +69,20 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user')
-        if (storedUser) {
+        const authToken = localStorage.getItem('authToken');
+        if (storedUser && authToken) {
             setUser(JSON.parse(storedUser))
+            setAuthTokens(authToken)
             setIsAuthenticated(true)
         } else {
+            clearAuthTokens()
             const currentPath = window.location.pathname
 
             if (currentPath !== '/registro' && currentPath !== '/revalidar-senha') {
                 navigate('/login')
             }
         }
+        axios.defaults.withCredentials = true;
     }, [navigate])
 
     const value = {
