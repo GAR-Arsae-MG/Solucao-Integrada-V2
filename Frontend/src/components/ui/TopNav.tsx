@@ -89,8 +89,10 @@ function TopNav() {
                 <NavbarBrand
                     rel="/"
                 >
-                    <img src={LogoSGP} className="h-14 justify-start"/>
-                    <p className="font-bold text-inherit"></p>
+                    <a href="/">
+                        <img src={LogoSGP} className="h-14 justify-start"/>
+                    </a>
+                    
                 </NavbarBrand>
             </div>
            
