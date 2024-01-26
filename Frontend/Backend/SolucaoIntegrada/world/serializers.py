@@ -13,6 +13,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return obj.get_funcao_display()
     
 class UserUpdateSerializer(serializers.ModelSerializer):
+    funcao = serializers.ChoiceField(choices=Usuarios.FUNCAO, required=False, allow_blank=True)
+    imagem = serializers.ImageField(required=False, allow_null=True)
     class Meta:
         model = Usuarios
         fields = ['email', 'nome', 'funcao', 'agencia', 'imagem']

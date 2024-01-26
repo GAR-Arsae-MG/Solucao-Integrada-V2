@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { 
     Navbar, 
     NavbarBrand, 
@@ -31,7 +32,8 @@ import { useSignOutAccount, useUpdateUserAccount } from "../../../react-query/Qu
 import { getFuncoes } from "../../../django/api";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { IUser } from "../../../types/types";
+import { IUpdateUser, IUser } from "../../../types/types";
+import FileUploader from "../shared/FileUploader";
 
 
 function TopNav() {
@@ -39,10 +41,10 @@ function TopNav() {
     const navigate = useNavigate()
     const signOutAccount = useSignOutAccount()
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
-    const {register, handleSubmit } = useForm<IUser>()
+    const {register, handleSubmit} = useForm<IUser>()
 
     const [funcoes, setFuncoes] = useState([])
-
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     useEffect(() => {
         const fetchFuncoes = async () => {
@@ -55,7 +57,11 @@ function TopNav() {
 
     const updateUserAccount = useUpdateUserAccount()
 
-    const handleUpdatedUser = async (data: IUser) => {
+    const handleUpdatedUser = async (data: IUpdateUser) => {
+
+        if (selectedFile) {
+            user!.imagem = URL.createObjectURL(selectedFile)
+        }
 
         await updateUserAccount.mutate(data)
 
@@ -68,7 +74,13 @@ function TopNav() {
         })
     }
     
- 
+    const HandleFileChange = (files: File[]) => {
+        // Verifique se pelo menos um arquivo foi selecionado
+        if (files.length > 0) {
+            // Armazene o primeiro arquivo selecionado no estado do componente
+            setSelectedFile(files[0]);
+        }
+    }
 
     return(
         <Navbar className=" gap-6 bg-slate-900" >
@@ -221,13 +233,7 @@ function TopNav() {
                                                             className="w-52 h-52"
                                                         />
 
-                                                        <Input
-                                                            {...register('imagem')} 
-                                                            type="file"
-                                                            id="image"
-                                                            className="mt-2"
-                                                            
-                                                        />
+                                                        <FileUploader fieldChange={HandleFileChange} mediaUrl={user!.imagem} />
                                                     </div>
 
                                                     <div className="grid gap-4 py-4">

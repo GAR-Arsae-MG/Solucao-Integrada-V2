@@ -2,14 +2,12 @@
 import axios from 'axios'
 import { redirect } from 'react-router-dom'
 
-import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, INewUser, IUser } from '../types/types'
+import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, INewUser, IUpdateUser } from '../types/types'
 
 export const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/',
     withCredentials: true
 })
-
-
 
 export async function getAccounts(filters: {funcao?: string, is_staff?: boolean, agencia?: string}) {
     const stringFilters = {
@@ -258,11 +256,29 @@ export async function getCurrentUser({email, senha}: INewUser) {
     }
 }
 
-export const updateCurrentUser = async (userData: IUser) => {
+export const updateCurrentUser = async (userData: IUpdateUser) => {
     try {
+        const authToken = localStorage.getItem('authToken')
+        const formData = new FormData()
 
-        const response = await api.put(`api/updateCurrentUser/`, userData);
-        return response.data as IUser;
+        for (const key of Object.keys(userData)) {
+            let value: string | undefined | Blob = userData[key as keyof IUpdateUser];
+            if (value !== undefined) {
+                if (key === 'imagem' && typeof value === 'string') {
+                    const response = await fetch(value);
+                    value = await response.blob();
+                }
+                formData.append(key, value);
+            }
+        }
+
+        const response = await api.put(`api/updateCurrentUser/`, formData, {
+            headers: {
+                Authorization: `Token ${authToken}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data as IUpdateUser;
     } catch (error) {
         console.error(error);
         alert('Erro ao atualizar o usuário atual');

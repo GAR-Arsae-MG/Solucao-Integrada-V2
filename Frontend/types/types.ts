@@ -6,7 +6,8 @@ export type IUser = {
     funcao_display: string,
     imagem?: string,
     agencia: string,
-    token: string
+    token: string,
+    [key: string]: string | File | undefined;
 }
 
 export type IContextType = {
@@ -37,11 +38,15 @@ export type IGetUser = {
 }
 
 export type IUpdateUser =  {
+    id: string,
     nome: string,
     email: string,
     funcao: string,
+    funcao_display: string,
+    imagem?: string,
     agencia: string,
-    imagem: string
+    token: string,
+    [key: string]: string | File | undefined;
 }
 
 //Adicionar os types dos ativos e unidades.

@@ -2,7 +2,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { createUser, deleteExternalUser, getAccounts, getAtivosAdmin, getAtivosAdminFilters, getAtivosOp, getAtivosOpFilters, getCurrentUser, getGroups, getUnitiesFilters, getUnits, getUsersFilters, logoutUser, revalidatePassword, updateCurrentUser, updateExternalUser } from '../django/api'
-import { IGetUser, INewUser, IUser } from '../types/types'
+import { IGetUser, INewUser, IUpdateUser } from '../types/types'
 import { QUERY_KEYS } from './QueryKeys'
 
 export const useCreateUserAccount = () => {
@@ -13,7 +13,7 @@ export const useCreateUserAccount = () => {
 
 export const useUpdateUserAccount = () => {
     return useMutation({
-        mutationFn: (userData: IUser) => updateCurrentUser(userData)
+        mutationFn: (userData: IUpdateUser) => updateCurrentUser(userData)
     })
 }
 

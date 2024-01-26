@@ -15,7 +15,7 @@ from rest_framework.authentication import TokenAuthentication
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.generics import UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -141,20 +141,20 @@ class revalidatePassword(APIView):
             return Response({'detail': 'Email inexistente.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UpdateCurrentUserView(APIView):
+class UpdateCurrentUserView(UpdateAPIView):
     def get_object(self):
         return self.request.user
     
     def put(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             user = self.get_object()
             data = request.data.copy()
             
-            for field in data:
+            for field in list(data):
                 if getattr(user, field) == data[field]:
                     del data[field]
                     
-            serializer = UserUpdateSerializer(user, data=data)
+            serializer = UserUpdateSerializer(user, data=data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
