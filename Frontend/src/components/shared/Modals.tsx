@@ -1,10 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from "@nextui-org/react"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { ModalUserEditProps } from "../../../types/types"
-import { updateExternalUser } from "../../../django/api"
+import { getFuncoes, updateExternalUser } from "../../../django/api"
 
 
 const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange, usuario}) => {
+
+    const [funcoes, setFuncoes] = useState([])
+    const [selectedFuncao, setSelectedFuncao] = useState('')
+
+    const handleFuncoesChange = async (event: any) => {
+        setSelectedFuncao(event.target.value)
+    }
+
+    useEffect(() => {
+        const fetchFuncoes = async () => {
+            const funcoes = await getFuncoes()
+            setFuncoes(funcoes)
+        }
+        fetchFuncoes()
+    }, [])
 
   return (
     <>
@@ -48,12 +64,19 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange, usua
                                 <div className="grid items-center gap-4">
                                     <Select
                                         label='Função'
+                                        onChange={handleFuncoesChange}
                                         placeholder="Selecione a função"
                                     >
-                                        <SelectItem>
-
-                                        </SelectItem>
+                                        {funcoes.map((funcao: string) => (
+                                            <SelectItem
+                                                key={funcao.charAt(0).toUpperCase()}
+                                                value={funcao.charAt(0).toUpperCase()}
+                                            >
+                                                {funcao}
+                                            </SelectItem>
+                                        ))}
                                     </Select>
+                                    <p className="text-default-400 text-sm">Função selecionada: {selectedFuncao}</p>
                                 </div>
 
                                 <div className="grid items-center gap-4">
