@@ -94,7 +94,7 @@ export async function getAtivosOp(filters: {tipo_ativo?: string, tipo_investimen
 
 //Rotas HTTP dos models
 
-export const updateExternalUser = async (userId: number, userData: IGetUser) => {
+export const updateExternalUser = async (userId: string, userData: IGetUser | null) => {
     try {
         const response = await api.put(`/usuarios/${userId}/`, userData)
         return response.data as IGetUser

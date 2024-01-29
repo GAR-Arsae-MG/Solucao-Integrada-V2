@@ -112,7 +112,10 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange, usua
                         <div className="flex flex-1 justify-between w-full p-4 gap-4">
                             <Button
                                 color="success"
-                                onPress={updateExternalUser}
+                                onClick={() => updateExternalUser(
+                                        usuario!.id, usuario
+                                    )
+                                }
                             >
                                 Salvar
                             </Button>
