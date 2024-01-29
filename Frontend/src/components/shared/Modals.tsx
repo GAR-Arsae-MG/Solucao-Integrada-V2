@@ -1,9 +1,10 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from "@nextui-org/react"
 import React from "react"
 import { ModalUserEditProps } from "../../../types/types"
+import { updateExternalUser } from "../../../django/api"
 
 
-const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange}) => {
+const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange, usuario}) => {
 
   return (
     <>
@@ -29,6 +30,7 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange}) => 
                                         label='Nome'
                                         placeholder="Escreva o nome"
                                         variant="bordered"
+                                        defaultValue={usuario ? usuario.nome: ''}
                                     />
                                 </div>
 
@@ -37,6 +39,7 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange}) => 
                                         label='Email'
                                         placeholder="Escreva o email"
                                         variant="bordered"
+                                        defaultValue={usuario ? usuario.email: ''}
                                     />
                                 </div>
                             </div>
@@ -58,6 +61,7 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange}) => 
                                         label='Criado por'
                                         placeholder="Escreva por quem este Usuário foi criado"
                                         variant="bordered"
+                                        defaultValue={usuario ? usuario.criado_por : ''}
                                     />
                                 </div>
                             </div>
@@ -68,6 +72,7 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange}) => 
                                         label='Agência'
                                         placeholder="Escreva a agência"
                                         variant="bordered"
+                                        defaultValue={usuario ? usuario.agencia : ''}
                                     />
                                 </div>
                             </div>
@@ -84,6 +89,7 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange}) => 
                         <div className="flex flex-1 justify-between w-full p-4 gap-4">
                             <Button
                                 color="success"
+                                onPress={updateExternalUser}
                             >
                                 Salvar
                             </Button>

@@ -123,4 +123,5 @@ export type ModalUserEditProps = {
     onOpen?: () => void,
     onOpenChange: () => void,
     onClose?: () => void,
+    usuario: IGetUser | null,
 }

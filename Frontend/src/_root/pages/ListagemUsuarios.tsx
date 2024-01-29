@@ -20,6 +20,7 @@ function ListagemUsuarios() {
     const [selectedAgencia, setSelectedAgencia] = useState('')
 
     const [isUserModalOpen, setIsUserModalOpen] = useState(false)
+    const [selectedUser, setSelectedUser] = useState<IGetUser | null>(null)
     
     const { data: users, isLoading: isUserLoading, isError: isUserError, refetch: refetchUsers } = useGetUsers({funcao: selectedFuncao, is_staff: selectedStaff, agencia: selectedAgencia})
     
@@ -128,7 +129,11 @@ function ListagemUsuarios() {
                         <Tooltip content="Editar usuário">
                             <Button 
                                 className="text-lg text-success-800 cursor-pointer active:opacity-50"
-                                onClick={() => setIsUserModalOpen(true)}
+                                onClick={() => {
+                                    setIsUserModalOpen(true)
+                                    setSelectedUser(user)
+                                }}
+                                
                             >
                                 <EditIcon />
                             </Button>
@@ -208,7 +213,7 @@ function ListagemUsuarios() {
             </CardBody>
         </Card>
 
-        <ModalUserEdit isOpen={isUserModalOpen} onOpenChange={() => setIsUserModalOpen(false)} />
+        <ModalUserEdit isOpen={isUserModalOpen} onOpenChange={() => setIsUserModalOpen(false)} usuario={selectedUser} />
 
         <Card className='max-w-full w-[1200px] h-[680px]'>
             <CardBody className='overflow-auto scrollbar-hide'>
