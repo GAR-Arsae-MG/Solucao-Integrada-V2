@@ -115,3 +115,12 @@ export type IGetOpAtivo = {
     tipo_investimento_display: string,
     etapa_do_servico_display: string
 }
+
+// Adicionar os types para os modals.
+
+export type ModalUserEditProps = {
+    isOpen: boolean,
+    onOpen?: () => void,
+    onOpenChange: () => void,
+    onClose?: () => void,
+}

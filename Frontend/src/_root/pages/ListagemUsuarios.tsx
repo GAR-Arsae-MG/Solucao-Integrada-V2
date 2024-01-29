@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Card, CardBody, Input, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -9,6 +10,7 @@ import { columns } from '../../components/data';
 import { DeleteIcon } from '../../components/ui/DeleteIcon';
 import { EditIcon } from '../../components/ui/EditIcon';
 import { EyeIcon } from '../../components/ui/EyeIcon';
+import ModalUserEdit from '../../components/shared/Modals';
 
 function ListagemUsuarios() {
     const [funcoes, setFuncoes] = useState([])
@@ -16,6 +18,8 @@ function ListagemUsuarios() {
     const [staff, setStaff] = useState([])
     const [selectedStaff, setSelectedStaff] = useState(false)
     const [selectedAgencia, setSelectedAgencia] = useState('')
+
+    const [isUserModalOpen, setIsUserModalOpen] = useState(false)
     
     const { data: users, isLoading: isUserLoading, isError: isUserError, refetch: refetchUsers } = useGetUsers({funcao: selectedFuncao, is_staff: selectedStaff, agencia: selectedAgencia})
     
@@ -122,9 +126,12 @@ function ListagemUsuarios() {
                         </Tooltip>
 
                         <Tooltip content="Editar usuário">
-                            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                            <Button 
+                                className="text-lg text-success-800 cursor-pointer active:opacity-50"
+                                onClick={() => setIsUserModalOpen(true)}
+                            >
                                 <EditIcon />
-                            </span>
+                            </Button>
                         </Tooltip>
 
                         <Tooltip color="danger" content="Deletar Usuário">
@@ -201,9 +208,12 @@ function ListagemUsuarios() {
             </CardBody>
         </Card>
 
+        <ModalUserEdit isOpen={isUserModalOpen} onOpenChange={() => setIsUserModalOpen(false)} />
 
         <Card className='max-w-full w-[1200px] h-[680px]'>
             <CardBody className='overflow-auto scrollbar-hide'>
+
+
                 {isUserLoading ? (
                     <>
                         <Spinner />
