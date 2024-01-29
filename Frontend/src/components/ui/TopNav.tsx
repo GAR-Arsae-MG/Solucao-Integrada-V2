@@ -288,8 +288,8 @@ function TopNav() {
                                                                     labelPlacement="outside-left"
                                                                     className="col-span-3"
                                                                 >
-                                                                    {funcoes.map((funcao, index) => (
-                                                                        <SelectItem key={index}>{funcao}</SelectItem>
+                                                                    {funcoes.map((funcao: string) => (
+                                                                        <SelectItem key={funcao.charAt(0).toUpperCase()}>{funcao}</SelectItem>
                                                                     ))}
                                                                 </Select>
                                                             </div>
