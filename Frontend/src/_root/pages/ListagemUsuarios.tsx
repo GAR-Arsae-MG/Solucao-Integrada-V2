@@ -3,13 +3,12 @@
 import { Button, Card, CardBody, Input, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from '@nextui-org/react';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { getFuncoes, getStaff } from '../../../django/api';
+import { deleteExternalUser, getFuncoes, getStaff } from '../../../django/api';
 import { useGetUsers, useGetUsersFilters } from '../../../react-query/QueriesAndMutations';
 import { IGetUser } from '../../../types/types';
 import { columns } from '../../components/data';
 import { DeleteIcon } from '../../components/ui/DeleteIcon';
 import { EditIcon } from '../../components/ui/EditIcon';
-import { EyeIcon } from '../../components/ui/EyeIcon';
 import ModalUserEdit from '../../components/shared/Modals';
 
 function ListagemUsuarios() {
@@ -120,11 +119,6 @@ function ListagemUsuarios() {
             case 'actions':
                 return(
                     <div className='relative flex items-center gap-2'>
-                        <Tooltip content='Detalhes'>
-                            <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
-                                <EyeIcon />
-                            </span>
-                        </Tooltip>
 
                         <Tooltip content="Editar usuário">
                             <Button 
@@ -140,9 +134,12 @@ function ListagemUsuarios() {
                         </Tooltip>
 
                         <Tooltip color="danger" content="Deletar Usuário">
-                            <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                            <Button 
+                                className="text-lg text-danger cursor-pointer active:opacity-50"
+                                onClick={() => deleteExternalUser(user!.id)}
+                            >
                                 <DeleteIcon />
-                            </span>
+                            </Button>
                         </Tooltip>
                     </div>
                 );

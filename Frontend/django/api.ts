@@ -96,16 +96,16 @@ export async function getAtivosOp(filters: {tipo_ativo?: string, tipo_investimen
 
 export const updateExternalUser = async (userId: string, userData: IGetUser | null) => {
     try {
-        const response = await api.put(`/usuarios/${userId}/`, userData)
+        const response = await api.patch(`/usuarios/${userId}/`, userData)
         return response.data as IGetUser
     } catch (error) {
         console.error(error)
         alert('Erro ao atualizar o usuário')
-        throw error
+        throw error as Error
     }
 }
 
-export const deleteExternalUser = async (userId: number) => {
+export const deleteExternalUser = async (userId: string) => {
     try {
         const response = await api.delete(`/usuarios/${userId}/`);
         return response.data;

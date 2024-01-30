@@ -84,6 +84,7 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange, usua
                                                     label='Função'
                                                     onChange={handleFuncoesChange}
                                                     placeholder="Selecione a função"
+                                                    defaultSelectedKeys={usuario!.funcao}
                                                 >
                                                     {funcoes.map((funcao: string) => (
                                                         <SelectItem
