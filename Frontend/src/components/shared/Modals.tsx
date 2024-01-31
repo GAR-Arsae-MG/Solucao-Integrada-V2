@@ -435,21 +435,48 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
                                     <div className="grid gap-4 py-4 text-center items-center justify-center">
                                         <div className="grid grid-cols-2 items-center gap-4">
                                             <div className="grid items-center gap-4">
-
+                                                <Input 
+                                                    {...register("nome_ativo")}
+                                                    label="Nome do ativo"
+                                                    placeholder="Escreva o nome do ativo"
+                                                    variant="bordered"
+                                                    defaultValue={ativo ? ativo.nome_ativo : ''}
+                                                />
                                             </div>
 
                                             <div className="grid items-center gap-4">
-
+                                                <Select
+                                                    {...register("tipo_ativo")}
+                                                    label="Tipo de ativo"
+                                                    placeholder="Selecione o tipo de ativo"
+                                                    onChange={handleAdminTipoChange}
+                                                    defaultSelectedKeys={ativo ? ativo.tipo_ativo : ''}
+                                                >
+                                                    {tipoAtivoAdmin.map((tipoAtivo: string) => (
+                                                        <SelectItem
+                                                            key={tipoAtivo.charAt(0).toUpperCase()}
+                                                            value={tipoAtivo.charAt(0).toUpperCase()}
+                                                        >
+                                                            {tipoAtivo}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-2 items-center gap-4">
                                             <div className="grid items-center gap-4">
-
+                                                <Input 
+                                                    {...register("código_ativo")}
+                                                    label="Código do ativo"
+                                                    placeholder="Escreva o código do ativo"
+                                                    variant="bordered"
+                                                    defaultValue={ativo ? ativo.código_ativo : ''}
+                                                />
                                             </div>
 
                                             <div className="grid items-center gap-4">
-
+                                                
                                             </div>
                                         </div>
 
