@@ -52,7 +52,8 @@ export type IUpdateUser =  {
 //Adicionar os types dos ativos e unidades.
 
 export type IGetUnity = {
-    id: number,
+    nome: string,
+    id: string,
     sistemas: string,
     sistemas_display: string,
     tipo: string,
@@ -124,4 +125,28 @@ export type ModalUserEditProps = {
     onOpenChange: () => void,
     onClose?: () => void,
     usuario: IGetUser | null,
+}
+
+export type ModalAtivosAdminEditProps = {
+    isOpen: boolean,
+    onOpen?: () => void,
+    onOpenChange: () => void,
+    onClose?: () => void,
+    ativo: IGetAdminAtivo | null,
+}
+
+export type ModalAtivosOpEditProps = {
+    isOpen: boolean,
+    onOpen?: () => void,
+    onOpenChange: () => void,
+    onClose?: () => void,
+    ativo: IGetOpAtivo | null,
+}
+
+export type ModalUnitiesEditProps = {
+    isOpen: boolean,
+    onOpen?: () => void,
+    onOpenChange: () => void,
+    onClose?: () => void,
+    unidade: IGetUnity | null,
 }

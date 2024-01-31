@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from "@nextui-org/react"
 import React, { useEffect, useState } from "react"
-import { IGetUser, ModalUserEditProps } from "../../../types/types"
-import { getFuncoes, updateExternalUser } from "../../../django/api"
+import { IGetUnity, IGetUser, ModalAtivosAdminEditProps, ModalUnitiesEditProps, ModalUserEditProps } from "../../../types/types"
+import { getFuncoes, getUnitSistemas, getUnitTipos, updateExternalUnity, updateExternalUser } from "../../../django/api"
 import { useForm } from "react-hook-form"
 
 
@@ -158,3 +158,208 @@ const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange, usua
 }
 
 export default ModalUserEdit
+
+export const ModalUnitiesEdit: React.FC<ModalUnitiesEditProps> = ({isOpen, onOpenChange, unidade}) => {
+    const { register, handleSubmit } = useForm<IGetUnity>()
+
+    const [sistemas, setSistemas] = useState([])
+    const [selectedSistema, setSelectedSistema] = useState('')
+
+    const [tipo, setTipo] = useState([])
+    const [selectedTipo, setSelectedTipo] = useState('')
+
+    useEffect(() => {
+
+        const fetchUnitySistema = async () => {
+          const unitySistema = await getUnitSistemas()
+          setSistemas(unitySistema)
+        }
+        fetchUnitySistema()
+    
+        const fetchUnityTipo = async () => {
+          const unityTipo = await getUnitTipos()
+          setTipo(unityTipo)
+        }
+        fetchUnityTipo()
+    }, [])
+
+    const handleSistemasChange = async (event: any) => {
+    setSelectedSistema(event.target.value)
+    }
+
+    const handleTipoChange = (event: any) => {
+    setSelectedTipo(event.target.value)
+    }
+
+    return (
+        <>
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                placement="top-center"
+                backdrop="blur"
+            >
+                <ModalContent className="sm:max-w-[600px] flex flex-col items-start">
+                    {(onClose) => (
+                        <>
+                            <form 
+                                encType="multipart/form-data"
+                                onSubmit={handleSubmit((formData: IGetUnity) => {
+                                    updateExternalUnity(unidade!.id, formData)
+                                    .then(() => {
+                                        onClose
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    })
+                                })}
+                            >
+                                <ModalHeader className="w-full gap-2 items-center justify-center">
+                                    <h1 className="text-3xl text-center text-teal-900 font-bold">Editar Unidade</h1>
+                                </ModalHeader>
+
+                                <ModalBody>
+                                    <div className="grid gap-4 py-4 text-center items-center justify-center">
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("nome")}
+                                                    autoFocus
+                                                    label="Nome"
+                                                    placeholder="Escreva o nome da Unidade"
+                                                    variant="bordered"
+                                                    defaultValue={unidade ? unidade.nome : ''}
+                                                />
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+                                                <Select
+                                                    {...register("sistemas")}
+                                                    label='Sistema'
+                                                    onChange={handleSistemasChange}
+                                                    placeholder="Selecione o sistema"
+                                                    defaultSelectedKeys={unidade!.sistemas}
+                                                >
+                                                    {sistemas.map((sistema: string) => (
+                                                        <SelectItem
+                                                            key={sistema.charAt(0).toUpperCase()}
+                                                            value={sistema.charAt(0).toUpperCase()}
+                                                        >
+                                                            {sistema}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                                <p className="text-sm text-default-400">Sistema selecionado: {selectedSistema}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+                                                <Select
+                                                    {...register("tipo")}
+                                                    label='Tipo'
+                                                    onChange={handleTipoChange}
+                                                    placeholder="Selecione o tipo"
+                                                    defaultSelectedKeys={unidade!.tipo}
+                                                >
+                                                    {tipo.map((tipo: string) => (
+                                                        <SelectItem
+                                                            key={tipo.charAt(0).toUpperCase()}
+                                                            value={tipo.charAt(0).toUpperCase()}
+                                                        >
+                                                            {tipo}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                                <p className="text-sm text-default-400">Tipo selecionado: {selectedTipo}</p>
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+                                                <Input
+                                                    {...register("latitude")} 
+                                                    label="Latitude"
+                                                    placeholder="Escreva a latitude"
+                                                    type="number"
+                                                    variant="bordered"
+                                                    defaultValue={unidade ? unidade.latitude.toString() : ''}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+                                                <Input
+                                                    {...register("longitude")} 
+                                                    label="Longitude"
+                                                    placeholder="Escreva a longitude"
+                                                    type="number"
+                                                    variant="bordered"
+                                                    defaultValue={unidade ? unidade.longitude.toString() : ''}
+                                                />
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("Município")}
+                                                    label="Município"
+                                                    placeholder="Escreva o município"
+                                                    type="text"
+                                                    variant="bordered"
+                                                    defaultValue={unidade ? unidade.Município : ''}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("localidade")}
+                                                    label="Localidade"
+                                                    placeholder="Escreva a localidade"
+                                                    variant="bordered"
+                                                    defaultValue={unidade ? unidade.localidade : ''} 
+                                                />
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("Endereco")}
+                                                    label="Endereço"
+                                                    placeholder="Escreva o endereço"
+                                                    variant="bordered"
+                                                    defaultValue={unidade ? unidade.Endereco : ''}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ModalBody>
+
+                                <ModalFooter className="w-full gap-4 p-4 items-center justify-center text-center">
+                                    <div className="flex flex-1 justify-between w-full p-4 gap-4">
+                                        <Button
+                                            color="success"
+                                            type="submit"
+                                        >
+                                            Salvar
+                                        </Button>
+
+                                        <Button
+                                            color="danger"
+                                            onClick={onClose}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                    </div>
+                                </ModalFooter>
+                            </form>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+        </>
+    )
+}
+
+export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpen, onOpenChange, ativo}) => {
+    
+}

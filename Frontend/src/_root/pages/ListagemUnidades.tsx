@@ -2,14 +2,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useGetUnits, useGetUnitsFilters } from "../../../react-query/QueriesAndMutations"
-import { getUnitSistemas, getUnitTipos } from "../../../django/api"
+import { deleteExternalUnity, getUnitSistemas, getUnitTipos } from "../../../django/api"
 import { IGetUnity } from "../../../types/types"
 import { Button, Card, CardBody, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip } from "@nextui-org/react"
-import { EyeIcon } from "../../components/ui/EyeIcon"
 import { EditIcon } from "../../components/ui/EditIcon"
 import { DeleteIcon } from "../../components/ui/DeleteIcon"
 import { MapPinIcon, MapPinned } from "lucide-react"
 import { UnidadesColumns } from "../../constants/Columns"
+import { ModalUnitiesEdit } from "../../components/shared/Modals"
 
 
 const ListagemUnidades = () => {
@@ -18,6 +18,9 @@ const ListagemUnidades = () => {
 
   const [tipo, setTipo] = useState([])
   const [selectedTipo, setSelectedTipo] = useState('')
+
+  const [isUnityModalOpen, setIsUnityModalOpen] = useState(false)
+  const [selectedUnity, setSelectedUnity] = useState<IGetUnity | null>(null)
 
   const navigate = useNavigate()
 
@@ -93,6 +96,13 @@ const ListagemUnidades = () => {
     }
 
     switch (columnKey) {
+      case 'name':
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-black text-sm capitalize">{unidade.nome}</p>
+          </div>
+        )
+
       case 'systems':
         return (
           <div className="flex flex-col">
@@ -145,22 +155,26 @@ const ListagemUnidades = () => {
       case 'actions':
         return (
           <div className='relative flex items-center text-center justify-center gap-2'>
-            <Tooltip content='Detalhes'>
-              <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
-                <EyeIcon /> 
-              </span>
-            </Tooltip>
 
             <Tooltip content='Editar Ativo'>
-              <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
+              <Button 
+                className='text-lg text-default-400 cursor-pointer active:opacity-50'
+                onClick={() => {
+                  setIsUnityModalOpen(true)
+                  setSelectedUnity(unidade)
+                }}
+              >
                 <EditIcon />
-              </span>
+              </Button>
             </Tooltip>
 
             <Tooltip color='danger' content='Excluir Ativo'>
-              <span className='text-lg text-red-600 cursor-pointer active:opacity-50'>
+              <Button 
+                className='text-lg text-red-600 cursor-pointer active:opacity-50'
+                onClick={() => {deleteExternalUnity(unidade.id)}}
+              >
                 <DeleteIcon />
-              </span>
+              </Button>
             </Tooltip>
           </div>
         )
@@ -224,6 +238,8 @@ const ListagemUnidades = () => {
           </div>
         </CardBody>
       </Card>
+
+      <ModalUnitiesEdit isOpen={isUnityModalOpen} onOpenChange={() => setIsUnityModalOpen(false)} unidade={selectedUnity}/>
 
       <Card className="max-w-full w-[1200px] h-[750px]">
         <CardBody className="overflow-auto scrollbar-hide">

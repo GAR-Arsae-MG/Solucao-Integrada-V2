@@ -44,6 +44,7 @@ export const ativosAdminColumns = [
 ]
 
 export const UnidadesColumns = [
+  {name: 'NOME', uid: 'name'},
   {name: 'SISTEMAS', uid: 'systems'},
   {name: 'TIPO', uid:'type' },
   {name:'LATITUDE' , uid: 'latitude'},

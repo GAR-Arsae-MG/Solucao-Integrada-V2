@@ -116,6 +116,27 @@ export const deleteExternalUser = async (userId: string) => {
     }
 }
 
+export const updateExternalUnity = async (unityId: string, unityData: IGetUnity | null) => {
+    try {
+        const response = await api.patch(`/unidades/${unityId}/`, unityData)
+        return response.data as IGetUnity
+    } catch (error) {
+        console.error(error)
+        alert(`Erro ao atualizar a unidade, devido ao erro ${error as Error}`)
+    }
+}
+
+export const deleteExternalUnity = async (unityId: string) => {
+    try {
+        const response = await api.delete(`/unidades/${unityId}/`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao deletar a unidade');
+        throw error;
+    }
+}
+
 // Rotas de Parâmetros dos models
 
 export async function getFuncoes() {
