@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from "@nextui-org/react"
 import React, { useEffect, useState } from "react"
-import { IGetUnity, IGetUser, ModalAtivosAdminEditProps, ModalUnitiesEditProps, ModalUserEditProps } from "../../../types/types"
-import { getFuncoes, getUnitSistemas, getUnitTipos, updateExternalUnity, updateExternalUser } from "../../../django/api"
+import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, ModalAtivosAdminEditProps, ModalAtivosOpEditProps, ModalUnitiesEditProps, ModalUserEditProps } from "../../../types/types"
+import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo, getFuncoes, getUnitSistemas, getUnitTipos, updateExternalUnity, updateExternalUser } from "../../../django/api"
 import { useForm } from "react-hook-form"
 
 
@@ -361,5 +361,52 @@ export const ModalUnitiesEdit: React.FC<ModalUnitiesEditProps> = ({isOpen, onOpe
 }
 
 export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpen, onOpenChange, ativo}) => {
+    const { register, handleSubmit } = useForm<IGetAdminAtivo>()
+
+    const [tipoAtivoAdmin, setTipoAtivoAdmin] = useState([])
+    const [selectedTipoAtivoAdmin, setSelectedTipoAtivoAdmin] = useState('')
+
+    const [classeAtivoAdmin, setClasseAtivoAdmin] = useState([])
+    const [selectedClasseAtivoAdmin, setSelectedClasseAtivoAdmin] = useState('')
+
+    const [statusAtivoAdmin, setStatusAtivoAdmin] = useState([])
+    const [selectedStatusAtivoAdmin, setSelectedStatusAtivoAdmin] = useState('')
+
+    useEffect(() => {
+        const fetchAdminStatus = async () => {
+          const adminStatus = await getAdminStatus()
+          setStatusAtivoAdmin(adminStatus)
+        }
+        fetchAdminStatus()
     
+        const fetchAdminClasseAtivo = async () => {
+          const adminClasseAtivo = await getAdminClasseAtivo()
+          setClasseAtivoAdmin(adminClasseAtivo)
+        }
+        fetchAdminClasseAtivo()
+    
+        const fetchAdminTipoAtivo = async () => {
+          const adminTipoAtivo = await getAdminTipoAtivo()
+          setTipoAtivoAdmin(adminTipoAtivo)
+        }
+        fetchAdminTipoAtivo()
+    }, [])
+
+    const handleAdminStatusChange = async (event: any) => {
+        setSelectedStatusAtivoAdmin(event.target.value)
+      }
+    
+      const handleAdminClasseChange = async (event: any) => {
+        setSelectedClasseAtivoAdmin(event.target.value)
+      }
+    
+      const handleAdminTipoChange = async (event: any) => {
+        setSelectedTipoAtivoAdmin(event.target.value)
+      }
+}
+
+export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onOpenChange, ativo}) => {
+    const { register, handleSubmit } = useForm<IGetOpAtivo>()
+
+
 }
