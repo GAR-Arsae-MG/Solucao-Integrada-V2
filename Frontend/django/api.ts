@@ -137,6 +137,26 @@ export const deleteExternalUnity = async (unityId: string) => {
     }
 }
 
+export const updateExternalAtivoAdmin = async (ativoId: string, ativoData: IGetAdminAtivo | null) => {
+    try {
+        const response = await api.patch(`/ativos-administrativos/${ativoId}/`, ativoData)
+        return response.data as IGetAdminAtivo
+    } catch (error) {
+        console.error(error)
+        alert(`Erro ao atualizar o ativo, devido ao erro ${error as Error}`)
+    }
+}
+
+export const deleteExternalAtivoAdmin = async (ativoId: string) => {
+    try {
+        const response = await api.delete(`/ativos-administrativos/${ativoId}/`);
+        return response.data;
+    } catch (error) {
+        alert('Erro ao deletar ativo')
+        throw error as Error
+    }
+}
+
 // Rotas de Parâmetros dos models
 
 export async function getFuncoes() {

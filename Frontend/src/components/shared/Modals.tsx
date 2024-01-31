@@ -2,7 +2,7 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from "@nextui-org/react"
 import React, { useEffect, useState } from "react"
 import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, ModalAtivosAdminEditProps, ModalAtivosOpEditProps, ModalUnitiesEditProps, ModalUserEditProps } from "../../../types/types"
-import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo, getFuncoes, getUnitSistemas, getUnitTipos, updateExternalUnity, updateExternalUser } from "../../../django/api"
+import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo, getFuncoes, getUnitSistemas, getUnitTipos, updateExternalAtivoAdmin, updateExternalUnity, updateExternalUser } from "../../../django/api"
 import { useForm } from "react-hook-form"
 
 
@@ -394,15 +394,41 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
 
     const handleAdminStatusChange = async (event: any) => {
         setSelectedStatusAtivoAdmin(event.target.value)
-      }
+    }
     
-      const handleAdminClasseChange = async (event: any) => {
+    const handleAdminClasseChange = async (event: any) => {
         setSelectedClasseAtivoAdmin(event.target.value)
-      }
+    }
     
-      const handleAdminTipoChange = async (event: any) => {
+    const handleAdminTipoChange = async (event: any) => {
         setSelectedTipoAtivoAdmin(event.target.value)
-      }
+    }
+
+    return (
+        <>
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                placement="top-center"
+                backdrop="blur"
+            >
+                <ModalContent className="sm:max-w-[600px] flex flex-col items-start">
+                    {(onClose) => (
+                        <>
+                            <form 
+                                encType="multipart/form-data"
+                                onSubmit={handleSubmit((formData: IGetAdminAtivo) => {
+                                    updateExternalAtivoAdmin()
+                                })}
+                            >
+
+                            </form>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+        </>
+    )
 }
 
 export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onOpenChange, ativo}) => {

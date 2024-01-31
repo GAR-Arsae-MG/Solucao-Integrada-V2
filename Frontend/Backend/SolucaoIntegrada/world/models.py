@@ -91,6 +91,7 @@ class Unidades(models.Model):
         return sistemas_dict.get(self.sistemas)
 
 class Ativos_Operacionais(models.Model):
+    id = models.AutoField(primary_key=True)
     STATUS = (
        ('P/A', 'Projeto em andamento'),
        ('P/P', 'Projeto paralisado'),
@@ -173,6 +174,7 @@ class Ativos_Operacionais(models.Model):
         return etapa_do_servico_dict.get(self.etapa_do_servico)
  
 class Ativos_Administrativos(models.Model):
+    id = models.AutoField(primary_key=True)
     TIPO_ATIVO = (
         ('A', 'Automóvel'),
         ('M', 'Móvel'),
