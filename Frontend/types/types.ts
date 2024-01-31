@@ -66,6 +66,7 @@ export type IGetUnity = {
 }
 
 export type IGetAdminAtivo = {
+    id: string,
     tipo_ativo: string,
     tipo_ativo_display: string,
     nome_ativo: string,

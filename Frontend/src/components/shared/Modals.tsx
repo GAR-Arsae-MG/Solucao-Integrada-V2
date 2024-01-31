@@ -207,7 +207,7 @@ export const ModalUnitiesEdit: React.FC<ModalUnitiesEditProps> = ({isOpen, onOpe
                                 onSubmit={handleSubmit((formData: IGetUnity) => {
                                     updateExternalUnity(unidade!.id, formData)
                                     .then(() => {
-                                        onClose
+                                        onClose()
                                     })
                                     .catch(error => {
                                         console.log(error)
@@ -418,10 +418,100 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
                             <form 
                                 encType="multipart/form-data"
                                 onSubmit={handleSubmit((formData: IGetAdminAtivo) => {
-                                    updateExternalAtivoAdmin()
+                                    updateExternalAtivoAdmin(ativo!.id, formData)
+                                    .then(() => {
+                                        onClose()
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    })
                                 })}
                             >
+                                <ModalHeader className="w-full gap-2 items-center justify-center">
+                                    <h1 className="text-3xl text-center text-teal-900 font-bold">Editar Ativos Administrativos</h1>
+                                </ModalHeader>
 
+                                <ModalBody>
+                                    <div className="grid gap-4 py-4 text-center items-center justify-center">
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ModalBody>
+
+                                <ModalFooter className="w-full gap-4 p-4 items-center justify-center text-center">
+                                    <div className="flex flex-1 justify-between w-full p-4 gap-4">
+                                        <Button
+                                            color="success"
+                                            type="submit"
+                                        >
+                                            Salvar
+                                        </Button>
+
+                                        <Button
+                                            color="danger"
+                                            onClick={onClose}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                    </div>
+                                </ModalFooter>
                             </form>
                         </>
                     )}
