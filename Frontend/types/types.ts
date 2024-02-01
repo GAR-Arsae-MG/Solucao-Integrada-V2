@@ -87,6 +87,7 @@ export type IGetAdminAtivo = {
 }
 
 export type IGetOpAtivo = {
+    id: string,
     nome_de_campo: string,
     tipo_ativo: string,
     classe: string,

@@ -2,7 +2,7 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from "@nextui-org/react"
 import React, { useEffect, useState } from "react"
 import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, ModalAtivosAdminEditProps, ModalAtivosOpEditProps, ModalUnitiesEditProps, ModalUserEditProps } from "../../../types/types"
-import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo, getFuncoes, getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoAdmin, updateExternalUnity, updateExternalUser } from "../../../django/api"
+import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo, getFuncoes, getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoAdmin, updateExternalAtivoOp, updateExternalUnity, updateExternalUser } from "../../../django/api"
 import { useForm } from "react-hook-form"
 import CheckboxDonation from "../ui/Checkbox"
 
@@ -704,5 +704,204 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
     const handleOpTipoInvestimentoChange = async (event: any) => {
         setSelectedTipoInvestimentoOp(event.target.value)
     }
+
+    return (
+        <>
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                placement="top-center"
+                backdrop="blur"
+            >
+                <ModalContent
+                    className="sm:max-w-[600px] flex flex-col items-start"
+                >
+                    {(onClose) => (
+                        <>
+                            <form 
+                                encType="multipart/form-data"
+                                onSubmit={handleSubmit((formData: IGetOpAtivo) => {
+                                    updateExternalAtivoOp(ativo!.id, formData)
+                                    .then(() => {
+                                        onClose()
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    })
+                                })}
+                            >
+                                <ModalHeader
+                                    className="w-full gap-2 items-center justify-center"
+                                >
+                                    <h1 className="text-3xl text-center text-teal-900 font-bold">Editar Ativos Operacionais</h1>
+                                </ModalHeader>
+
+                                <ModalBody>
+                                    <div className="grid gap-4 py-4 text-center items-center justify-center">
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("nome_de_campo")}
+                                                    label="Nome do Ativo"
+                                                    placeholder="Escreva o nome do Ativo"
+                                                    variant="bordered"
+                                                    defaultValue={ativo ? ativo.nome_de_campo : ''}
+                                                />
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+                                                <Select
+                                                    {...register("tipo_ativo")}
+                                                    label="Tipo de Ativo"
+                                                    placeholder="Selecione o Tipo de Ativo"
+                                                    onChange={handleOpTipoAtivoChange}
+                                                    defaultSelectedKeys={ativo ? ativo.tipo_ativo : ''}
+                                                >
+                                                    {tipoAtivoOp.map((tipoAtivoOp: string) => (
+                                                        <SelectItem
+                                                            key={tipoAtivoOp.charAt(0).toUpperCase()}
+                                                            value={tipoAtivoOp.charAt(0).toUpperCase()}
+                                                        >
+                                                            {tipoAtivoOp}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ModalBody>
+
+                                <ModalFooter
+                                
+                                >
+
+                                </ModalFooter>
+                            </form>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+        </>
+    )
 }
 
