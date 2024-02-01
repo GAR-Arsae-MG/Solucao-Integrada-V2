@@ -2,7 +2,7 @@
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from "@nextui-org/react"
 import React, { useEffect, useState } from "react"
 import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, ModalAtivosAdminEditProps, ModalAtivosOpEditProps, ModalUnitiesEditProps, ModalUserEditProps } from "../../../types/types"
-import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo, getFuncoes, getUnitSistemas, getUnitTipos, updateExternalAtivoAdmin, updateExternalUnity, updateExternalUser } from "../../../django/api"
+import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo, getFuncoes, getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoAdmin, updateExternalUnity, updateExternalUser } from "../../../django/api"
 import { useForm } from "react-hook-form"
 import CheckboxDonation from "../ui/Checkbox"
 
@@ -651,5 +651,58 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
 export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onOpenChange, ativo}) => {
     const { register, handleSubmit } = useForm<IGetOpAtivo>()
 
+    const [tipoAtivoOp, setTipoAtivoOp] = useState([])
+    const [selectedTipoAtivoOp, setSelectedTipoAtivoOp] = useState('')
 
+    const [tipoInvestimentoOp, setTipoInvestimentoOp] = useState([])
+    const [selectedTipoInvestimentoOp, setSelectedTipoInvestimentoOp] = useState('')
+
+    const [statusOp, setStatusOp] = useState([])
+    const [selectedStatusOp, setSelectedStatusOp] = useState('')
+
+    const [etapaServicoOp, setEtapaServicoOp] = useState([])
+    const [selectedEtapaServicoOp, setSelectedEtapaServicoOp] = useState('')
+
+    useEffect(() => {
+        const fetchOpStatus = async () => {
+            const opStatus = await getOpStatus()
+            setStatusOp(opStatus)
+        }
+        fetchOpStatus()
+
+        const fetchOpEtapaServico = async () => {
+            const opEtapaServico = await getOpEtapaServico()
+            setEtapaServicoOp(opEtapaServico)
+        }
+        fetchOpEtapaServico()
+
+        const fetchOpTipoAtivo = async () => {
+            const opTipoAtivo = await getOpTipoAtivo()
+            setTipoAtivoOp(opTipoAtivo)
+        }
+        fetchOpTipoAtivo()
+
+        const fetchOpTipoInvestimento = async () => {
+            const opTipoInvestimento = await getOpTipoInvestimento()
+            setTipoInvestimentoOp(opTipoInvestimento)
+        }
+        fetchOpTipoInvestimento()
+    }, [])
+
+    const handleOpStatusChange = async (event: any) => {
+        setSelectedStatusOp(event.target.value)
+    }
+
+    const handleOpEtapaServicoChange = async (event: any) => {
+        setSelectedEtapaServicoOp(event.target.value)
+    }
+
+    const handleOpTipoAtivoChange = async (event: any) => {
+        setSelectedTipoAtivoOp(event.target.value)
+    }
+
+    const handleOpTipoInvestimentoChange = async (event: any) => {
+        setSelectedTipoInvestimentoOp(event.target.value)
+    }
 }
+
