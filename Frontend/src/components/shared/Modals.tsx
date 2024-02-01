@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, ModalAtivosAdminEditProps, ModalAtivosOpEditProps, ModalUnitiesEditProps, ModalUserEditProps } from "../../../types/types"
 import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo, getFuncoes, getUnitSistemas, getUnitTipos, updateExternalAtivoAdmin, updateExternalUnity, updateExternalUser } from "../../../django/api"
 import { useForm } from "react-hook-form"
+import CheckboxDonation from "../ui/Checkbox"
 
 
 const ModalUserEdit: React.FC<ModalUserEditProps> = ({isOpen, onOpenChange, usuario}) => {
@@ -461,6 +462,7 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
                                                         </SelectItem>
                                                     ))}
                                                 </Select>
+                                                <p className="text-sm text-default-400">Tipo de ativo selecionado: {selectedTipoAtivoAdmin}</p>
                                             </div>
                                         </div>
 
@@ -476,47 +478,145 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
                                             </div>
 
                                             <div className="grid items-center gap-4">
-                                                
+                                                <Select
+                                                    {...register("classe_ativo")}
+                                                    label="Classe do ativo"
+                                                    placeholder="Selecione a classe do ativo"
+                                                    onChange={handleAdminClasseChange}
+                                                    defaultSelectedKeys={ativo ? ativo.classe_ativo : ''}
+                                                >
+                                                    {classeAtivoAdmin.map((classeAtivo: string) => (
+                                                        <SelectItem
+                                                            key={classeAtivo.charAt(0).toUpperCase()}
+                                                            value={classeAtivo.charAt(0).toUpperCase()}
+                                                        >
+                                                            {classeAtivo}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                                <p className="text-sm text-default-400">Classe de ativo selecionado: {selectedClasseAtivoAdmin}</p>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-2 items-center gap-4">
                                             <div className="grid items-center gap-4">
-
+                                                <Input
+                                                    {...register("proprietario")}
+                                                    label="Proprietario"
+                                                    placeholder="Escreva o proprietario"
+                                                    variant="bordered"
+                                                    defaultValue={ativo ? ativo.proprietario : ''}
+                                                /> 
                                             </div>
 
                                             <div className="grid items-center gap-4">
+                                                <p>Doação?</p>
 
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 items-center gap-4">
-                                            <div className="grid items-center gap-4">
-
-                                            </div>
-
-                                            <div className="grid items-center gap-4">
-
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 items-center gap-4">
-                                            <div className="grid items-center gap-4">
-
-                                            </div>
-
-                                            <div className="grid items-center gap-4">
-
+                                                <CheckboxDonation 
+                                                    {...register("doacao")}
+                                                />
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-2 items-center gap-4">
                                             <div className="grid items-center gap-4">
-
+                                                <Input 
+                                                    {...register("valor_original")}
+                                                    label="Valor original"
+                                                    placeholder="Escreva o valor original"
+                                                    variant="bordered"
+                                                    type="number"
+                                                    defaultValue={ativo ? ativo.valor_original.toString() : ''}
+                                                />
                                             </div>
 
                                             <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("valor_atual")}
+                                                    label="Valor atual"
+                                                    placeholder="Escreva o valor atual"
+                                                    variant="bordered"
+                                                    type="number"
+                                                    defaultValue={ativo ? ativo.valor_atual.toString() : ''}
+                                                />
+                                            </div>
+                                        </div>
 
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+                                                <Select
+                                                    {...register("status")}
+                                                    label="Status do ativo"
+                                                    placeholder="Selecione o status do ativo"
+                                                    onChange={handleAdminStatusChange}
+                                                    defaultSelectedKeys={ativo ? ativo.status : ''}
+                                                >
+                                                    {statusAtivoAdmin.map((statusAtivo: string) => (
+                                                        <SelectItem
+                                                            key={statusAtivo.charAt(0).toUpperCase()}
+                                                            value={statusAtivo.charAt(0).toUpperCase()}
+                                                        >
+                                                            {statusAtivo}
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+                                                <p>Status selecionado: {selectedStatusAtivoAdmin}</p>
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("data_insercao")}
+                                                    label="Data de inserção"
+                                                    placeholder="Escreva a data de inserção"
+                                                    variant="bordered"
+                                                    type="date"
+                                                    defaultValue={ativo ? ativo.data_insercao.toString() : ''}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("previsao_substituicao")}
+                                                    label="Previsão de substituição"
+                                                    placeholder="Escreva a previsão de substituição"
+                                                    variant="bordered"
+                                                    type="date"
+                                                    defaultValue={ativo ? ativo.previsao_substituicao.toString() : ''}
+                                                />
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("criado_por")}
+                                                    label="Criado por"
+                                                    placeholder="Escreva por quem o ativo foi criado"
+                                                    variant="bordered"
+                                                    defaultValue={ativo ? ativo.criado_por : ''}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 items-center gap-4">
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("adquirido_por")}
+                                                    label="Adquirido por"
+                                                    placeholder="Escreva por quem o ativo foi adquirido"
+                                                    variant="bordered"
+                                                    defaultValue={ativo ? ativo.adquirido_por : ''}
+                                                />
+                                            </div>
+
+                                            <div className="grid items-center gap-4">
+                                                <Input 
+                                                    {...register("unidade")}
+                                                    label="Unidade"
+                                                    placeholder="Escreva a unidade"
+                                                    variant="bordered"
+                                                    defaultValue={ativo ? ativo.unidade : ''}
+                                                />
                                             </div>
                                         </div>
                                     </div>

@@ -5,12 +5,12 @@ import { ativosAdminColumns } from '../../constants/Columns'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { MapPinIcon, MapPinned } from 'lucide-react'
 import { useGetAtivosAdmin, useGetAtivosAdminfilters } from '../../../react-query/QueriesAndMutations'
-import { getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo } from '../../../django/api'
+import { deleteExternalAtivoAdmin, getAdminClasseAtivo, getAdminStatus, getAdminTipoAtivo } from '../../../django/api'
 import { IGetAdminAtivo } from '../../../types/types'
-import { EyeIcon } from '../../components/ui/EyeIcon'
 import { EditIcon } from '../../components/ui/EditIcon'
 import { DeleteIcon } from '../../components/ui/DeleteIcon'
 import { useNavigate } from 'react-router-dom'
+import { ModalAtivosAdminEdit } from '../../components/shared/Modals'
 
 
 const ListagemAtivosAdmin = () => {
@@ -22,6 +22,9 @@ const ListagemAtivosAdmin = () => {
 
   const [statusAtivoAdmin, setStatusAtivoAdmin] = useState([])
   const [selectedStatusAtivoAdmin, setSelectedStatusAtivoAdmin] = useState('')
+
+  const [isAtivoAdminModalOpen, setIsAtivoAdminModalOpen] = useState(false)
+  const [selectedAtivoAdmin, setSelectedAtivoAdmin] = useState<IGetAdminAtivo | null>(null)
 
   const INITIAL_TABLE_COLUMNS = ['name', 'code', 'status', 'unit', 'actions']
 
@@ -249,22 +252,26 @@ const ListagemAtivosAdmin = () => {
       case 'actions':
         return (
           <div className='relative flex items-center text-center justify-center gap-2'>
-            <Tooltip content='Detalhes'>
-              <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
-                <EyeIcon /> 
-              </span>
-            </Tooltip>
 
             <Tooltip content='Editar Ativo'>
-              <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
+              <Button 
+                className='text-lg text-default-400 cursor-pointer active:opacity-50'
+                onClick={() => {
+                  setIsAtivoAdminModalOpen(true)
+                  setSelectedAtivoAdmin(ativoAdmin)
+                }}
+              >
                 <EditIcon />
-              </span>
+              </Button>
             </Tooltip>
 
             <Tooltip color='danger' content='Excluir Ativo'>
-              <span className='text-lg text-red-600 cursor-pointer active:opacity-50'>
+              <Button 
+                className='text-lg text-red-600 cursor-pointer active:opacity-50'
+                onClick={() => deleteExternalAtivoAdmin(ativoAdmin.id)}
+              >
                 <DeleteIcon />
-              </span>
+              </Button>
             </Tooltip>
           </div>
         )
@@ -341,6 +348,8 @@ const ListagemAtivosAdmin = () => {
           </div>
         </CardBody>
       </Card>
+
+      <ModalAtivosAdminEdit isOpen={isAtivoAdminModalOpen} onOpenChange={() => setIsAtivoAdminModalOpen(false)} ativo={selectedAtivoAdmin}/>
 
       <Card className='max-w-full w-[1200px] h-[750px]'>
         <CardBody className='overflow-auto scrollbar-hide'>
