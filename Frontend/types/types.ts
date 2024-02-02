@@ -111,6 +111,7 @@ export type IGetOpAtivo = {
     codigo: string,
     latitude: number,
     longitude: number,
+    Município?: string,
     localidade?: string,
     Endereco?: string,
     status_display: string,

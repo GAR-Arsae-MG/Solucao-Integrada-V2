@@ -6,11 +6,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useGetAtivosOp, useGetAtivosOpFilters } from '../../../react-query/QueriesAndMutations'
 import { IGetOpAtivo } from '../../../types/types'
 import { DeleteIcon } from '../../components/ui/DeleteIcon'
-import { EyeIcon } from '../../components/ui/EyeIcon'
 import { AtivosOpColumns } from '../../constants/Columns'
-import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento } from '../../../django/api'
+import { deleteExternalAtivoOp, getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento } from '../../../django/api'
 import { MapPinIcon, MapPinned } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { ModalAtivosOpEdit } from '../../components/shared/Modals'
 
 const ListagemAtivos = () => {
     const [tipoAtivoOp, setTipoAtivoOp] = useState([])
@@ -21,6 +21,9 @@ const ListagemAtivos = () => {
     const [selectedStatusOp, setSelectedStatusOp] = useState('')
     const [etapaServicoOp, setEtapaServicoOp] = useState([])
     const [selectedEtapaServicoOp, setSelectedEtapaServicoOp] = useState('')
+
+    const [isAtivoOpModalOpen, setIsAtivoOpModalOpen] = useState(false)
+  const [selectedAtivoOp, setSelectedAtivoOp] = useState<IGetOpAtivo | null>(null)
     
 
     const INITIAL_TABLE_COLUMNS = ['code', 'campName', 'class', 'actions']
@@ -342,22 +345,26 @@ const ListagemAtivos = () => {
             case 'actions': 
                 return (
                     <div className='relative flex items-center text-center justify-center gap-2'>
-                    <Tooltip content='Detalhes'>
-                        <span className='text-lg text-default-400 cursor-pointer active:opacity-50'>
-                            <EyeIcon />
-                        </span>
-                    </Tooltip>
     
                     <Tooltip content="Editar Ativo">
-                        <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                        <Button 
+                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                            onClick={() => {
+                                setIsAtivoOpModalOpen(true)
+                                setSelectedAtivoOp(ativoOp)
+                            }}
+                        >
                             <EditIcon />
-                        </span>
+                        </Button>
                     </Tooltip>
     
                     <Tooltip color="danger" content="Apagar Ativo">
-                        <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                        <Button 
+                            className="text-lg text-danger cursor-pointer active:opacity-50"
+                            onClick={() => deleteExternalAtivoOp(ativoOp.id)}
+                        >
                             <DeleteIcon />
-                        </span>
+                        </Button>
                     </Tooltip>
                 </div>
                 )
@@ -448,6 +455,8 @@ const ListagemAtivos = () => {
                 </div>
             </CardBody>
         </Card>
+
+        <ModalAtivosOpEdit isOpen={isAtivoOpModalOpen} onOpenChange={() => setIsAtivoOpModalOpen(false)} ativo={selectedAtivoOp} />
 
         <Card className='max-w-full w-[1200px] h-[750px]'>
             <CardBody className='overflow-auto scrollbar-hide'>
