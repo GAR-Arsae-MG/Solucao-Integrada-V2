@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, createRef } from "react";
 import {
   GoogleMap,
   InfoWindow,
@@ -12,54 +12,84 @@ import Places from "../places"
 import { Button, Input, Radio, RadioGroup } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
-import ativo from '../../assets/ativo.png'
-
-
-type LatLngLiteral = google.maps.LatLngLiteral;
-type MapOptions = google.maps.MapOptions;
+import ativoPin from '../../assets/ativo.png'
+import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData } from "../../../types/types";
 
 export default function Map() {
 
-  interface  Marker {
-    id: string
-    name: string
-    tipoAtivo: 'Visível'
-    position: LatLngLiteral
-  }
-
   //Markers Logic
-  const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null)
-  const [markers, setMarkers] = useState<Marker[]>([])
+  const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
+  const [ativosOp, setAtivosOp] = useState<AtivoUnityData[]>([])
   const [inputValue, setInputValue] = useState('')
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
-      const newMarker: Marker = {
-        id: new Date().toISOString(),
-        position: e.latLng.toJSON(),
-        name: `Ativo ${markers.length + 1}`,
-        tipoAtivo: 'Visível',
+      const newMarker: AtivoUnityData = {
+        tipo: "Ativo",
+        tipoAtivo: "Visível",
+        data: {
+          id: '',
+          nome_de_campo: `Ativo ${ativosOp.length + 1}`,
+          tipo_ativo: '',
+          classe: '',
+          fase: '',
+          tipo_investimento: '',
+          etapa_do_servico: '',
+          situacao_atual: '',
+          proprietario: '',
+          doacao: true,
+          valor_original: 0,
+          vida_util_reg_anos: 0,
+          vida_util_reg_meses: 0,
+          unidade: '',
+          data_insercao: new Date(),
+          data_projeto: new Date(),
+          data_obra: new Date(),
+          data_operacao: new Date(),
+          criado_por: '',
+          status: '',
+          criado_em: new Date(),
+          codigo: '',
+          latitude: e.latLng.lat(),
+          longitude: e.latLng.lng(),
+          Município: '',
+          localidade: '',
+          Endereco: '',
+          status_display: '',
+          tipo_ativo_display: '',
+          tipo_investimento_display: '',
+          etapa_do_servico_display: ''
+        }
       }
-      setMarkers([...markers, newMarker])
+      setAtivosOp([...ativosOp, newMarker])
     }
   }
 
-  const handleMarkerClick = (marker: Marker): void => {
-    setSelectedMarker(marker)
-    setInputValue(marker.name)
+  const handleAtivoClick = (ativo: AtivoUnityData): void => {
+    setSelectedAtivoOp(ativo)
+
+    console.log(selectedAtivoOp)
+    
+    if ('nome_de_campo' in ativo.data) {
+      setInputValue(ativo.data.nome_de_campo)
+    }
+
+    if ('nome' in ativo.data) {
+      setInputValue(ativo.data.nome)
+    }
   }
 
-  const handleMarkerClose = () => {
-    setSelectedMarker(null)
+  const handleAtivoClose = () => {
+    setSelectedAtivoOp(null)
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
-    if (selectedMarker) {
-      setMarkers((prevMarkers) => 
+    if (selectedAtivoOp) {
+      setAtivosOp((prevMarkers) => 
         prevMarkers.map(
           (marker) => 
-            marker.id === selectedMarker.id ? {...marker, name: e.target.value} : marker
+            marker.data.id === selectedAtivoOp.data.id ? {...marker, name: e.target.value} : marker
         )
       )
     }
@@ -69,25 +99,8 @@ export default function Map() {
 
   const [nextPolylineType, setNextPolylineType] = useState<'agua' | 'esgoto'>('agua')
 
-  interface Polyline {
-    id: string,
-    path: LatLngLiteral[]
-    type: 'agua' | 'esgoto',
-    tipoAtivo: 'Enterrado',
-    creationDate: Date,
-    updateDate: Date,
-    itemCode: string,
-    length: string,
-    diameter: string,
-    InitialPoint: LatLngLiteral
-  }
-
-  interface LatLngwithId extends LatLngLiteral {
-    id: string
-  }
-
-  const [selectedPolyline, setSelectedPolyline] = useState<Polyline | null>(null)
-  const [polylines, setPolylines] = useState<Polyline[]>([])
+  const [selectedPolyline, setSelectedPolyline] = useState<Tubulação | null>(null)
+  const [polylines, setPolylines] = useState<Tubulação[]>([])
   const [isNewPolyline, setIsNewPolyline] = useState(false)
   const [inputPolyline, setInputPolyline] = useState({
     itemCode: '',
@@ -113,7 +126,7 @@ export default function Map() {
 
   const idCounter = useRef(1)
 
-  const createPolyline = (path: LatLngLiteral[]): Polyline => {
+  const createPolyline = (path: LatLngLiteral[]): Tubulação => {
 
     function getNewId() {
       return idCounter.current++
@@ -164,7 +177,7 @@ export default function Map() {
     console.log(polylines)
   }
 
-  const handlePolylineClick = (polyline: Polyline): void => {
+  const handlePolylineClick = (polyline: Tubulação): void => {
     setSelectedPolyline(polyline)
     setInputPolyline({
       itemCode: polyline.itemCode,
@@ -200,17 +213,11 @@ export default function Map() {
 
   //Map Logic
 
-  type Painel = {
-    selectedSistema: string,
-    selectedTipoAtivo: string,
-    selectedLocalidade: string,   
-  }
-
   const {register} = useForm<Painel>()
 
   const [office, setOffice] = useState<LatLngLiteral>()
 
-  const mapRef = useRef<GoogleMap>()
+  const mapRef = createRef<GoogleMap>()
 
   const center = useMemo<LatLngLiteral>(() => ({ 
     lat: -19.947128,
@@ -309,6 +316,7 @@ export default function Map() {
                 options={options}
                 onClick={handleMapClick}
                 onRightClick={handleMapRightClick}
+                ref={mapRef}
               >
                 {office && (
                   <>
@@ -320,24 +328,28 @@ export default function Map() {
                   </>
                 )}
                   
-                {markers.map((marker) => (
+                {ativosOp.map((ativo) => (
                   <Marker 
-                      key={marker.id}
-                      position={marker.position}
-                      onClick={() => handleMarkerClick(marker)}
-                      icon={ativo}
+                      key={ativo.data.id}
+                      position={{ lat: ativo.data.latitude, lng: ativo.data.longitude }}
+                      onClick={() =>
+                        handleAtivoClick(ativo) 
+                      }
+                      icon={ativoPin}
                   />
                 ))}
 
-                {selectedMarker && (
+                {selectedAtivoOp && (
                   <InfoWindow
-                    key={selectedMarker.id}
-                    position={selectedMarker.position}
-                    onCloseClick={handleMarkerClose}
+                    key={selectedAtivoOp.data.id}
+                    position={{ lat: selectedAtivoOp.data.latitude, lng: selectedAtivoOp.data.longitude }}
+                    onCloseClick={handleAtivoClose}
                   >
                       <div>
                         <h2>Informações gerais do Ativo</h2>
-                        <p>Tipo Ativo: {selectedMarker.tipoAtivo}</p>
+                        <p>ID: {selectedAtivoOp.data.id}</p>
+                        <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
+                        <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
 
                         <h2>Editar nome de Ativo</h2>
                         <Input 

@@ -153,3 +153,43 @@ export type ModalUnitiesEditProps = {
     onClose?: () => void,
     unidade: IGetUnity | null,
 }
+
+// Adicionar os types específicos para o mapa.
+
+export type LatLngLiteral = google.maps.LatLngLiteral;
+export type MapOptions = google.maps.MapOptions;
+export interface LatLngwithId extends LatLngLiteral {
+    id: string
+}
+
+export type Painel = {
+    selectedSistema: string,
+    selectedTipoAtivo: string,
+    selectedLocalidade: string,   
+}
+
+export interface Ativo {
+    id: string
+    name: string
+    tipoAtivo: 'Visível'
+    position: LatLngLiteral
+}
+
+export type AtivoUnityData = {
+    tipo: 'Ativo' | 'Unidade'
+    tipoAtivo: 'Visível'
+    data: IGetOpAtivo | IGetUnity
+}
+
+export interface Tubulação {
+    id: string,
+    path: LatLngLiteral[]
+    type: 'agua' | 'esgoto',
+    tipoAtivo: 'Enterrado',
+    creationDate: Date,
+    updateDate: Date,
+    itemCode: string,
+    length: string,
+    diameter: string,
+    InitialPoint: LatLngLiteral
+}
