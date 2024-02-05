@@ -714,7 +714,7 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                 backdrop="blur"
             >
                 <ModalContent
-                    className="flex flex-col items-start overflow-scroll sm:max-w-[600px] md:max-w-[800px] lg:max-w-[1000px] xl:max-w-[1200px]"
+                    className="flex flex-col items-start overflow-auto scrollbar-hide w-full sm:max-w-[600px] md:max-w-[800px] lg:max-w-[1000px] xl:max-w-[1200px] md:max-h-[800px]"
                 >
                     {(onClose) => (
                         <>
