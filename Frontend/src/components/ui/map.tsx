@@ -13,6 +13,7 @@ import { Button, Input, Radio, RadioGroup } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
+import unidadePin from '../../assets/unities-pin.svg'
 import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity } from "../../../types/types";
 
 export default function Map() {
@@ -21,14 +22,21 @@ export default function Map() {
   const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
   const [ativosOp, setAtivosOp] = useState<AtivoUnityData[]>([])
   const [inputValue, setInputValue] = useState('')
+  const [TipoMarcador, setTipoMarcador] = useState<'Ativo' | 'Unidade'>('Ativo');
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
-    if (e.latLng) {
+    console.log('handleMapClick chamado', e.latLng, TipoMarcador)
+
+    function getNewId() {
+      return idCounter.current++
+    }
+
+    if (e.latLng && TipoMarcador === 'Ativo') {
       const newMarker: AtivoUnityData = {
         tipo: "Ativo",
         tipoAtivo: "Visível",
         data: {
-          id: '',
+          id: getNewId().toString(),
           nome_de_campo: `Ativo ${ativosOp.length + 1}`,
           tipo_ativo: '',
           classe: '',
@@ -63,12 +71,34 @@ export default function Map() {
       }
       setAtivosOp([...ativosOp, newMarker])
     }
+
+    if (e.latLng && TipoMarcador === 'Unidade') {
+      const newMarker: AtivoUnityData = {
+        tipo: "Unidade",
+        tipoAtivo: "Visível",
+        data: {
+          id: getNewId().toString(),
+          nome: `Unidade ${ativosOp.length + 1}`,
+          sistemas: '',
+          sistemas_display: '',
+          tipo: '',
+          tipo_display: '',
+          latitude: e.latLng.lat(),
+          longitude: e.latLng.lng(),
+          Município: '',
+          localidade: '',
+          Endereco: '',
+        }
+      }
+      setAtivosOp([...ativosOp, newMarker])
+    }
   }
 
   const handleAtivoClick = (ativo: AtivoUnityData): void => {
     setSelectedAtivoOp(ativo)
 
     console.log(selectedAtivoOp)
+    
     
     if ('nome_de_campo' in ativo.data) {
       setInputValue(ativo.data.nome_de_campo)
@@ -288,7 +318,7 @@ export default function Map() {
             </RadioGroup>
 
 
-            <div>
+            <div className="gap-4 p-2 justify-between flex">
               <Button 
                 color="primary"
                 onClick={() => handleTypeChange('agua')}
@@ -303,11 +333,12 @@ export default function Map() {
               </Button>
             </div>
             
-            <div>
+            <div className="gap-4 p-2">
 
               <Button
                 color="warning"
                 onClick={handleCreatePolyline}
+                className="mb-4"
               >
                 Adicionar Polylines
               </Button>
@@ -317,6 +348,23 @@ export default function Map() {
                 //onClick={() => ()}
               >
                 Deletar Polylines
+              </Button>
+            </div>
+
+            <div className="items-center p-4 gap-4 w-full">
+              <Button
+                className="mb-4"
+                color="primary"
+                onClick={() => setTipoMarcador('Ativo')}
+              >
+                Marcador de Ativos
+              </Button>
+
+              <Button
+                color="secondary"
+                onClick={() => setTipoMarcador('Unidade')}
+              >
+                Marcador de Unidades
               </Button>
             </div>
           </div>
@@ -353,7 +401,7 @@ export default function Map() {
                       onClick={() =>
                         handleAtivoClick(ativo) 
                       }
-                      icon={ativoPin}
+                      icon={ativo.tipo === 'Ativo' ? ativoPin : unidadePin}
                   />
                 ))}
 
@@ -365,24 +413,34 @@ export default function Map() {
                   >
                       <div>
                         <h2>Informações gerais do Ativo</h2>
-                        <p>ID: {selectedAtivoOp.data.id}</p>
-                        <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
-                        <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
-
-                        <h2>Editar nome de Ativo</h2>
-                        <Input 
-                            placeholder="Nome do ativo"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            type="text"
-                        />
-
-                        <Input 
-                          label='Código do Ativo'
-                          placeholder="Código do Ativo"
-                          type="text"
-                          
-                        />
+                        {selectedAtivoOp.tipo === 'Ativo' ? (
+                          <>
+                            <p>ID: {selectedAtivoOp.data.id}</p>
+                            <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
+                            <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
+    
+                            <h2>Editar nome de Ativo</h2>
+                            <Input 
+                                placeholder="Nome do ativo"
+                                value={inputValue}
+                                onChange={handleInputChange}
+                                type="text"
+                            />
+    
+                            <Input 
+                              label='Código do Ativo'
+                              placeholder="Código do Ativo"
+                              type="text"
+                              
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <p>ID: {selectedAtivoOp.data.id}</p>
+                            <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
+                            <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
+                          </>
+                        )}
                       </div>
                   </InfoWindow>
                 )}
