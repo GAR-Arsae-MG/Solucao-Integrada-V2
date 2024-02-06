@@ -13,9 +13,9 @@ import { Button, Input, Radio, RadioGroup } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
-import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData } from "../../../types/types";
+import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity } from "../../../types/types";
 
-export default function Map() {
+export default function Map({data}: AtivoUnityData) {
 
   //Markers Logic
   const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
@@ -85,11 +85,29 @@ export default function Map() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
-    if (selectedAtivoOp) {
+    if (selectedAtivoOp && selectedAtivoOp.tipo === 'Ativo') {
       setAtivosOp((prevMarkers) => 
         prevMarkers.map(
           (marker) => 
-            marker.data.id === selectedAtivoOp.data.id ? {...marker, name: e.target.value} : marker
+            marker.data.id === selectedAtivoOp.data.id && selectedAtivoOp.tipo === 'Ativo' ? 
+            {...marker, data: {...(marker.data as IGetOpAtivo), nome_de_campo: e.target.value}} as AtivoUnityData : marker
+        )
+      )
+    }
+
+    if (selectedAtivoOp && selectedAtivoOp.tipo === 'Unidade') {
+      setAtivosOp((prevMarkers) => 
+        prevMarkers.map(
+          (marker) => 
+            marker.data.id === selectedAtivoOp.data.id ? 
+              {
+                ...marker, 
+                data: {
+                  ...(marker.data as IGetUnity),
+                  nome: e.target.value,
+                }
+              } as AtivoUnityData 
+              : marker
         )
       )
     }
@@ -357,6 +375,13 @@ export default function Map() {
                             value={inputValue}
                             onChange={handleInputChange}
                             type="text"
+                        />
+
+                        <Input 
+                          label='Código do Ativo'
+                          placeholder="Código do Ativo"
+                          type="text"
+                          
                         />
                       </div>
                   </InfoWindow>

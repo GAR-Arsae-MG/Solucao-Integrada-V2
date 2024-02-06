@@ -175,11 +175,19 @@ export interface Ativo {
     position: LatLngLiteral
 }
 
-export type AtivoUnityData = {
-    tipo: 'Ativo' | 'Unidade'
-    tipoAtivo: 'Visível'
-    data: IGetOpAtivo | IGetUnity
+export type AtivoOp = {
+    tipo: 'Ativo';
+    tipoAtivo: 'Visível';
+    data: IGetOpAtivo;
 }
+  
+type Unidade = {
+    tipo: 'Unidade';
+    tipoAtivo: 'Visível';
+    data: IGetUnity;
+}
+  
+export type AtivoUnityData = AtivoOp | Unidade;
 
 export interface Tubulação {
     id: string,
