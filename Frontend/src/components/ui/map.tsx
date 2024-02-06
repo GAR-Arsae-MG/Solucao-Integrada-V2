@@ -15,7 +15,7 @@ import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
 import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity } from "../../../types/types";
 
-export default function Map({data}: AtivoUnityData) {
+export default function Map() {
 
   //Markers Logic
   const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
