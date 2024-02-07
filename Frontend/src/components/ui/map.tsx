@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useRef, createRef } from "react";
+import React, { useState, useMemo, useRef, createRef, useEffect } from "react";
 import {
   GoogleMap,
   InfoWindow,
@@ -9,20 +9,55 @@ import {
 } from "@react-google-maps/api";
 import '../../assets/Map.css'
 import Places from "../places"
-import { Button, Input, Radio, RadioGroup } from "@nextui-org/react";
+import { Button, Input, Radio, RadioGroup, Select, SelectItem } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
 import unidadePin from '../../assets/unities-pin.svg'
 import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity } from "../../../types/types";
+import { getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
+import { useGetUnits } from "../../../react-query/QueriesAndMutations";
 
 export default function Map() {
+
+  const { register: registerOpAtivo, handleSubmit: handleSubmitOpAtivo } = useForm<IGetOpAtivo>()
+  const { register: registerUnity, handleSubmit: handleSubmitUnity } = useForm<IGetUnity>()
 
   //Markers Logic
   const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
   const [ativosOp, setAtivosOp] = useState<AtivoUnityData[]>([])
-  const [inputValue, setInputValue] = useState('')
   const [TipoMarcador, setTipoMarcador] = useState<'Ativo' | 'Unidade'>('Ativo');
+
+  const [sistemas, setSistemas] = useState([])
+  const [selectedSistema, setSelectedSistema] = useState('')
+
+  const [tipo, setTipo] = useState([])
+  const [selectedTipo, setSelectedTipo] = useState('')
+
+  const {data: UnidadePin} = useGetUnits({tipo: selectedTipo, sistemas: selectedSistema})
+
+  useEffect(() => {
+
+    const fetchUnitySistema = async () => {
+      const unitySistema = await getUnitSistemas()
+      setSistemas(unitySistema)
+    }
+    fetchUnitySistema()
+
+    const fetchUnityTipo = async () => {
+      const unityTipo = await getUnitTipos()
+      setTipo(unityTipo)
+    }
+    fetchUnityTipo()
+  }, [])
+
+  const handleSistemasChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+  setSelectedSistema(event.target.value)
+  }
+
+  const handleTipoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  setSelectedTipo(event.target.value)
+  }
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     console.log('handleMapClick chamado', e.latLng, TipoMarcador)
@@ -36,37 +71,37 @@ export default function Map() {
         tipo: "Ativo",
         tipoAtivo: "Visível",
         data: {
-          id: getNewId().toString(),
-          nome_de_campo: `Ativo ${ativosOp.length + 1}`,
-          tipo_ativo: '',
-          classe: '',
-          fase: '',
-          tipo_investimento: '',
-          etapa_do_servico: '',
-          situacao_atual: '',
-          proprietario: '',
-          doacao: true,
-          valor_original: 0,
-          vida_util_reg_anos: 0,
-          vida_util_reg_meses: 0,
-          unidade: '',
-          data_insercao: new Date(),
-          data_projeto: new Date(),
-          data_obra: new Date(),
-          data_operacao: new Date(),
-          criado_por: '',
-          status: '',
-          criado_em: new Date(),
-          codigo: '',
-          latitude: e.latLng.lat(),
-          longitude: e.latLng.lng(),
-          Município: '',
-          localidade: '',
-          Endereco: '',
-          status_display: '',
-          tipo_ativo_display: '',
-          tipo_investimento_display: '',
-          etapa_do_servico_display: ''
+          id: selectedAtivoOp && 'id' in selectedAtivoOp.data ? selectedAtivoOp.data.id : getNewId().toString(),
+          nome_de_campo: selectedAtivoOp && 'nome_de_campo' in selectedAtivoOp.data ? selectedAtivoOp.data.nome_de_campo : `Ativo ${ativosOp.length + 1}`,
+          tipo_ativo: selectedAtivoOp && 'tipo_ativo' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_ativo : '',
+          classe: selectedAtivoOp && 'classe' in selectedAtivoOp.data ? selectedAtivoOp.data.classe : '',
+          fase: selectedAtivoOp && 'fase' in selectedAtivoOp.data ? selectedAtivoOp.data.fase : '',
+          tipo_investimento: selectedAtivoOp && 'tipo_investimento' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_investimento : '',
+          etapa_do_servico: selectedAtivoOp && 'etapa_do_servico' in selectedAtivoOp.data ? selectedAtivoOp.data.etapa_do_servico : '',
+          situacao_atual: selectedAtivoOp && 'situacao_atual' in selectedAtivoOp.data ? selectedAtivoOp.data.situacao_atual : '',
+          proprietario: selectedAtivoOp && 'proprietario' in selectedAtivoOp.data ? selectedAtivoOp.data.proprietario : '',
+          doacao: selectedAtivoOp && 'doacao' in selectedAtivoOp.data ? selectedAtivoOp.data.doacao : false,
+          valor_original:selectedAtivoOp && 'valor_original' in selectedAtivoOp.data ? selectedAtivoOp.data.valor_original : 0,
+          vida_util_reg_anos:selectedAtivoOp && 'vida_util_reg_anos' in selectedAtivoOp.data ? selectedAtivoOp.data.vida_util_reg_anos : 0,
+          vida_util_reg_meses:selectedAtivoOp && 'vida_util_reg_meses' in selectedAtivoOp.data ? selectedAtivoOp.data.vida_util_reg_meses : 0,
+          unidade: selectedAtivoOp && 'unidade' in selectedAtivoOp.data ? selectedAtivoOp.data.unidade : '',
+          data_insercao: selectedAtivoOp && 'data_insercao' in selectedAtivoOp.data ? selectedAtivoOp.data.data_insercao : new Date(),
+          data_projeto: selectedAtivoOp && 'data_projeto' in selectedAtivoOp.data ? selectedAtivoOp.data.data_projeto : new Date(),
+          data_obra: selectedAtivoOp && 'data_obra' in selectedAtivoOp.data ? selectedAtivoOp.data.data_obra : new Date(),
+          data_operacao: selectedAtivoOp && 'data_operacao' in selectedAtivoOp.data ? selectedAtivoOp.data.data_operacao : new Date(),
+          criado_por: selectedAtivoOp && 'criado_por' in selectedAtivoOp.data ? selectedAtivoOp.data.criado_por : '',
+          status: selectedAtivoOp && 'status' in selectedAtivoOp.data ? selectedAtivoOp.data.status : '',
+          criado_em: selectedAtivoOp && 'criado_em' in selectedAtivoOp.data ? selectedAtivoOp.data.criado_em : new Date(),
+          codigo: selectedAtivoOp && 'codigo' in selectedAtivoOp.data ? selectedAtivoOp.data.codigo : '',
+          latitude: selectedAtivoOp && 'latitude' in selectedAtivoOp.data ? selectedAtivoOp.data.latitude : e.latLng.lat(),
+          longitude: selectedAtivoOp && 'longitude' in selectedAtivoOp.data ? selectedAtivoOp.data.longitude : e.latLng.lng(),
+          Município: selectedAtivoOp && 'Município' in selectedAtivoOp.data ? selectedAtivoOp.data.Município : '',
+          localidade: selectedAtivoOp && 'localidade' in selectedAtivoOp.data ? selectedAtivoOp.data.localidade : '',
+          Endereco: selectedAtivoOp && 'Endereco' in selectedAtivoOp.data ? selectedAtivoOp.data.Endereco : '',
+          status_display: selectedAtivoOp && 'status_display' in selectedAtivoOp.data ? selectedAtivoOp.data.status_display : '',
+          tipo_ativo_display: selectedAtivoOp && 'tipo_ativo_display' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_ativo_display : '',
+          tipo_investimento_display: selectedAtivoOp && 'tipo_investimento_display' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_investimento_display : '',
+          etapa_do_servico_display: selectedAtivoOp && 'etapa_do_servico_display' in selectedAtivoOp.data ? selectedAtivoOp.data.etapa_do_servico_display : '',
         }
       }
       setAtivosOp([...ativosOp, newMarker])
@@ -77,17 +112,17 @@ export default function Map() {
         tipo: "Unidade",
         tipoAtivo: "Visível",
         data: {
-          id: getNewId().toString(),
-          nome: `Unidade ${ativosOp.length + 1}`,
-          sistemas: '',
-          sistemas_display: '',
-          tipo: '',
-          tipo_display: '',
-          latitude: e.latLng.lat(),
-          longitude: e.latLng.lng(),
-          Município: '',
-          localidade: '',
-          Endereco: '',
+          id: selectedAtivoOp && 'id' in selectedAtivoOp.data ? selectedAtivoOp.data.id : getNewId().toString(),
+          nome: selectedAtivoOp && 'nome' in selectedAtivoOp.data ? selectedAtivoOp.data.nome : `Unidade ${ativosOp.length + 1}`,
+          sistemas: selectedAtivoOp && 'sistemas' in selectedAtivoOp.data ? selectedAtivoOp.data.sistemas : '',
+          sistemas_display: selectedAtivoOp && 'sistemas_display' in selectedAtivoOp.data ? selectedAtivoOp.data.sistemas_display : '',
+          tipo: selectedAtivoOp && 'tipo' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo : '',
+          tipo_display: selectedAtivoOp && 'tipo_display' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_display : '',
+          latitude: selectedAtivoOp && 'latitude' in selectedAtivoOp.data ? selectedAtivoOp.data.latitude : e.latLng.lat(),
+          longitude: selectedAtivoOp && 'longitude' in selectedAtivoOp.data ? selectedAtivoOp.data.longitude : e.latLng.lng(),
+          Município: selectedAtivoOp && 'Município' in selectedAtivoOp.data ? selectedAtivoOp.data.Município : '',
+          localidade: selectedAtivoOp && 'localidade' in selectedAtivoOp.data ? selectedAtivoOp.data.localidade : '',
+          Endereco: selectedAtivoOp && 'Endereco' in selectedAtivoOp.data ? selectedAtivoOp.data.Endereco : '',
         }
       }
       setAtivosOp([...ativosOp, newMarker])
@@ -98,49 +133,10 @@ export default function Map() {
     setSelectedAtivoOp(ativo)
 
     console.log(selectedAtivoOp)
-    
-    
-    if ('nome_de_campo' in ativo.data) {
-      setInputValue(ativo.data.nome_de_campo)
-    }
-
-    if ('nome' in ativo.data) {
-      setInputValue(ativo.data.nome)
-    }
   }
 
   const handleAtivoClose = () => {
     setSelectedAtivoOp(null)
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
-    if (selectedAtivoOp && selectedAtivoOp.tipo === 'Ativo') {
-      setAtivosOp((prevMarkers) => 
-        prevMarkers.map(
-          (marker) => 
-            marker.data.id === selectedAtivoOp.data.id && selectedAtivoOp.tipo === 'Ativo' ? 
-            {...marker, data: {...(marker.data as IGetOpAtivo), nome_de_campo: e.target.value}} as AtivoUnityData : marker
-        )
-      )
-    }
-
-    if (selectedAtivoOp && selectedAtivoOp.tipo === 'Unidade') {
-      setAtivosOp((prevMarkers) => 
-        prevMarkers.map(
-          (marker) => 
-            marker.data.id === selectedAtivoOp.data.id ? 
-              {
-                ...marker, 
-                data: {
-                  ...(marker.data as IGetUnity),
-                  nome: e.target.value,
-                }
-              } as AtivoUnityData 
-              : marker
-        )
-      )
-    }
   }
 
   //Polyline Logic
@@ -415,30 +411,122 @@ export default function Map() {
                         <h2>Informações gerais do Ativo</h2>
                         {selectedAtivoOp.tipo === 'Ativo' ? (
                           <>
-                            <p>ID: {selectedAtivoOp.data.id}</p>
-                            <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
-                            <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
-    
-                            <h2>Editar nome de Ativo</h2>
-                            <Input 
-                                placeholder="Nome do ativo"
-                                value={inputValue}
-                                onChange={handleInputChange}
+                            <form
+                              onSubmit={handleSubmitOpAtivo((formData: IGetOpAtivo) => {
+                                updateExternalAtivoOp(selectedAtivoOp.data.id, formData);
+                              })}
+
+                              className="flex flex-col gap-2"
+                            >
+                              <p>ID: {selectedAtivoOp.data.id}</p>
+                              <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
+                              <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
+      
+                              <h2>Editar nome de Ativo</h2>
+                              <Input
+                                  {...registerOpAtivo("nome_de_campo")} 
+                                  placeholder="Nome do ativo"
+                                  label="Nome do Ativo"
+                                  defaultValue={selectedAtivoOp ? selectedAtivoOp.data.nome_de_campo: ''}
+                                  type="text"
+                                  variant="underlined"
+                              />
+      
+                              <Input
+                                {...registerOpAtivo("codigo")} 
+                                label='Código do Ativo'
+                                placeholder="Código do Ativo"
                                 type="text"
-                            />
-    
-                            <Input 
-                              label='Código do Ativo'
-                              placeholder="Código do Ativo"
-                              type="text"
-                              
-                            />
+                                variant="underlined"
+                              />
+                            </form>
                           </>
                         ) : (
                           <>
-                            <p>ID: {selectedAtivoOp.data.id}</p>
-                            <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
-                            <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
+                            <form
+                              onSubmit={handleSubmitUnity((formData: IGetUnity) => {
+                                updateExternalUnity(selectedAtivoOp.data.id, formData);
+                              })}
+                              className="flex flex-col gap-2"
+                            >
+                              <p>ID: {selectedAtivoOp.data.id}</p>
+                              <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
+                              <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
+
+                              <Input 
+                                {...registerUnity("nome")}
+                                placeholder="Nome da Unidade"
+                                label="Nome da Unidade"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.nome: ''}
+                                type="text"
+                                variant="underlined"
+                              />
+
+                              <Select
+                                {...registerUnity("sistemas")}
+                                label='Sistema'
+                                onChange={handleSistemasChange}
+                                placeholder="Selecione o sistema"
+                                defaultSelectedKeys={selectedAtivoOp.data.sistemas}
+                                variant="underlined"
+                              >
+                                {sistemas.map((sistema: string) => (
+                                    <SelectItem
+                                        key={sistema.charAt(0).toUpperCase()}
+                                        value={sistema.charAt(0).toUpperCase()}
+                                    >
+                                        {sistema}
+                                    </SelectItem>
+                                ))}
+                              </Select>
+                              <p className="text-sm text-default-400">Sistema selecionado: {selectedSistema}</p>
+
+                              <Select
+                                {...registerUnity("tipo")}
+                                label='Tipo'
+                                onChange={handleTipoChange}
+                                placeholder="Selecione o tipo"
+                                defaultSelectedKeys={selectedAtivoOp.data.tipo}
+                                variant="underlined"
+                              >
+                                {tipo.map((tipo: string) => (
+                                    <SelectItem
+                                        key={tipo.charAt(0).toUpperCase()}
+                                        value={tipo.charAt(0).toUpperCase()}
+                                    >
+                                        {tipo}
+                                    </SelectItem>
+                                ))}
+                              </Select>
+                              <p className="text-sm text-default-400">Tipo selecionado: {selectedTipo}</p>
+
+                              <Input 
+                                {...registerUnity("Município")}
+                                placeholder="Município"
+                                label="Município"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.Município: ''}
+                                type="text"
+                                variant="underlined"
+                              />
+
+                              <Input 
+                                {...registerUnity("localidade")}
+                                placeholder="Localidade"
+                                label="Localidade"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.localidade: ''}
+                                type="text"
+                                variant="underlined"
+                              />
+
+                              <Input 
+                                {...registerUnity("Endereco")}
+                                placeholder="Endereço"
+                                label="Endereço"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.Endereco: ''}
+                                type="text"
+                                variant="underlined"
+                              />
+                            </form>
                           </>
                         )}
                       </div>

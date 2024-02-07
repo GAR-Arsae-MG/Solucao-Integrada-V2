@@ -45,13 +45,13 @@ export const useRevalidatePassword = () => {
 
 export const useUpdateExternalUser = () => {
     return useMutation({
-        mutationFn: ({ userId, userData }: { userId: number; userData: IGetUser }) => updateExternalUser(userId, userData)
+        mutationFn: ({ userId, userData }: { userId: string; userData: IGetUser }) => updateExternalUser(userId, userData)
     })
 }
 
 export const useDeleteExternalUser = () => {
     return useMutation({
-        mutationFn: (userId: number) => deleteExternalUser(userId)
+        mutationFn: (userId: string) => deleteExternalUser(userId)
     })
 }
 
