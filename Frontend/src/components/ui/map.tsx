@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useState, useMemo, useRef, createRef } from "react";
 import {
   GoogleMap,
