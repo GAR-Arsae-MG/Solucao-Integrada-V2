@@ -55,9 +55,9 @@ export type IGetUnity = {
     nome: string,
     id: string,
     sistemas: string,
-    sistemas_display: string,
+    sistemas_display: {key: string, value: string},
     tipo: string,
-    tipo_display: string,
+    tipo_display: {key: string, value: string},
     latitude: number,
     longitude: number,
     Município?: string,
@@ -114,10 +114,10 @@ export type IGetOpAtivo = {
     Município?: string,
     localidade?: string,
     Endereco?: string,
-    status_display: string,
-    tipo_ativo_display: string,
-    tipo_investimento_display: string,
-    etapa_do_servico_display: string
+    status_display: {key: string, value: string},
+    tipo_ativo_display: {key: string, value: string},
+    tipo_investimento_display: {key: string, value: string},
+    etapa_do_servico_display: {key: string, value: string}
 }
 
 // Adicionar os types para os modals.

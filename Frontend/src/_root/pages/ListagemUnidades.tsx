@@ -106,14 +106,14 @@ const ListagemUnidades = () => {
       case 'systems':
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-black text-sm capitalize">{unidade.sistemas_display}</p>
+            <p className="text-bold text-black text-sm capitalize">{unidade.sistemas_display.value}</p>
           </div>
         )
 
       case 'type':
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-black text-sm capitalize">{unidade.tipo_display}</p>
+            <p className="text-bold text-black text-sm capitalize">{unidade.tipo_display.value}</p>
           </div>
         )
       
@@ -179,8 +179,8 @@ const ListagemUnidades = () => {
           </div>
         )
       
-      default:
-        return cellValue
+        default:
+          return typeof cellValue === 'object' && cellValue !== null ? cellValue.value : cellValue;
     }
   }, [])
 
@@ -199,12 +199,12 @@ const ListagemUnidades = () => {
                 color="primary"
                 selectionMode="single"
               >
-                {sistemas.map((sistema: string) => (
+                {sistemas.map((sistema: {key: string, value: string}) => (
                   <SelectItem
-                    key={sistema.charAt(0).toUpperCase()}
-                    value={sistema.charAt(0).toUpperCase()}
+                    key={sistema.key}
+                    value={sistema.key}
                   >
-                    {sistema}
+                    {sistema.value}
                   </SelectItem>
                 ))}
               </Select>
@@ -215,12 +215,12 @@ const ListagemUnidades = () => {
                 color="secondary"
                 selectionMode="single"
               >
-                {tipo.map((tipo: string) => (
+                {tipo.map((tipo: {key: string, value: string}) => (
                   <SelectItem
-                    key={tipo.charAt(0).toUpperCase()}
-                    value={tipo.charAt(0).toUpperCase()}
+                    key={tipo.key}
+                    value={tipo.key}
                   >
-                    {tipo}
+                    {tipo.value}
                   </SelectItem>
                 ))}
               </Select>

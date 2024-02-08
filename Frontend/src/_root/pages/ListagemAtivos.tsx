@@ -244,7 +244,7 @@ const ListagemAtivos = () => {
                 return (
                     <div className='flex flex-col'>
                         <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_investimento}</p>
-                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_investimento_display}</p>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_investimento_display.value}</p>
                     </div>
                 )
 
@@ -252,7 +252,7 @@ const ListagemAtivos = () => {
                 return (
                     <div className='flex flex-col'>
                         <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_ativo}</p>
-                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_ativo_display}</p>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.tipo_ativo_display.value}</p>
                     </div>
                 )
     
@@ -260,7 +260,7 @@ const ListagemAtivos = () => {
                 return (
                     <div className='flex flex-col'>
                         <p className='text-bold text-sm capitalize text-black'>{ativoOp.etapa_do_servico}</p>
-                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.etapa_do_servico_display}</p>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.etapa_do_servico_display.value}</p>
                     </div>
                 )
     
@@ -310,7 +310,7 @@ const ListagemAtivos = () => {
                 return (
                     <div className='flex flex-col'>
                         <p className='text-bold text-sm capitalize text-primary-400'>{ativoOp.status}</p>
-                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.status_display}</p>
+                        <p className='text-bold text-sm capitalize text-black'>{ativoOp.status_display.value}</p>
                     </div>
                 )
                 
@@ -369,7 +369,7 @@ const ListagemAtivos = () => {
                 </div>
                 )
             default:
-                return cellValue   
+                return typeof cellValue === 'object' && cellValue !== null ? cellValue.value : cellValue;
         }
         }, [])
 
@@ -387,12 +387,12 @@ const ListagemAtivos = () => {
                             onChange={handleOpStatusChange}
                             color='primary'
                         >
-                            {statusOp.map((status: string) => (
+                            {statusOp.map((status: {key: string, value: string}) => (
                                 <SelectItem
-                                    key={status.charAt(0).toUpperCase()}
-                                    value={status.charAt(0).toUpperCase()}
+                                    key={status.key}
+                                    value={status.key}
                                 >
-                                    {status}
+                                    {status.value}
                                 </SelectItem>
                             ))}
                         </Select>
@@ -402,12 +402,12 @@ const ListagemAtivos = () => {
                             onChange={handleOpTipoAtivoChange}
                             color='primary'
                         >
-                            {tipoAtivoOp.map((tipoAtivo: string) => (
+                            {tipoAtivoOp.map((tipoAtivo: {key: string, value: string}) => (
                                 <SelectItem
-                                    key={tipoAtivo.charAt(0).toUpperCase()}
-                                    value={tipoAtivo.charAt(0).toUpperCase()}
+                                    key={tipoAtivo.key}
+                                    value={tipoAtivo.key}
                                 >
-                                    {tipoAtivo}
+                                    {tipoAtivo.value}
                                 </SelectItem>
                             ))}
                         </Select>
@@ -417,12 +417,12 @@ const ListagemAtivos = () => {
                             onChange={handleOpTipoInvestimentoChange}
                             color='primary'
                         >
-                            {tipoInvestimentoOp.map((tipoInvestimento: string) => (
+                            {tipoInvestimentoOp.map((tipoInvestimento: {key: string, value: string}) => (
                                 <SelectItem
-                                    key={tipoInvestimento.charAt(0).toUpperCase()}
-                                    value={tipoInvestimento.charAt(0).toUpperCase()}
+                                    key={tipoInvestimento.key}
+                                    value={tipoInvestimento.key}
                                 >
-                                    {tipoInvestimento}
+                                    {tipoInvestimento.value}
                                 </SelectItem>
                             ))}
                         </Select>
@@ -434,12 +434,12 @@ const ListagemAtivos = () => {
                             onChange={handleOpEtapaServicoChange}
                             color='primary'
                         >
-                            {etapaServicoOp.map((etapaServico: string) => (
+                            {etapaServicoOp.map((etapaServico: {key: string, value: string}) => (
                                 <SelectItem
-                                    key={etapaServico.charAt(0).toUpperCase()}
-                                    value={etapaServico.charAt(0).toUpperCase()}
+                                    key={etapaServico.key}
+                                    value={etapaServico.key}
                                 >
-                                    {etapaServico}
+                                    {etapaServico.value}
                                 </SelectItem>
                             ))}
                         </Select>

@@ -181,23 +181,23 @@ class StaffView(View):
 class UnitiesSistemasView(View):
     def get(self, request):
         try:
-            sistemas = [sistema[1] for sistema in Unidades.SISTEMAS]
-            return JsonResponse(list(sistemas), safe=False, status=status.HTTP_200_OK)
+            sistemas = [{"key": sistema[0], "value": sistema[1]} for sistema in Unidades.SISTEMAS]
+            return JsonResponse(sistemas, safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
         
 class UnitiesTypesView(View):
     def get(self, request):
         try:
-            tipos = [tipo[1] for tipo in Unidades.TIPO]
-            return JsonResponse(list(tipos), safe=False, status=status.HTTP_200_OK)
+            tipos = [{"key": tipo[0], "value": tipo[1]} for tipo in Unidades.TIPO]
+            return JsonResponse(tipos, safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
         
 class AtivosOpTipoAtivoView(View):
     def get(self, request):
         try:
-            tipos = [tipo[1] for tipo in Ativos_Operacionais.TIPO_ATIVO]
+            tipos = [{"key": tipo[0], "value": tipo[1]} for tipo in Ativos_Operacionais.TIPO_ATIVO]
             return JsonResponse(list(tipos), safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
@@ -206,7 +206,7 @@ class AtivosOpTipoAtivoView(View):
 class AtivosOpTipoInvestimentoView(View):
     def get(self, request):
         try:
-            tipos = [tipo[1] for tipo in Ativos_Operacionais.TIPO_INVESTIMENTO]
+            tipos = [{"key": tipo[0], "value": tipo[1]} for tipo in Ativos_Operacionais.TIPO_INVESTIMENTO]
             return JsonResponse(list(tipos), safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
@@ -214,7 +214,7 @@ class AtivosOpTipoInvestimentoView(View):
 class AtivosOpStatusView(View):
     def get(self, request):
         try:
-            statusOP = [statusOP[1] for statusOP in Ativos_Operacionais.STATUS]
+            statusOP = [{"key": status[0], "value": status[1]} for status in Ativos_Operacionais.STATUS]
             return JsonResponse(list(statusOP), safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)
@@ -222,7 +222,7 @@ class AtivosOpStatusView(View):
 class AtivosOpEtapaServicoView(View):
     def get(self, request):
         try:
-            etapas = [etapa[1] for etapa in Ativos_Operacionais.ETAPA_DO_SERVICO]
+            etapas = [{"key": etapa[0], "value": etapa[1]} for etapa in Ativos_Operacionais.ETAPA_DO_SERVICO]
             return JsonResponse(list(etapas), safe=False, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return JsonResponse({'detail': 'Nenhum registro encontrado.'}, status=status.HTTP_404_NOT_FOUND)

@@ -42,10 +42,10 @@ class UnitiesSerializer(serializers.ModelSerializer):
         fields = ['id','nome','sistemas', 'sistemas_display', 'tipo', 'tipo_display','latitude', 'longitude','Município', 'localidade','Endereco']
         
     def get_tipo_display(self, obj):
-        return obj.get_tipo_display()
+        return {"key": obj.tipo, "value": obj.get_tipo_display()}
     
     def get_sistemas_display(self, obj):
-        return obj.get_sistemas_display()
+        return {"key": obj.sistemas,"value": obj.get_sistemas_display()}
 
 class AtivosAdminSerializer(serializers.ModelSerializer):
     tipo_ativo_display = serializers.SerializerMethodField()
@@ -76,14 +76,14 @@ class AtivosOperacionaisSerializer(serializers.ModelSerializer):
         fields = [f.name for f in Ativos_Operacionais._meta.get_fields()] + ['status_display', 'tipo_ativo_display', 'tipo_investimento_display', 'etapa_do_servico_display']
         
     def get_status_display(self, obj):
-        return obj.get_status_display()
+        return {"key": obj.status, "value": obj.get_status_display()}
     
     def get_tipo_ativo_display(self, obj):
-        return obj.get_tipo_ativo_display()
+        return {"key": obj.tipo_ativo, "value": obj.get_tipo_ativo_display()}
     
     def get_tipo_investimento_display(self, obj):
-        return obj.get_tipo_investimento_display()
+        return {"key": obj.tipo_investimento, "value": obj.get_tipo_investimento_display()}
     
     def get_etapa_do_servico_display(self, obj):
-        return obj.get_etapa_do_servico_display()
+        return {"key": obj.etapa_do_servico, "value": obj.get_etapa_do_servico_display()}
         
