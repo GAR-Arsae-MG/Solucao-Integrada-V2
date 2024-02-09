@@ -762,12 +762,12 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                             onChange={handleOpTipoAtivoChange}
                                                             defaultSelectedKeys={ativo ? ativo.tipo_ativo : ''}
                                                         >
-                                                            {tipoAtivoOp.map((tipoAtivoOp: string) => (
+                                                            {tipoAtivoOp.map((tipoAtivoOp: {key: string, value: string}) => (
                                                                 <SelectItem
-                                                                    key={tipoAtivoOp.charAt(0).toUpperCase()}
-                                                                    value={tipoAtivoOp.charAt(0).toUpperCase()}
+                                                                    key={tipoAtivoOp.key}
+                                                                    value={tipoAtivoOp.key}
                                                                 >
-                                                                    {tipoAtivoOp}
+                                                                    {tipoAtivoOp.value}
                                                                 </SelectItem>
                                                             ))}
                                                         </Select>
@@ -807,12 +807,12 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                             onChange={handleOpTipoInvestimentoChange}
                                                             defaultSelectedKeys={ativo ? ativo.tipo_investimento : ''}
                                                         >
-                                                            {tipoInvestimentoOp.map((tipoInvestimentoOp: string) => (
+                                                            {tipoInvestimentoOp.map((tipoInvestimentoOp: {key: string, value: string}) => (
                                                                 <SelectItem
-                                                                    key={tipoInvestimentoOp.charAt(0).toUpperCase()}
-                                                                    value={tipoInvestimentoOp.charAt(0).toUpperCase()}
+                                                                    key={tipoInvestimentoOp.key}
+                                                                    value={tipoInvestimentoOp.key}
                                                                 >
-                                                                    {tipoInvestimentoOp}
+                                                                    {tipoInvestimentoOp.value}
                                                                 </SelectItem>
                                                             ))}
                                                         </Select>
@@ -828,12 +828,12 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                             onChange={handleOpEtapaServicoChange}
                                                             defaultSelectedKeys={ativo ? ativo.etapa_do_servico : ''}
                                                         >
-                                                            {etapaServicoOp.map((etapasServicoOp: string) => (
+                                                            {etapaServicoOp.map((etapasServicoOp: {key: string, value: string}) => (
                                                                 <SelectItem
-                                                                    key={etapasServicoOp.charAt(0).toUpperCase()}
-                                                                    value={etapasServicoOp.charAt(0).toUpperCase()}
+                                                                    key={etapasServicoOp.key}
+                                                                    value={etapasServicoOp.key}
                                                                 >
-                                                                    {etapasServicoOp}
+                                                                    {etapasServicoOp.value}
                                                                 </SelectItem>
                                                             ))}
                                                         </Select>
@@ -1007,12 +1007,12 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                             variant="bordered"
                                                             defaultSelectedKeys={ativo!.status}
                                                         >
-                                                            {statusOp.map((status: string) => (
+                                                            {statusOp.map((status: {key: string, value: string}) => (
                                                                 <SelectItem 
-                                                                    key={status.charAt(0).toUpperCase()} 
-                                                                    value={status.charAt(0).toUpperCase()}
+                                                                    key={status.key} 
+                                                                    value={status.key}
                                                                 >
-                                                                    {status}
+                                                                    {status.value}
                                                                 </SelectItem>
                                                             ))}
                                                         </Select>

@@ -98,10 +98,22 @@ export default function Map() {
           Município: selectedAtivoOp && 'Município' in selectedAtivoOp.data ? selectedAtivoOp.data.Município : '',
           localidade: selectedAtivoOp && 'localidade' in selectedAtivoOp.data ? selectedAtivoOp.data.localidade : '',
           Endereco: selectedAtivoOp && 'Endereco' in selectedAtivoOp.data ? selectedAtivoOp.data.Endereco : '',
-          status_display: selectedAtivoOp && 'status_display' in selectedAtivoOp.data ? selectedAtivoOp.data.status_display : '',
-          tipo_ativo_display: selectedAtivoOp && 'tipo_ativo_display' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_ativo_display : '',
-          tipo_investimento_display: selectedAtivoOp && 'tipo_investimento_display' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_investimento_display : '',
-          etapa_do_servico_display: selectedAtivoOp && 'etapa_do_servico_display' in selectedAtivoOp.data ? selectedAtivoOp.data.etapa_do_servico_display : '',
+          status_display: selectedAtivoOp && 'status_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.status_display === 'string' 
+          ? { key: selectedAtivoOp.data.status_display, value: selectedAtivoOp.data.status_display } 
+          : selectedAtivoOp.data.status_display) 
+          : { key: '', value: '' },
+          
+          tipo_ativo_display: selectedAtivoOp && 'tipo_ativo_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.tipo_ativo_display === 'string' 
+          ? { key: selectedAtivoOp.data.tipo_ativo_display, value: selectedAtivoOp.data.tipo_ativo_display } : selectedAtivoOp.data.tipo_ativo_display)
+          : { key: '', value: ''},
+          
+          tipo_investimento_display: selectedAtivoOp && 'tipo_investimento_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.tipo_investimento_display === 'string' 
+          ? { key: selectedAtivoOp.data.tipo_investimento_display, value: selectedAtivoOp.data.tipo_investimento_display } : selectedAtivoOp.data.tipo_investimento_display)
+          : { key: '', value: ''},
+
+          etapa_do_servico_display: selectedAtivoOp && 'etapa_do_servico_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.etapa_do_servico_display === 'string' 
+          ? { key: selectedAtivoOp.data.etapa_do_servico_display, value: selectedAtivoOp.data.etapa_do_servico_display } : selectedAtivoOp.data.etapa_do_servico_display)
+          : { key: '', value: ''},
         }
       }
       setAtivosOp([...ativosOp, newMarker])
@@ -115,9 +127,11 @@ export default function Map() {
           id: selectedAtivoOp && 'id' in selectedAtivoOp.data ? selectedAtivoOp.data.id : getNewId().toString(),
           nome: selectedAtivoOp && 'nome' in selectedAtivoOp.data ? selectedAtivoOp.data.nome : `Unidade ${ativosOp.length + 1}`,
           sistemas: selectedAtivoOp && 'sistemas' in selectedAtivoOp.data ? selectedAtivoOp.data.sistemas : '',
-          sistemas_display: selectedAtivoOp && 'sistemas_display' in selectedAtivoOp.data ? selectedAtivoOp.data.sistemas_display : '',
+          sistemas_display: selectedAtivoOp && 'sistemas_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.sistemas_display === 'string' ? { key: selectedAtivoOp.data.sistemas_display, value: selectedAtivoOp.data.sistemas_display } : selectedAtivoOp.data.sistemas_display) : { key: '', value: ''},
+
+
           tipo: selectedAtivoOp && 'tipo' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo : '',
-          tipo_display: selectedAtivoOp && 'tipo_display' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_display : '',
+          tipo_display: selectedAtivoOp && 'tipo_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.tipo_display === 'string' ? { key: selectedAtivoOp.data.tipo_display, value: selectedAtivoOp.data.tipo_display } : selectedAtivoOp.data.tipo_display) : { key: '', value: ''},
           latitude: selectedAtivoOp && 'latitude' in selectedAtivoOp.data ? selectedAtivoOp.data.latitude : e.latLng.lat(),
           longitude: selectedAtivoOp && 'longitude' in selectedAtivoOp.data ? selectedAtivoOp.data.longitude : e.latLng.lng(),
           Município: selectedAtivoOp && 'Município' in selectedAtivoOp.data ? selectedAtivoOp.data.Município : '',
@@ -470,12 +484,12 @@ export default function Map() {
                                 defaultSelectedKeys={selectedAtivoOp.data.sistemas}
                                 variant="underlined"
                               >
-                                {sistemas.map((sistema: string) => (
+                                {sistemas.map((sistema: {key: string, value: string}) => (
                                     <SelectItem
-                                        key={sistema.charAt(0).toUpperCase()}
-                                        value={sistema.charAt(0).toUpperCase()}
+                                        key={sistema.key}
+                                        value={sistema.key}
                                     >
-                                        {sistema}
+                                        {sistema.value}
                                     </SelectItem>
                                 ))}
                               </Select>
@@ -489,12 +503,12 @@ export default function Map() {
                                 defaultSelectedKeys={selectedAtivoOp.data.tipo}
                                 variant="underlined"
                               >
-                                {tipo.map((tipo: string) => (
+                                {tipo.map((tipo: {key: string, value: string}) => (
                                     <SelectItem
-                                        key={tipo.charAt(0).toUpperCase()}
-                                        value={tipo.charAt(0).toUpperCase()}
+                                        key={tipo.key}
+                                        value={tipo.key}
                                     >
-                                        {tipo}
+                                        {tipo.value}
                                     </SelectItem>
                                 ))}
                               </Select>
