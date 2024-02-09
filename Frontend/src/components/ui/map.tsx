@@ -15,8 +15,8 @@ import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
 import unidadePin from '../../assets/unities-pin.svg'
 import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity } from "../../../types/types";
-import { getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
-import { useGetUnits } from "../../../react-query/QueriesAndMutations";
+import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
+import { useGetAtivosOp, useGetUnits } from "../../../react-query/QueriesAndMutations";
 
 export default function Map() {
 
@@ -34,7 +34,21 @@ export default function Map() {
   const [tipo, setTipo] = useState([])
   const [selectedTipo, setSelectedTipo] = useState('')
 
+  const [tipoAtivoOp, setTipoAtivoOp] = useState([])
+  const [selectedTipoAtivoOp, setSelectedTipoAtivoOp] = useState('')
+
+  const [tipoInvestimentoOp, setTipoInvestimentoOp] = useState([])
+  const [selectedTipoInvestimentoOp, setSelectedTipoInvestimentoOp] = useState('')
+
+  const [statusOp, setStatusOp] = useState([])
+  const [selectedStatusOp, setSelectedStatusOp] = useState('')
+
+  const [etapaServicoOp, setEtapaServicoOp] = useState([])
+  const [selectedEtapaServicoOp, setSelectedEtapaServicoOp] = useState('')
+
   const {data: UnidadePin} = useGetUnits({tipo: selectedTipo, sistemas: selectedSistema})
+
+  const {data: AtivoOpPin} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
 
   useEffect(() => {
 
@@ -49,6 +63,30 @@ export default function Map() {
       setTipo(unityTipo)
     }
     fetchUnityTipo()
+
+    const fetchOpStatus = async () => {
+      const opStatus = await getOpStatus()
+      setStatusOp(opStatus)
+    }
+    fetchOpStatus()
+
+    const fetchOpEtapaServico = async () => {
+        const opEtapaServico = await getOpEtapaServico()
+        setEtapaServicoOp(opEtapaServico)
+    }
+    fetchOpEtapaServico()
+
+    const fetchOpTipoAtivo = async () => {
+        const opTipoAtivo = await getOpTipoAtivo()
+        setTipoAtivoOp(opTipoAtivo)
+    }
+    fetchOpTipoAtivo()
+
+    const fetchOpTipoInvestimento = async () => {
+        const opTipoInvestimento = await getOpTipoInvestimento()
+        setTipoInvestimentoOp(opTipoInvestimento)
+    }
+    fetchOpTipoInvestimento() 
   }, [])
 
   const handleSistemasChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -58,6 +96,23 @@ export default function Map() {
   const handleTipoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
   setSelectedTipo(event.target.value)
   }
+
+  const handleOpStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedStatusOp(event.target.value)
+  }
+
+const handleOpEtapaServicoChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedEtapaServicoOp(event.target.value)
+  }
+
+const handleOpTipoAtivoChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTipoAtivoOp(event.target.value)
+  }
+
+const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTipoInvestimentoOp(event.target.value)
+  }
+
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     console.log('handleMapClick chamado', e.latLng, TipoMarcador)
@@ -451,8 +506,37 @@ export default function Map() {
                                 label='Código do Ativo'
                                 placeholder="Código do Ativo"
                                 type="text"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.codigo: ''}
                                 variant="underlined"
                               />
+
+                              <Select
+                                {...registerOpAtivo("tipo_ativo")}
+                                label="Tipo de Ativo"
+                                placeholder="Selecione o Tipo de Ativo"
+                                onChange={handleOpTipoAtivoChange}
+                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.data.tipo_ativo : ''}
+                              >
+                                {tipoAtivoOp.map((tipoAtivoOp: {key: string, value: string}) => (
+                                    <SelectItem
+                                        key={tipoAtivoOp.key}
+                                        value={tipoAtivoOp.key}
+                                    >
+                                        {tipoAtivoOp.value}
+                                    </SelectItem>
+                                ))}
+                              </Select>
+                              <p>Tipo de ativo selecionado: {selectedTipoAtivoOp}</p>
+
+                              <Input 
+                                {...registerOpAtivo("classe")}
+                                label="Classe"
+                                placeholder="Escreva a Classe do ativo"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.classe : ''}
+                              />
+
+
                             </form>
                           </>
                         ) : (
