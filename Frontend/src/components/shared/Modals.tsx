@@ -936,7 +936,7 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                     <div className="grid items-center gap-4">
                                                         <Input 
                                                             {...register("data_obra")}
-                                                            label="Data de Inserção"
+                                                            label="Data da Obra"
                                                             placeholder="Escreva a Data de Inserção"
                                                             variant="bordered"
                                                             type="date"
@@ -947,7 +947,7 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                     <div className="grid items-center gap-4">
                                                         <Input 
                                                             {...register("data_operacao")}
-                                                            label="Data de Inserção"
+                                                            label="Data de Operação"
                                                             placeholder="Escreva a Data de Inserção"
                                                             variant="bordered"
                                                             type="date"
