@@ -17,6 +17,7 @@ import unidadePin from '../../assets/unities-pin.svg'
 import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity } from "../../../types/types";
 import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
 import { useGetAtivosOp, useGetUnits } from "../../../react-query/QueriesAndMutations";
+import CheckboxDonation from "./Checkbox";
 
 export default function Map() {
 
@@ -536,7 +537,137 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 defaultValue={selectedAtivoOp ? selectedAtivoOp.data.classe : ''}
                               />
 
+                              <Input 
+                                {...registerOpAtivo("fase")}
+                                label="Fase"
+                                placeholder="Escreva a Fase do ativo"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.fase : ''}
+                              />
 
+                              <Select
+                                {...registerOpAtivo("tipo_investimento")}
+                                label="Tipo de Investimento"
+                                placeholder="Selecione o Tipo de Investimento"
+                                onChange={handleOpTipoInvestimentoChange}
+                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.data.tipo_investimento : ''}
+                              >
+                                {tipoInvestimentoOp.map((tipoInvestimentoOp: {key: string, value: string}) => (
+                                    <SelectItem
+                                        key={tipoInvestimentoOp.key}
+                                        value={tipoInvestimentoOp.key}
+                                    >
+                                        {tipoInvestimentoOp.value}
+                                    </SelectItem>
+                                ))}
+                              </Select>
+
+                              <p className="text-sm text-default-400">Tipo de investimento selecionado: {selectedTipoInvestimentoOp}</p>
+
+                              <Select
+                                {...registerOpAtivo("etapa_do_servico")}
+                                label="Etapa do Serviço"
+                                placeholder="Selecione a Etapa do Serviço"
+                                onChange={handleOpEtapaServicoChange}
+                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.data.etapa_do_servico : ''}
+                              >
+                                {etapaServicoOp.map((etapasServicoOp: {key: string, value: string}) => (
+                                    <SelectItem
+                                        key={etapasServicoOp.key}
+                                        value={etapasServicoOp.key}
+                                    >
+                                        {etapasServicoOp.value}
+                                    </SelectItem>
+                                ))}
+                              </Select>
+
+                              <p className="text-sm text-default-400">Etapa do Serviço selecionado: {selectedEtapaServicoOp}</p>
+
+                              <Input 
+                                {...registerOpAtivo("situacao_atual")}
+                                label="Situação Atual"
+                                placeholder="Escreva a Situação Atual"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.situacao_atual : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("proprietario")}
+                                label="Proprietário"
+                                placeholder="Escreva o Proprietário"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.proprietario : ''}
+                              />
+
+                              <p>Doação?</p>
+
+                              <CheckboxDonation 
+                                  {...registerOpAtivo("doacao")}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("valor_original")}
+                                label="Valor Original"
+                                placeholder="Escreva o Valor Original"
+                                variant="bordered"
+                                type="number"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.valor_original.toString() : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("vida_util_reg_anos")}
+                                label="Vida Útil (Anos)"
+                                placeholder="Escreva a Vida Útil (Anos)"
+                                variant="bordered"
+                                type="number"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.vida_util_reg_anos.toString() : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("vida_util_reg_meses")}
+                                label="Vida Útil (Meses)"
+                                placeholder="Escreva a Vida Útil (Meses)"
+                                variant="bordered"
+                                type="number"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.vida_util_reg_meses.toString() : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("unidade")}
+                                label="Unidade"
+                                placeholder="Escreva a unidade"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.unidade : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("data_insercao")}
+                                label="Data de Inserção"
+                                placeholder="Escreva a Data de Inserção"
+                                variant="bordered"
+                                type="date"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_insercao.toString() : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("data_obra")}
+                                label="Data de Inserção"
+                                placeholder="Escreva a Data de Inserção"
+                                variant="bordered"
+                                type="date"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_obra.toString() : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("data_operacao")}
+                                label="Data de Inserção"
+                                placeholder="Escreva a Data de Inserção"
+                                variant="bordered"
+                                type="date"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_operacao.toString() : ''}
+                              />
+
+                              
                             </form>
                           </>
                         ) : (
