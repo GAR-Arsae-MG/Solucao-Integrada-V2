@@ -460,16 +460,28 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                   </>
                 )}
                   
-                {ativosOp.map((ativo) => (
-                  <Marker 
-                      key={ativo.data.id}
-                      position={{ lat: ativo.data.latitude, lng: ativo.data.longitude }}
-                      onClick={() =>
-                        handleAtivoClick(ativo) 
+                  {ativosOp.flatMap((ativo) => {
+                      if (ativo.tipo === 'Ativo') {
+                        return AtivoOpPin!.map((ativoOp) => (
+                          <Marker 
+                            key={ativoOp.id}
+                            position={{ lat: ativoOp.latitude, lng: ativoOp.longitude }}
+                            onClick={() => handleAtivoClick(ativo)}
+                            icon={ativoPin}
+                          />
+                        )) || [];
+
+                      } else {
+                        return UnidadePin!.map((unidade) => (
+                          <Marker 
+                            key={unidade.id}
+                            position={{ lat: unidade.latitude, lng: unidade.longitude }}
+                            onClick={() => handleAtivoClick(ativo)}
+                            icon={unidadePin}
+                          />
+                        )) || [];
                       }
-                      icon={ativo.tipo === 'Ativo' ? ativoPin : unidadePin}
-                  />
-                ))}
+                    })}
 
                 {selectedAtivoOp && (
                   <InfoWindow
