@@ -642,7 +642,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
                               <Input 
                                 {...registerOpAtivo("data_insercao")}
-                                label="Data de Inserção"
+                                label="Data de inserção"
                                 placeholder="Escreva a Data de Inserção"
                                 variant="bordered"
                                 type="date"
@@ -651,8 +651,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
                               <Input 
                                 {...registerOpAtivo("data_obra")}
-                                label="Data de Inserção"
-                                placeholder="Escreva a Data de Inserção"
+                                label="Data da Obra"
+                                placeholder="Escreva a Data da Obra"
                                 variant="bordered"
                                 type="date"
                                 defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_obra.toString() : ''}
@@ -660,14 +660,116 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
                               <Input 
                                 {...registerOpAtivo("data_operacao")}
-                                label="Data de Inserção"
-                                placeholder="Escreva a Data de Inserção"
+                                label="Data de Operação"
+                                placeholder="Escreva a Data de Operação"
                                 variant="bordered"
                                 type="date"
                                 defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_operacao.toString() : ''}
                               />
 
-                              
+                              <Input 
+                                {...registerOpAtivo("data_projeto")}
+                                label="Data de Inserção"
+                                placeholder="Escreva a Data do Projeto"
+                                variant="bordered"
+                                type="date"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_projeto.toString() : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("criado_por")}
+                                label="Criado Por"
+                                placeholder="Escreva por quem foi criado o ativo"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.criado_por : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("criado_em")}
+                                label="Criado Em"
+                                placeholder="Escreva quando foi criado o ativo"
+                                variant="bordered"
+                                type="date"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.criado_em.toString() : ''}
+                              />
+
+                              <Select
+                                {...registerOpAtivo("status")}
+                                label="Status"
+                                placeholder="Selecione o Status"
+                                onChange={handleOpStatusChange}
+                                variant="bordered"
+                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.data.status: ''}
+                              >
+                                {statusOp.map((status: {key: string, value: string}) => (
+                                    <SelectItem 
+                                        key={status.key} 
+                                        value={status.key}
+                                    >
+                                        {status.value}
+                                    </SelectItem>
+                                ))}
+                              </Select>
+
+                              <p className="text-sm text-default-400">Status: {selectedStatusOp}</p>
+
+                              <Input 
+                                {...registerOpAtivo("codigo")}
+                                label="Código"
+                                placeholder="Escreva o Código do ativo"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.codigo : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("latitude")}
+                                label="Latitude"
+                                placeholder="Escreva a Latitude"
+                                variant="bordered"
+                                type="number"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.latitude.toString() : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("longitude")}
+                                label="Longitude"
+                                placeholder="Escreva a Longitude"
+                                variant="bordered"
+                                type="number"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.longitude.toString() : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("Município")}
+                                label="Município"
+                                placeholder="Escreva o Município"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.Município : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("localidade")}
+                                label="Localidade"
+                                placeholder="Escreva a Localidade"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.localidade : ''}
+                              />
+
+                              <Input 
+                                {...registerOpAtivo("Endereco")}
+                                label="Endereço"
+                                placeholder="Escreva o Endereço"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.Endereco : ''}
+                              />
+
+                              <Button
+                                color="success"
+                                type="submit"
+                                className="w-full"
+                              >
+                                Salvar
+                              </Button> 
                             </form>
                           </>
                         ) : (
@@ -729,6 +831,24 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               </Select>
                               <p className="text-sm text-default-400">Tipo selecionado: {selectedTipo}</p>
 
+                              <Input
+                                {...registerUnity("latitude")} 
+                                label="Latitude"
+                                placeholder="Escreva a latitude"
+                                type="number"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.latitude.toString() : ''}
+                              />
+
+                              <Input
+                                {...registerUnity("longitude")} 
+                                label="Longitude"
+                                placeholder="Escreva a longitude"
+                                type="number"
+                                variant="bordered"
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.longitude.toString() : ''}
+                              />
+
                               <Input 
                                 {...registerUnity("Município")}
                                 placeholder="Município"
@@ -755,6 +875,13 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 type="text"
                                 variant="underlined"
                               />
+
+                              <Button
+                                color="success"
+                                type="submit"
+                              >
+                                Salvar
+                              </Button>
                             </form>
                           </>
                         )}

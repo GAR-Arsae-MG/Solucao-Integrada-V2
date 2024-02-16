@@ -948,7 +948,7 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                         <Input 
                                                             {...register("data_operacao")}
                                                             label="Data de Operação"
-                                                            placeholder="Escreva a Data de Inserção"
+                                                            placeholder="Escreva a Data de Operação"
                                                             variant="bordered"
                                                             type="date"
                                                             defaultValue={ativo ? ativo.data_operacao.toString() : ''}
@@ -968,7 +968,7 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                         <Input 
                                                             {...register("data_projeto")}
                                                             label="Data de Inserção"
-                                                            placeholder="Escreva a Data de Inserção"
+                                                            placeholder="Escreva a Data do Projeto"
                                                             variant="bordered"
                                                             type="date"
                                                             defaultValue={ativo ? ativo.data_projeto.toString() : ''}
