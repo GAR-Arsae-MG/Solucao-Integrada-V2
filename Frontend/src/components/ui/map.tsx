@@ -156,7 +156,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
         tipo_display: selectedAtivoOp && 'tipo_display' in selectedAtivoOp ? (typeof selectedAtivoOp.tipo_display === 'string' ? {key: selectedAtivoOp.tipo_display, value: selectedAtivoOp.tipo_display}: selectedAtivoOp.tipo_display) : {key: '', value: ''},
       } 
       if (UnidadePin!.length > 0) {
-        setUnidadesPin([...UnidadePin, newMarker]);
+        setUnidadesPin([...(UnidadePin || []), newMarker]);
       } else {
         setUnidadesPin([newMarker]);
       }
