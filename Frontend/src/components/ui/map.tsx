@@ -25,8 +25,10 @@ export default function Map() {
   const { register: registerUnity, handleSubmit: handleSubmitUnity } = useForm<IGetUnity>()
 
   //Markers Logic
-  const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
   const [ativosOp, setAtivosOp] = useState<AtivoUnityData[]>([])
+  const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
+  const [ativosOpPin, SetAtivosOpPin] = useState<AtivoUnityData[]>([])
+  const [unidadesPin, setUnidadesPin] = useState<AtivoUnityData[]>([])
   const [TipoMarcador, setTipoMarcador] = useState<'Ativo' | 'Unidade'>('Ativo');
 
   const [sistemas, setSistemas] = useState([])
@@ -172,7 +174,11 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
           : { key: '', value: ''},
         }
       }
-      setAtivosOp([...ativosOp, newMarker])
+      if (AtivoOpPin) {
+        SetAtivosOpPin([...AtivoOpPin, newMarker]);
+      } else {
+        SetAtivosOpPin([newMarker]);
+      }
     }
 
     if (e.latLng && TipoMarcador === 'Unidade') {
@@ -193,9 +199,13 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
           Município: selectedAtivoOp && 'Município' in selectedAtivoOp.data ? selectedAtivoOp.data.Município : '',
           localidade: selectedAtivoOp && 'localidade' in selectedAtivoOp.data ? selectedAtivoOp.data.localidade : '',
           Endereco: selectedAtivoOp && 'Endereco' in selectedAtivoOp.data ? selectedAtivoOp.data.Endereco : '',
-        }
+        } 
+      } 
+      if (UnidadePin) {
+        setUnidadesPin([...UnidadePin, newMarker]);
+      } else {
+        setUnidadesPin([newMarker]);
       }
-      setAtivosOp([...ativosOp, newMarker])
     }
   }
 
@@ -460,28 +470,23 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                   </>
                 )}
                   
-                  {ativosOp.flatMap((ativo) => {
-                      if (ativo.tipo === 'Ativo') {
-                        return AtivoOpPin!.map((ativoOp) => (
-                          <Marker 
-                            key={ativoOp.id}
-                            position={{ lat: ativoOp.latitude, lng: ativoOp.longitude }}
-                            onClick={() => handleAtivoClick(ativo)}
-                            icon={ativoPin}
-                          />
-                        )) || [];
+                  {ativosOpPin.map((ativoOp) => (
+                    <Marker 
+                      key={ativoOp.data.id}
+                      position={{ lat: ativoOp.data.latitude, lng: ativoOp.data.longitude }}
+                      onClick={() => handleAtivoClick(ativoOp)}
+                      icon={ativoPin}
+                    />
+                  ))}
 
-                      } else {
-                        return UnidadePin!.map((unidade) => (
-                          <Marker 
-                            key={unidade.id}
-                            position={{ lat: unidade.latitude, lng: unidade.longitude }}
-                            onClick={() => handleAtivoClick(ativo)}
-                            icon={unidadePin}
-                          />
-                        )) || [];
-                      }
-                    })}
+                  {unidadesPin.map((unidade) => (
+                    <Marker 
+                      key={unidade.data.id}
+                      position={{ lat: unidade.data.latitude, lng: unidade.data.longitude }}
+                      onClick={() => handleAtivoClick(unidade)}
+                      icon={unidadePin}
+                    />
+                  ))}
 
                 {selectedAtivoOp && (
                   <InfoWindow
