@@ -175,16 +175,14 @@ export interface Ativo {
     position: LatLngLiteral
 }
 
-export type AtivoOp = {
-    tipo: 'Ativo';
+export type AtivoOp = IGetOpAtivo & {
+    tipoMarcador: 'Ativo';
     tipoAtivo: 'Visível';
-    data: IGetOpAtivo;
 }
   
-type Unidade = {
-    tipo: 'Unidade';
+export type Unidade  = IGetUnity & {
+    tipoMarcador: 'Unidade';
     tipoAtivo: 'Visível';
-    data: IGetUnity;
 }
   
 export type AtivoUnityData = AtivoOp | Unidade;

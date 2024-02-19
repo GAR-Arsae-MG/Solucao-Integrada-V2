@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
 import unidadePin from '../../assets/unities-pin.svg'
-import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity } from "../../../types/types";
+import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity, AtivoOp, Unidade } from "../../../types/types";
 import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
 import { useGetAtivosOp, useGetUnits } from "../../../react-query/QueriesAndMutations";
 import CheckboxDonation from "./Checkbox";
@@ -25,10 +25,9 @@ export default function Map() {
   const { register: registerUnity, handleSubmit: handleSubmitUnity } = useForm<IGetUnity>()
 
   //Markers Logic
-  const [ativosOp, setAtivosOp] = useState<AtivoUnityData[]>([])
   const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
-  const [ativosOpPin, SetAtivosOpPin] = useState<AtivoUnityData[]>([])
-  const [unidadesPin, setUnidadesPin] = useState<AtivoUnityData[]>([])
+  const [ativosOpPin, SetAtivosOpPin] = useState<AtivoOp[]>([])
+  const [unidadesPin, setUnidadesPin] = useState<Unidade[]>([])
   const [TipoMarcador, setTipoMarcador] = useState<'Ativo' | 'Unidade'>('Ativo');
 
   const [sistemas, setSistemas] = useState([])
@@ -125,56 +124,15 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     }
 
     if (e.latLng && TipoMarcador === 'Ativo') {
-      const newMarker: AtivoUnityData = {
-        tipo: "Ativo",
+      const newMarker: AtivoOp = {
+        tipoMarcador: "Ativo",
         tipoAtivo: "Visível",
-        data: {
-          id: selectedAtivoOp && 'id' in selectedAtivoOp.data ? selectedAtivoOp.data.id : getNewId().toString(),
-          nome_de_campo: selectedAtivoOp && 'nome_de_campo' in selectedAtivoOp.data ? selectedAtivoOp.data.nome_de_campo : `Ativo ${ativosOp.length + 1}`,
-          tipo_ativo: selectedAtivoOp && 'tipo_ativo' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_ativo : '',
-          classe: selectedAtivoOp && 'classe' in selectedAtivoOp.data ? selectedAtivoOp.data.classe : '',
-          fase: selectedAtivoOp && 'fase' in selectedAtivoOp.data ? selectedAtivoOp.data.fase : '',
-          tipo_investimento: selectedAtivoOp && 'tipo_investimento' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo_investimento : '',
-          etapa_do_servico: selectedAtivoOp && 'etapa_do_servico' in selectedAtivoOp.data ? selectedAtivoOp.data.etapa_do_servico : '',
-          situacao_atual: selectedAtivoOp && 'situacao_atual' in selectedAtivoOp.data ? selectedAtivoOp.data.situacao_atual : '',
-          proprietario: selectedAtivoOp && 'proprietario' in selectedAtivoOp.data ? selectedAtivoOp.data.proprietario : '',
-          doacao: selectedAtivoOp && 'doacao' in selectedAtivoOp.data ? selectedAtivoOp.data.doacao : false,
-          valor_original:selectedAtivoOp && 'valor_original' in selectedAtivoOp.data ? selectedAtivoOp.data.valor_original : 0,
-          vida_util_reg_anos:selectedAtivoOp && 'vida_util_reg_anos' in selectedAtivoOp.data ? selectedAtivoOp.data.vida_util_reg_anos : 0,
-          vida_util_reg_meses:selectedAtivoOp && 'vida_util_reg_meses' in selectedAtivoOp.data ? selectedAtivoOp.data.vida_util_reg_meses : 0,
-          unidade: selectedAtivoOp && 'unidade' in selectedAtivoOp.data ? selectedAtivoOp.data.unidade : '',
-          data_insercao: selectedAtivoOp && 'data_insercao' in selectedAtivoOp.data ? selectedAtivoOp.data.data_insercao : new Date(),
-          data_projeto: selectedAtivoOp && 'data_projeto' in selectedAtivoOp.data ? selectedAtivoOp.data.data_projeto : new Date(),
-          data_obra: selectedAtivoOp && 'data_obra' in selectedAtivoOp.data ? selectedAtivoOp.data.data_obra : new Date(),
-          data_operacao: selectedAtivoOp && 'data_operacao' in selectedAtivoOp.data ? selectedAtivoOp.data.data_operacao : new Date(),
-          criado_por: selectedAtivoOp && 'criado_por' in selectedAtivoOp.data ? selectedAtivoOp.data.criado_por : '',
-          status: selectedAtivoOp && 'status' in selectedAtivoOp.data ? selectedAtivoOp.data.status : '',
-          criado_em: selectedAtivoOp && 'criado_em' in selectedAtivoOp.data ? selectedAtivoOp.data.criado_em : new Date(),
-          codigo: selectedAtivoOp && 'codigo' in selectedAtivoOp.data ? selectedAtivoOp.data.codigo : '',
-          latitude: selectedAtivoOp && 'latitude' in selectedAtivoOp.data ? selectedAtivoOp.data.latitude : e.latLng.lat(),
-          longitude: selectedAtivoOp && 'longitude' in selectedAtivoOp.data ? selectedAtivoOp.data.longitude : e.latLng.lng(),
-          Município: selectedAtivoOp && 'Município' in selectedAtivoOp.data ? selectedAtivoOp.data.Município : '',
-          localidade: selectedAtivoOp && 'localidade' in selectedAtivoOp.data ? selectedAtivoOp.data.localidade : '',
-          Endereco: selectedAtivoOp && 'Endereco' in selectedAtivoOp.data ? selectedAtivoOp.data.Endereco : '',
-          status_display: selectedAtivoOp && 'status_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.status_display === 'string' 
-          ? { key: selectedAtivoOp.data.status_display, value: selectedAtivoOp.data.status_display } 
-          : selectedAtivoOp.data.status_display) 
-          : { key: '', value: '' },
-          
-          tipo_ativo_display: selectedAtivoOp && 'tipo_ativo_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.tipo_ativo_display === 'string' 
-          ? { key: selectedAtivoOp.data.tipo_ativo_display, value: selectedAtivoOp.data.tipo_ativo_display } : selectedAtivoOp.data.tipo_ativo_display)
-          : { key: '', value: ''},
-          
-          tipo_investimento_display: selectedAtivoOp && 'tipo_investimento_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.tipo_investimento_display === 'string' 
-          ? { key: selectedAtivoOp.data.tipo_investimento_display, value: selectedAtivoOp.data.tipo_investimento_display } : selectedAtivoOp.data.tipo_investimento_display)
-          : { key: '', value: ''},
+        id: getNewId().toString(),
+        latitude: e.latLng.lat(),
+        longitude: e.latLng.lng(),
 
-          etapa_do_servico_display: selectedAtivoOp && 'etapa_do_servico_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.etapa_do_servico_display === 'string' 
-          ? { key: selectedAtivoOp.data.etapa_do_servico_display, value: selectedAtivoOp.data.etapa_do_servico_display } : selectedAtivoOp.data.etapa_do_servico_display)
-          : { key: '', value: ''},
-        }
       }
-      if (AtivoOpPin) {
+      if (AtivoOpPin!.length > 0) {
         SetAtivosOpPin([...AtivoOpPin, newMarker]);
       } else {
         SetAtivosOpPin([newMarker]);
@@ -182,26 +140,22 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     }
 
     if (e.latLng && TipoMarcador === 'Unidade') {
-      const newMarker: AtivoUnityData = {
-        tipo: "Unidade",
+      const newMarker: Unidade = {
+        tipoMarcador: "Unidade",
         tipoAtivo: "Visível",
-        data: {
-          id: selectedAtivoOp && 'id' in selectedAtivoOp.data ? selectedAtivoOp.data.id : getNewId().toString(),
-          nome: selectedAtivoOp && 'nome' in selectedAtivoOp.data ? selectedAtivoOp.data.nome : `Unidade ${ativosOp.length + 1}`,
-          sistemas: selectedAtivoOp && 'sistemas' in selectedAtivoOp.data ? selectedAtivoOp.data.sistemas : '',
-          sistemas_display: selectedAtivoOp && 'sistemas_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.sistemas_display === 'string' ? { key: selectedAtivoOp.data.sistemas_display, value: selectedAtivoOp.data.sistemas_display } : selectedAtivoOp.data.sistemas_display) : { key: '', value: ''},
-
-
-          tipo: selectedAtivoOp && 'tipo' in selectedAtivoOp.data ? selectedAtivoOp.data.tipo : '',
-          tipo_display: selectedAtivoOp && 'tipo_display' in selectedAtivoOp.data ? (typeof selectedAtivoOp.data.tipo_display === 'string' ? { key: selectedAtivoOp.data.tipo_display, value: selectedAtivoOp.data.tipo_display } : selectedAtivoOp.data.tipo_display) : { key: '', value: ''},
-          latitude: selectedAtivoOp && 'latitude' in selectedAtivoOp.data ? selectedAtivoOp.data.latitude : e.latLng.lat(),
-          longitude: selectedAtivoOp && 'longitude' in selectedAtivoOp.data ? selectedAtivoOp.data.longitude : e.latLng.lng(),
-          Município: selectedAtivoOp && 'Município' in selectedAtivoOp.data ? selectedAtivoOp.data.Município : '',
-          localidade: selectedAtivoOp && 'localidade' in selectedAtivoOp.data ? selectedAtivoOp.data.localidade : '',
-          Endereco: selectedAtivoOp && 'Endereco' in selectedAtivoOp.data ? selectedAtivoOp.data.Endereco : '',
-        } 
+        id: selectedAtivoOp && 'id' in selectedAtivoOp ? selectedAtivoOp.id : getNewId().toString(),
+        latitude: e.latLng.lat(),
+        longitude: e.latLng.lng(),
+        nome: selectedAtivoOp && 'nome' in selectedAtivoOp ? selectedAtivoOp.nome : '',
+        sistemas: selectedAtivoOp && 'sistemas' in selectedAtivoOp ? selectedAtivoOp.sistemas : '',
+        tipo: selectedAtivoOp && 'tipo' in selectedAtivoOp ? selectedAtivoOp.tipo : '',
+        Município: selectedAtivoOp && 'Município' in selectedAtivoOp ? selectedAtivoOp.Município : '',
+        localidade: selectedAtivoOp && 'localidade' in selectedAtivoOp ? selectedAtivoOp.localidade : '',
+        Endereco: selectedAtivoOp && 'Endereco' in selectedAtivoOp ? selectedAtivoOp.Endereco : '',
+        sistemas_display: selectedAtivoOp && 'sistemas_display' in selectedAtivoOp ? (typeof selectedAtivoOp.sistemas_display === 'string' ? {key: selectedAtivoOp.sistemas_display, value: selectedAtivoOp.sistemas_display}: selectedAtivoOp.sistemas_display) : {key: '', value: ''},
+        tipo_display: selectedAtivoOp && 'tipo_display' in selectedAtivoOp ? (typeof selectedAtivoOp.tipo_display === 'string' ? {key: selectedAtivoOp.tipo_display, value: selectedAtivoOp.tipo_display}: selectedAtivoOp.tipo_display) : {key: '', value: ''},
       } 
-      if (UnidadePin) {
+      if (UnidadePin!.length > 0) {
         setUnidadesPin([...UnidadePin, newMarker]);
       } else {
         setUnidadesPin([newMarker]);
@@ -472,8 +426,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                   
                   {ativosOpPin.map((ativoOp) => (
                     <Marker 
-                      key={ativoOp.data.id}
-                      position={{ lat: ativoOp.data.latitude, lng: ativoOp.data.longitude }}
+                      key={ativoOp.id}
+                      position={{ lat: ativoOp.latitude, lng: ativoOp.longitude }}
                       onClick={() => handleAtivoClick(ativoOp)}
                       icon={ativoPin}
                     />
@@ -481,8 +435,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
                   {unidadesPin.map((unidade) => (
                     <Marker 
-                      key={unidade.data.id}
-                      position={{ lat: unidade.data.latitude, lng: unidade.data.longitude }}
+                      key={unidade.id}
+                      position={{ lat: unidade.latitude, lng: unidade.longitude }}
                       onClick={() => handleAtivoClick(unidade)}
                       icon={unidadePin}
                     />
@@ -490,8 +444,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
                 {selectedAtivoOp && (
                   <InfoWindow
-                    key={selectedAtivoOp.data.id}
-                    position={{ lat: selectedAtivoOp.data.latitude, lng: selectedAtivoOp.data.longitude }}
+                    key={selectedAtivoOp.id}
+                    position={{ lat: selectedAtivoOp.latitude, lng: selectedAtivoOp.longitude }}
                     onCloseClick={handleAtivoClose}
                   >
                       <div>
@@ -500,12 +454,12 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                           <>
                             <form
                               onSubmit={handleSubmitOpAtivo((formData: IGetOpAtivo) => {
-                                updateExternalAtivoOp(selectedAtivoOp.data.id, formData);
+                                updateExternalAtivoOp(selectedAtivoOp.id, formData);
                               })}
 
                               className="flex flex-col gap-2"
                             >
-                              <p>ID: {selectedAtivoOp.data.id}</p>
+                              <p>ID: {selectedAtivoOp.id}</p>
                               <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
                               <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
       
@@ -514,7 +468,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                   {...registerOpAtivo("nome_de_campo")} 
                                   placeholder="Nome do ativo"
                                   label="Nome do Ativo"
-                                  defaultValue={selectedAtivoOp ? selectedAtivoOp.data.nome_de_campo: ''}
+                                  defaultValue={selectedAtivoOp ? selectedAtivoOp.nome_de_campo: ''}
                                   type="text"
                                   variant="underlined"
                               />
@@ -524,7 +478,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label='Código do Ativo'
                                 placeholder="Código do Ativo"
                                 type="text"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.codigo: ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.codigo: ''}
                                 variant="underlined"
                               />
 
@@ -533,7 +487,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Tipo de Ativo"
                                 placeholder="Selecione o Tipo de Ativo"
                                 onChange={handleOpTipoAtivoChange}
-                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.data.tipo_ativo : ''}
+                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.tipo_ativo : ''}
                               >
                                 {tipoAtivoOp.map((tipoAtivoOp: {key: string, value: string}) => (
                                     <SelectItem
@@ -551,7 +505,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Classe"
                                 placeholder="Escreva a Classe do ativo"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.classe : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.classe : ''}
                               />
 
                               <Input 
@@ -559,7 +513,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Fase"
                                 placeholder="Escreva a Fase do ativo"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.fase : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.fase : ''}
                               />
 
                               <Select
@@ -567,7 +521,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Tipo de Investimento"
                                 placeholder="Selecione o Tipo de Investimento"
                                 onChange={handleOpTipoInvestimentoChange}
-                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.data.tipo_investimento : ''}
+                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.tipo_investimento : ''}
                               >
                                 {tipoInvestimentoOp.map((tipoInvestimentoOp: {key: string, value: string}) => (
                                     <SelectItem
@@ -586,7 +540,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Etapa do Serviço"
                                 placeholder="Selecione a Etapa do Serviço"
                                 onChange={handleOpEtapaServicoChange}
-                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.data.etapa_do_servico : ''}
+                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.etapa_do_servico : ''}
                               >
                                 {etapaServicoOp.map((etapasServicoOp: {key: string, value: string}) => (
                                     <SelectItem
@@ -605,7 +559,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Situação Atual"
                                 placeholder="Escreva a Situação Atual"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.situacao_atual : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.situacao_atual : ''}
                               />
 
                               <Input 
@@ -613,7 +567,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Proprietário"
                                 placeholder="Escreva o Proprietário"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.proprietario : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.proprietario : ''}
                               />
 
                               <p>Doação?</p>
@@ -628,7 +582,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva o Valor Original"
                                 variant="bordered"
                                 type="number"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.valor_original.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.valor_original.toString() : ''}
                               />
 
                               <Input 
@@ -637,7 +591,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a Vida Útil (Anos)"
                                 variant="bordered"
                                 type="number"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.vida_util_reg_anos.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.vida_util_reg_anos.toString() : ''}
                               />
 
                               <Input 
@@ -646,7 +600,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a Vida Útil (Meses)"
                                 variant="bordered"
                                 type="number"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.vida_util_reg_meses.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.vida_util_reg_meses.toString() : ''}
                               />
 
                               <Input 
@@ -654,7 +608,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Unidade"
                                 placeholder="Escreva a unidade"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.unidade : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.unidade : ''}
                               />
 
                               <Input 
@@ -663,7 +617,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a Data de Inserção"
                                 variant="bordered"
                                 type="date"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_insercao.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data_insercao.toString() : ''}
                               />
 
                               <Input 
@@ -672,7 +626,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a Data da Obra"
                                 variant="bordered"
                                 type="date"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_obra.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data_obra.toString() : ''}
                               />
 
                               <Input 
@@ -681,7 +635,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a Data de Operação"
                                 variant="bordered"
                                 type="date"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_operacao.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data_operacao.toString() : ''}
                               />
 
                               <Input 
@@ -690,7 +644,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a Data do Projeto"
                                 variant="bordered"
                                 type="date"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.data_projeto.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data_projeto.toString() : ''}
                               />
 
                               <Input 
@@ -698,7 +652,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Criado Por"
                                 placeholder="Escreva por quem foi criado o ativo"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.criado_por : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.criado_por : ''}
                               />
 
                               <Input 
@@ -707,7 +661,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva quando foi criado o ativo"
                                 variant="bordered"
                                 type="date"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.criado_em.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.criado_em.toString() : ''}
                               />
 
                               <Select
@@ -716,7 +670,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Selecione o Status"
                                 onChange={handleOpStatusChange}
                                 variant="bordered"
-                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.data.status: ''}
+                                defaultSelectedKeys={selectedAtivoOp ? selectedAtivoOp.status: ''}
                               >
                                 {statusOp.map((status: {key: string, value: string}) => (
                                     <SelectItem 
@@ -735,7 +689,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Código"
                                 placeholder="Escreva o Código do ativo"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.codigo : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.codigo : ''}
                               />
 
                               <Input 
@@ -744,7 +698,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a Latitude"
                                 variant="bordered"
                                 type="number"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.latitude.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.latitude.toString() : ''}
                               />
 
                               <Input 
@@ -753,7 +707,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a Longitude"
                                 variant="bordered"
                                 type="number"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.longitude.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.longitude.toString() : ''}
                               />
 
                               <Input 
@@ -761,7 +715,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Município"
                                 placeholder="Escreva o Município"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.Município : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.Município : ''}
                               />
 
                               <Input 
@@ -769,7 +723,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Localidade"
                                 placeholder="Escreva a Localidade"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.localidade : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.localidade : ''}
                               />
 
                               <Input 
@@ -777,7 +731,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label="Endereço"
                                 placeholder="Escreva o Endereço"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.Endereco : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.Endereco : ''}
                               />
 
                               <Button
@@ -793,11 +747,11 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                           <>
                             <form
                               onSubmit={handleSubmitUnity((formData: IGetUnity) => {
-                                updateExternalUnity(selectedAtivoOp.data.id, formData);
+                                updateExternalUnity(selectedAtivoOp.id, formData);
                               })}
                               className="flex flex-col gap-2"
                             >
-                              <p>ID: {selectedAtivoOp.data.id}</p>
+                              <p>ID: {selectedAtivoOp.id}</p>
                               <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
                               <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
 
@@ -805,7 +759,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 {...registerUnity("nome")}
                                 placeholder="Nome da Unidade"
                                 label="Nome da Unidade"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.nome: ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.nome: ''}
                                 type="text"
                                 variant="underlined"
                               />
@@ -815,7 +769,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label='Sistema'
                                 onChange={handleSistemasChange}
                                 placeholder="Selecione o sistema"
-                                defaultSelectedKeys={selectedAtivoOp.data.sistemas}
+                                defaultSelectedKeys={selectedAtivoOp.sistemas}
                                 variant="underlined"
                               >
                                 {sistemas.map((sistema: {key: string, value: string}) => (
@@ -834,7 +788,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 label='Tipo'
                                 onChange={handleTipoChange}
                                 placeholder="Selecione o tipo"
-                                defaultSelectedKeys={selectedAtivoOp.data.tipo}
+                                defaultSelectedKeys={selectedAtivoOp.tipo}
                                 variant="underlined"
                               >
                                 {tipo.map((tipo: {key: string, value: string}) => (
@@ -854,7 +808,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a latitude"
                                 type="number"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.latitude.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.latitude.toString() : ''}
                               />
 
                               <Input
@@ -863,14 +817,14 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 placeholder="Escreva a longitude"
                                 type="number"
                                 variant="bordered"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.longitude.toString() : ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.longitude.toString() : ''}
                               />
 
                               <Input 
                                 {...registerUnity("Município")}
                                 placeholder="Município"
                                 label="Município"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.Município: ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.Município: ''}
                                 type="text"
                                 variant="underlined"
                               />
@@ -879,7 +833,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 {...registerUnity("localidade")}
                                 placeholder="Localidade"
                                 label="Localidade"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.localidade: ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.localidade: ''}
                                 type="text"
                                 variant="underlined"
                               />
@@ -888,7 +842,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                 {...registerUnity("Endereco")}
                                 placeholder="Endereço"
                                 label="Endereço"
-                                defaultValue={selectedAtivoOp ? selectedAtivoOp.data.Endereco: ''}
+                                defaultValue={selectedAtivoOp ? selectedAtivoOp.Endereco: ''}
                                 type="text"
                                 variant="underlined"
                               />
