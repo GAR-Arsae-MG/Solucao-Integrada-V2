@@ -125,6 +125,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
     if (e.latLng && TipoMarcador === 'Ativo') {
       const newMarker: AtivoOp = {
+        ...selectedAtivoOp,
         tipoMarcador: "Ativo",
         tipoAtivo: "Visível",
         id: getNewId().toString(),
@@ -133,7 +134,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
       }
       if (AtivoOpPin!.length > 0) {
-        SetAtivosOpPin([...AtivoOpPin, newMarker]);
+        SetAtivosOpPin([...(AtivoOpPin as AtivoOp[]), newMarker]);
       } else {
         SetAtivosOpPin([newMarker]);
       }
@@ -141,6 +142,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
     if (e.latLng && TipoMarcador === 'Unidade') {
       const newMarker: Unidade = {
+        ...selectedAtivoOp,
         tipoMarcador: "Unidade",
         tipoAtivo: "Visível",
         id: selectedAtivoOp && 'id' in selectedAtivoOp ? selectedAtivoOp.id : getNewId().toString(),
@@ -154,9 +156,10 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
         Endereco: selectedAtivoOp && 'Endereco' in selectedAtivoOp ? selectedAtivoOp.Endereco : '',
         sistemas_display: selectedAtivoOp && 'sistemas_display' in selectedAtivoOp ? (typeof selectedAtivoOp.sistemas_display === 'string' ? {key: selectedAtivoOp.sistemas_display, value: selectedAtivoOp.sistemas_display}: selectedAtivoOp.sistemas_display) : {key: '', value: ''},
         tipo_display: selectedAtivoOp && 'tipo_display' in selectedAtivoOp ? (typeof selectedAtivoOp.tipo_display === 'string' ? {key: selectedAtivoOp.tipo_display, value: selectedAtivoOp.tipo_display}: selectedAtivoOp.tipo_display) : {key: '', value: ''},
+
       } 
-      if (UnidadePin!.length > 0) {
-        setUnidadesPin([...(UnidadePin || []), newMarker]);
+      if (UnidadePin && UnidadePin!.length > 0) {
+        setUnidadesPin([...UnidadePin, newMarker]);
       } else {
         setUnidadesPin([newMarker]);
       }
@@ -450,7 +453,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                   >
                       <div>
                         <h2>Informações gerais do Ativo</h2>
-                        {selectedAtivoOp.tipo === 'Ativo' ? (
+                        {selectedAtivoOp.tipoMarcador === 'Ativo' ? (
                           <>
                             <form
                               onSubmit={handleSubmitOpAtivo((formData: IGetOpAtivo) => {
@@ -460,7 +463,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               className="flex flex-col gap-2"
                             >
                               <p>ID: {selectedAtivoOp.id}</p>
-                              <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
+                              <p>Tipo de marcador: {selectedAtivoOp.tipoMarcador}</p>
                               <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
       
                               <h2>Editar nome de Ativo</h2>
@@ -752,7 +755,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               className="flex flex-col gap-2"
                             >
                               <p>ID: {selectedAtivoOp.id}</p>
-                              <p>Tipo de marcador: {selectedAtivoOp.tipo}</p>
+                              <p>Tipo de marcador: {selectedAtivoOp.tipoMarcador}</p>
                               <p>Tipo Ativo: {selectedAtivoOp.tipoAtivo}</p>
 
                               <Input 
