@@ -159,7 +159,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
       } 
       if (UnidadePin && UnidadePin!.length > 0) {
-        setUnidadesPin([...UnidadePin, newMarker]);
+        setUnidadesPin([...(UnidadePin as Unidade[]), newMarker]);
       } else {
         setUnidadesPin([newMarker]);
       }
