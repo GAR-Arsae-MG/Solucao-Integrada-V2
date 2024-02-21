@@ -31,6 +31,8 @@ export default function Map() {
   const [unidadesPin, setUnidadesPin] = useState<Unidade[]>([])
   const [TipoMarcador, setTipoMarcador] = useState<'Ativo' | 'Unidade'>('Ativo');
 
+  const [maxId, setMaxId] = useState(0);
+
   const [sistemas, setSistemas] = useState([])
   const [selectedSistema, setSelectedSistema] = useState('')
 
@@ -116,12 +118,19 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     setSelectedTipoInvestimentoOp(event.target.value)
   }
 
+  useEffect(() => {
+    if (AtivoOpPin && UnidadePin) {
+      const newMaxId = Math.max(...AtivoOpPin.map(ativo => parseInt(ativo.id)), ...UnidadePin.map(unidade => parseInt(unidade.id)));
+      setMaxId(newMaxId);
+    }
+  }, [AtivoOpPin, UnidadePin]);
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     console.log('handleMapClick chamado', e.latLng, TipoMarcador)
 
+
     function getNewId() {
-      return idCounter.current++
+      return maxId + 1
     }
 
     if (e.latLng && TipoMarcador === 'Ativo') {
