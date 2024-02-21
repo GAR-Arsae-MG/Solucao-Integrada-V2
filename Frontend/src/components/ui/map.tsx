@@ -7,6 +7,7 @@ import {
   Polyline,
   LoadScript
 } from "@react-google-maps/api";
+import toast, { Toaster } from 'react-hot-toast';
 import '../../assets/Map.css'
 import Places from "../places"
 import { Button, Input, Radio, RadioGroup, Select, SelectItem } from "@nextui-org/react";
@@ -48,9 +49,9 @@ export default function Map() {
   const [etapaServicoOp, setEtapaServicoOp] = useState([])
   const [selectedEtapaServicoOp, setSelectedEtapaServicoOp] = useState('')
 
-  const {data: UnidadePin} = useGetUnits({tipo: selectedTipo, sistemas: selectedSistema})
+  const {data: UnidadePin, isLoading: isUnidadePinLoading, isError: isUnidadePinError} = useGetUnits({tipo: selectedTipo, sistemas: selectedSistema})
 
-  const {data: AtivoOpPin} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
+  const {data: AtivoOpPin, isLoading: isAtivoOpPinLoading, isError: isAtivoOpPinError} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
 
   useEffect(() => {
 
@@ -339,6 +340,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
   return (
       <>
+        <Toaster />
         <div className="flex h-full">
           <div className="w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
           <h1>Painel - Filtros</h1>
@@ -453,24 +455,53 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                     />
                   </>
                 )}
-                  
-                  {ativosOpPin.map((ativoOp) => (
+
+                {isAtivoOpPinLoading ? (
+                  toast.loading('Carregando Ativos...', {
+                    position: 'top-right',
+                    duration: 4000,
+                  })
+                ): isAtivoOpPinError ? (
+                  toast.error('Falha ao carregar Ativos', {
+                    position: 'top-right',
+                    duration: 4000,
+                  })
+                ):(
+                  ativosOpPin.map((ativoOp) => (
                     <Marker 
                       key={ativoOp.id}
                       position={{ lat: ativoOp.latitude, lng: ativoOp.longitude }}
                       onClick={() => handleAtivoClick(ativoOp)}
                       icon={ativoPin}
                     />
-                  ))}
+                  ))
+                )}
 
-                  {unidadesPin.map((unidade) => (
+                {isUnidadePinLoading ? (
+                  toast.loading('Carregando Unidades...', {
+                    position: 'top-right',
+                    duration: 4000,
+                  })
+                ): isUnidadePinError ? (
+                  toast.error('Falha ao carregar Unidades', {
+                    position: 'top-right',
+                    duration: 4000,
+                  })
+                ): (
+                  toast.success('Unidades carregadas', {
+                    position: 'top-right',
+                    duration: 4000,
+                  }) &&
+                  unidadesPin.map((unidade) => (
                     <Marker 
                       key={unidade.id}
                       position={{ lat: unidade.latitude, lng: unidade.longitude }}
                       onClick={() => handleAtivoClick(unidade)}
                       icon={unidadePin}
                     />
-                  ))}
+                  ))
+                )
+                }
 
                 {selectedAtivoOp && (
                   <InfoWindow
