@@ -445,6 +445,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                 onClick={handleMapClick}
                 onRightClick={handleMapRightClick}
                 ref={mapRef}
+
               >
                 {office && (
                   <>
@@ -488,10 +489,6 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                     duration: 4000,
                   })
                 ): (
-                  toast.success('Unidades carregadas', {
-                    position: 'top-right',
-                    duration: 4000,
-                  }) &&
                   unidadesPin.map((unidade) => (
                     <Marker 
                       key={unidade.id}
