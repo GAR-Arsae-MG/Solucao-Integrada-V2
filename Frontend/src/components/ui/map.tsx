@@ -51,11 +51,36 @@ export default function Map() {
   const [etapaServicoOp, setEtapaServicoOp] = useState([])
   const [selectedEtapaServicoOp, setSelectedEtapaServicoOp] = useState('')
 
-  const {data: UnidadePin, isLoading: isUnidadePinLoading, isError: isUnidadePinError} = useGetUnits({tipo: selectedTipo, sistemas: selectedSistema})
+  const {data: UnidadePin, isLoading: isUnidadePinLoading, isError: isUnidadePinError, refetch: refetchUnidadePin } = useGetUnits({tipo: selectedTipo, sistemas: selectedSistema})
 
-  const {data: AtivoOpPin, isLoading: isAtivoOpPinLoading, isError: isAtivoOpPinError} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
+  const {data: AtivoOpPin, isLoading: isAtivoOpPinLoading, isError: isAtivoOpPinError, refetch: refetchAtivoOpPin} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
 
   useEffect(() => {
+
+    const fetchMapData = async () => {
+      refetchAtivoOpPin().then((result) => {
+        if (result.data) {
+          const ativosOp = result.data.map(ativo => ({
+            ...ativo,
+            tipoMarcador: 'Ativo' as const,
+            tipoAtivo: 'Visível' as const,
+          }));
+          SetAtivosOpPin(ativosOp);
+        }
+      });
+
+      refetchUnidadePin().then((result) => {
+        if (result.data) {
+          const unidades = result.data.map(unidade => ({
+            ...unidade,
+            tipoMarcador: 'Unidade' as const,
+            tipoAtivo: 'Visível' as const,
+          }))
+          setUnidadesPin(unidades)
+        }
+      })   
+    }
+    fetchMapData()
 
     const fetchUnitySistema = async () => {
       const unitySistema = await getUnitSistemas()
@@ -92,7 +117,7 @@ export default function Map() {
         setTipoInvestimentoOp(opTipoInvestimento)
     }
     fetchOpTipoInvestimento() 
-  }, [])
+  }, [refetchAtivoOpPin, refetchUnidadePin])
 
   const handleSistemasChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
   setSelectedSistema(event.target.value)

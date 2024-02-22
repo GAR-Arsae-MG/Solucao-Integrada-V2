@@ -2,79 +2,9 @@
 import { Accordion, AccordionItem, Card, CardBody, Tab, Tabs} from "@nextui-org/react";
 import 'leaflet/dist/leaflet.css'
 import Map from "../../components/ui/map";
-import { useEffect, useState } from "react";
-import { useGetAtivosOp, useGetUnits } from "../../../react-query/QueriesAndMutations";
-import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos } from "../../../django/api";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 function Painel() {
-    
-    const [sistemas, setSistemas] = useState([])
-  const [selectedSistema, setSelectedSistema] = useState('')
-
-  const [tipo, setTipo] = useState([])
-  const [selectedTipo, setSelectedTipo] = useState('')
-
-  const [tipoAtivoOp, setTipoAtivoOp] = useState([])
-  const [selectedTipoAtivoOp, setSelectedTipoAtivoOp] = useState('')
-
-  const [tipoInvestimentoOp, setTipoInvestimentoOp] = useState([])
-  const [selectedTipoInvestimentoOp, setSelectedTipoInvestimentoOp] = useState('')
-
-  const [statusOp, setStatusOp] = useState([])
-  const [selectedStatusOp, setSelectedStatusOp] = useState('')
-
-  const [etapaServicoOp, setEtapaServicoOp] = useState([])
-  const [selectedEtapaServicoOp, setSelectedEtapaServicoOp] = useState('')
-
-  const { isLoading: isUnidadePinLoading, isError: isUnidadePinError} = useGetUnits({tipo: selectedTipo, sistemas: selectedSistema})
-
-  const { isLoading: isAtivoOpPinLoading, isError: isAtivoOpPinError} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
-    console.log(
-        'parametros', 
-        sistemas, tipo, tipoAtivoOp, tipoInvestimentoOp, statusOp, etapaServicoOp,
-        setSelectedEtapaServicoOp, setSelectedSistema, setSelectedStatusOp, setSelectedTipo, setSelectedTipoAtivoOp, setSelectedTipoInvestimentoOp,
-    )
-
-
-  useEffect(() => {
-
-    const fetchUnitySistema = async () => {
-      const unitySistema = await getUnitSistemas()
-      setSistemas(unitySistema)
-    }
-    fetchUnitySistema()
-
-    const fetchUnityTipo = async () => {
-      const unityTipo = await getUnitTipos()
-      setTipo(unityTipo)
-    }
-    fetchUnityTipo()
-
-    const fetchOpStatus = async () => {
-      const opStatus = await getOpStatus()
-      setStatusOp(opStatus)
-    }
-    fetchOpStatus()
-
-    const fetchOpEtapaServico = async () => {
-        const opEtapaServico = await getOpEtapaServico()
-        setEtapaServicoOp(opEtapaServico)
-    }
-    fetchOpEtapaServico()
-
-    const fetchOpTipoAtivo = async () => {
-        const opTipoAtivo = await getOpTipoAtivo()
-        setTipoAtivoOp(opTipoAtivo)
-    }
-    fetchOpTipoAtivo()
-
-    const fetchOpTipoInvestimento = async () => {
-        const opTipoInvestimento = await getOpTipoInvestimento()
-        setTipoInvestimentoOp(opTipoInvestimento)
-    }
-    fetchOpTipoInvestimento() 
-  }, [])
     
 
     return (
@@ -87,20 +17,7 @@ function Painel() {
                             <section id="map">
                                 <p className=" flex justify-center font-bold ">Mapa Sanarj</p>
                                     <div>
-                                        {isAtivoOpPinLoading && isUnidadePinLoading ? (
-                                            toast.loading('Carregando Ativos e Unidades...', {
-                                                position: 'top-right',
-                                                duration: 4000,
-                                            })
-                                            ): isAtivoOpPinError && isUnidadePinError ? (
-                                            toast.error('Falha ao carregar Ativos e Unidades', {
-                                                position: 'bottom-right',
-                                                duration: 4000,
-                                            })
-                                            ):(
-                                                <Map />
-                                            )
-                                        }
+                                        <Map />
                                     </div>
                             </section>
                         </CardBody>
