@@ -546,7 +546,13 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                           <>
                             <form
                               onSubmit={handleSubmitOpAtivo((formData: IGetOpAtivo) => {
-                                updateExternalAtivoOp(selectedAtivoOp.id, formData);
+                                updateExternalAtivoOp(selectedAtivoOp.id, formData)
+                                .catch(error => (
+                                  toast.error(`Erro inesperado, ${error}`, {
+                                    position: 'top-left',
+                                    duration: 4000,
+                                  })
+                                ))
                               })}
 
                               className="flex flex-col gap-2"
@@ -839,7 +845,13 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                           <>
                             <form
                               onSubmit={handleSubmitUnity((formData: IGetUnity) => {
-                                updateExternalUnity(selectedAtivoOp.id, formData);
+                                updateExternalUnity(selectedAtivoOp.id, formData)
+                                .catch(error => (
+                                  toast.error(`Erro inesperado, ${error}`, {
+                                    position: 'top-left',
+                                    duration: 4000,
+                                  })
+                                ))
                               })}
                               className="flex flex-col gap-2"
                             >
