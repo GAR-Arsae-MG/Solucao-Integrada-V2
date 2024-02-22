@@ -116,9 +116,23 @@ export const deleteExternalUser = async (userId: string) => {
     }
 }
 
+export const createExternalUnity = async (unityData: IGetUnity) => {
+    try {
+        const response = await api.post(`/unidades/`, unityData)
+        return response.data as IGetUnity
+    } catch (error) {
+        console.error(error)
+        alert(`Erro ao criar uma nova unidade, devido ao erro ${error as Error}`)
+    }
+}
+
 export const updateExternalUnity = async (unityId: string, unityData: IGetUnity | null) => {
     try {
-        const response = await api.patch(`/unidades/${unityId}/`, unityData)
+        const response = await api.patch(`/unidades/${unityId}/`, unityData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
         return response.data as IGetUnity
     } catch (error) {
         console.error(error)
@@ -134,6 +148,16 @@ export const deleteExternalUnity = async (unityId: string) => {
         console.error(error);
         alert('Erro ao deletar a unidade');
         throw error;
+    }
+}
+
+export const createExternalAtivoAdmin = async (ativoData: IGetAdminAtivo) => {
+    try {
+        const response = await api.post('/ativos-administrativos/', ativoData)
+        return response.data as IGetAdminAtivo
+    } catch (error) {
+        console.error(error)
+        alert(`Erro ao criar um novo ativo, devido ao erro ${error as Error}`)
     }
 }
 
@@ -154,6 +178,16 @@ export const deleteExternalAtivoAdmin = async (ativoId: string) => {
     } catch (error) {
         alert('Erro ao deletar ativo')
         throw error as Error
+    }
+}
+
+export const createExternalAtivoOp = async (ativoData: IGetOpAtivo) => {
+    try {
+        const response = await api.post(`/ativos-operacionais/`, ativoData)
+        return response.data as IGetOpAtivo
+    } catch (error) {
+        console.error(error)
+        alert(`Erro ao criar um novo ativo, devido ao erro ${error as Error}`)
     }
 }
 

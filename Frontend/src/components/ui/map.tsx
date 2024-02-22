@@ -16,7 +16,7 @@ import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
 import unidadePin from '../../assets/unities-pin.svg'
 import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity, AtivoOp, Unidade } from "../../../types/types";
-import { getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
+import { createExternalAtivoOp, createExternalUnity, getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
 import { useGetAtivosOp, useGetUnits } from "../../../react-query/QueriesAndMutations";
 import CheckboxDonation from "./Checkbox";
 
@@ -150,20 +150,19 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     }
   }, [AtivoOpPin, UnidadePin]);
 
+  function getNewId() {
+    return maxId + 1
+  }
+
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     console.log('handleMapClick chamado', e.latLng, TipoMarcador)
-
-
-    function getNewId() {
-      return maxId + 1
-    }
 
     if (e.latLng && TipoMarcador === 'Ativo') {
       const newMarker: AtivoOp = {
         ...selectedAtivoOp,
         tipoMarcador: "Ativo",
         tipoAtivo: "Visível",
-        id: selectedAtivoOp && 'id' in selectedAtivoOp ? selectedAtivoOp.id : getNewId().toString(),
+        id: selectedAtivoOp && 'id' in selectedAtivoOp ? selectedAtivoOp.id : '',
         latitude: e.latLng.lat(),
         longitude: e.latLng.lng(),
         nome_de_campo: selectedAtivoOp && 'nome_de_campo' in selectedAtivoOp ? selectedAtivoOp.nome_de_campo : '',
@@ -207,7 +206,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
         ...selectedAtivoOp,
         tipoMarcador: "Unidade",
         tipoAtivo: "Visível",
-        id: selectedAtivoOp && 'id' in selectedAtivoOp ? selectedAtivoOp.id : getNewId().toString(),
+        id: selectedAtivoOp && 'id' in selectedAtivoOp ? selectedAtivoOp.id : '',
         latitude: e.latLng.lat(),
         longitude: e.latLng.lng(),
         nome: selectedAtivoOp && 'nome' in selectedAtivoOp ? selectedAtivoOp.nome : '',
@@ -546,13 +545,39 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                           <>
                             <form
                               onSubmit={handleSubmitOpAtivo((formData: IGetOpAtivo) => {
-                                updateExternalAtivoOp(selectedAtivoOp.id, formData)
-                                .catch(error => (
-                                  toast.error(`Erro inesperado, ${error}`, {
-                                    position: 'top-left',
-                                    duration: 4000,
+                                if (selectedAtivoOp.id) {
+
+                                  updateExternalAtivoOp(selectedAtivoOp.id, formData)
+                                  .then(() => {
+                                    toast.success('Ativo editado com sucesso', {
+                                      position: 'top-left',
+                                      duration: 4000,
+                                    })
                                   })
-                                ))
+                                  .catch(error => (
+                                    toast.error(`Erro inesperado, ${error}`, {
+                                      position: 'top-left',
+                                      duration: 4000,
+                                    })
+                                  ))
+                                } else {
+
+                                  console.log(formData)
+
+                                  createExternalAtivoOp(formData)
+                                  .then(() => {
+                                    toast.success('Ativo criado com sucesso', {
+                                      position: 'top-left',
+                                      duration: 4000,
+                                    })
+                                  })
+                                  .catch(error => (
+                                    toast.error(`Erro inesperado, ${error}`, {
+                                      position: 'top-left',
+                                      duration: 4000,
+                                    })
+                                  ))
+                                }
                               })}
 
                               className="flex flex-col gap-2"
@@ -845,13 +870,39 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                           <>
                             <form
                               onSubmit={handleSubmitUnity((formData: IGetUnity) => {
-                                updateExternalUnity(selectedAtivoOp.id, formData)
-                                .catch(error => (
-                                  toast.error(`Erro inesperado, ${error}`, {
-                                    position: 'top-left',
-                                    duration: 4000,
+
+                                if(selectedAtivoOp.id) {
+                                  updateExternalUnity(selectedAtivoOp.id, formData)
+                                  .then(() => {
+                                    toast.success(`Unidade atualizada com sucesso!`, {
+                                      position: 'top-left',
+                                      duration: 4000,
+                                    })
                                   })
-                                ))
+                                  .catch(error => (
+                                    toast.error(`Erro inesperado, ${error}`, {
+                                      position: 'top-left',
+                                      duration: 4000,
+                                    })
+                                  ))
+                                } else {
+
+                                  formData.id = getNewId().toString()
+                                  
+                                  createExternalUnity(formData)
+                                  .then(() => {
+                                    toast.success(`Unidade criada com sucesso!`, {
+                                      position: 'top-left',
+                                      duration: 4000,
+                                    })
+                                  }
+                                  ).catch(error => (
+                                    toast.error(`Erro inesperado, ${error}`, {
+                                      position: 'top-left',
+                                      duration: 4000,
+                                    })
+                                  ))
+                                }
                               })}
                               className="flex flex-col gap-2"
                             >
