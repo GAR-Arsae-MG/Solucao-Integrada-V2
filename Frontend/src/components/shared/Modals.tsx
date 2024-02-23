@@ -362,7 +362,7 @@ export const ModalUnitiesEdit: React.FC<ModalUnitiesEditProps> = ({isOpen, onOpe
 }
 
 export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpen, onOpenChange, ativo}) => {
-    const { register, handleSubmit } = useForm<IGetAdminAtivo>()
+    const { register, handleSubmit, setValue } = useForm<IGetAdminAtivo>()
 
     const [tipoAtivoAdmin, setTipoAtivoAdmin] = useState([])
     const [selectedTipoAtivoAdmin, setSelectedTipoAtivoAdmin] = useState('')
@@ -404,6 +404,10 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
     const handleAdminTipoChange = async (event: any) => {
         setSelectedTipoAtivoAdmin(event.target.value)
     }
+
+    const handleCheckboxChange = (value: boolean) => {
+        setValue("doacao", value);
+      };
 
     return (
         <>
@@ -513,7 +517,8 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
                                                 <p>Doação?</p>
 
                                                 <CheckboxDonation 
-                                                    {...register("doacao")}
+                                                    onChange={handleCheckboxChange}
+                                                    name="doacao"
                                                 />
                                             </div>
                                         </div>
@@ -649,7 +654,7 @@ export const ModalAtivosAdminEdit: React.FC<ModalAtivosAdminEditProps> = ({isOpe
 }
 
 export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onOpenChange, ativo}) => {
-    const { register, handleSubmit } = useForm<IGetOpAtivo>()
+    const { register, handleSubmit, setValue } = useForm<IGetOpAtivo>()
 
     const [tipoAtivoOp, setTipoAtivoOp] = useState([])
     const [selectedTipoAtivoOp, setSelectedTipoAtivoOp] = useState('')
@@ -704,6 +709,10 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
     const handleOpTipoInvestimentoChange = async (event: any) => {
         setSelectedTipoInvestimentoOp(event.target.value)
     }
+
+    const handleCheckboxChange = (value: boolean) => {
+        setValue("doacao", value);
+      };
 
     return (
         <>
@@ -869,7 +878,8 @@ export const ModalAtivosOpEdit: React.FC<ModalAtivosOpEditProps> = ({isOpen, onO
                                                         <p>Doação?</p>
 
                                                         <CheckboxDonation 
-                                                            {...register("doacao")}
+                                                            name="doacao"
+                                                            onChange={handleCheckboxChange}
                                                         />
                                                     </div>
 

@@ -1,59 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import {useCheckbox, Chip, VisuallyHidden, tv} from "@nextui-org/react";
-import { CheckIcon } from "lucide-react";
+import { Checkbox} from "@nextui-org/react";
+import { BanIcon, CheckIcon } from "lucide-react";
+import { useState } from "react";
 
-const checkbox = tv({
-  slots: {
-    base: "border-default hover:bg-default-200",
-    content: "text-default-500"
-  },
-  variants: {
-    isSelected: {
-      true: {
-        base: "border-primary bg-primary hover:bg-primary-500 hover:border-primary-500",
-        content: "text-primary-foreground pl-1"
-      }
-    },
-    isFocusVisible: {
-      true: { 
-        base: "outline-none ring-2 ring-focus ring-offset-2 ring-offset-background",
-      }
-    }
+interface CheckboxDonationProps {
+  name: string;
+  onChange: (value: boolean) => void;
+}
+export default function CheckboxDonation({  name, onChange }: CheckboxDonationProps) {
+  const [isSelected, setIsSelected] = useState<boolean>(false);
+
+  const handleValueChange = (value: boolean) => {
+    setIsSelected(value)
+    onChange(value);
   }
-})
-
-export default function CheckboxDonation(props: any) {
-  const {
-    children,
-    isSelected,
-    isFocusVisible,
-    getBaseProps,
-    getLabelProps,
-    getInputProps,
-  } = useCheckbox({
-    defaultSelected: true,
-  })
-
-  const styles = checkbox({ isSelected, isFocusVisible })
 
   return (
-    <label {...getBaseProps()}>
-      <VisuallyHidden>
-        <input {...getInputProps()} {...props} />
-      </VisuallyHidden>
-      <Chip
-        classNames={{
-          base: styles.base(),
-          content: styles.content(),
-        }}
+      <Checkbox
         color="primary"
-        startContent={isSelected ? <CheckIcon className="ml-1" /> : null}
-        variant="faded"
-        {...getLabelProps()}
+        icon={isSelected ? <CheckIcon className="ml-1" /> : <BanIcon className="ml-1" />}
+        isSelected={isSelected}
+        onValueChange={handleValueChange}
+        name={name}
       >
-        {children ? children : isSelected ? "Sim" : "Não"}
-      </Chip>
-    </label>
+        { isSelected ? "Sim" : "Não"}
+      </Checkbox>
   );
 }

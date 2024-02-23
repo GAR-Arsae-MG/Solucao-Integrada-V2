@@ -22,8 +22,8 @@ import CheckboxDonation from "./Checkbox";
 
 export default function Map() {
 
-  const { register: registerOpAtivo, handleSubmit: handleSubmitOpAtivo } = useForm<IGetOpAtivo>()
-  const { register: registerUnity, handleSubmit: handleSubmitUnity } = useForm<IGetUnity>()
+  const { register: registerOpAtivo, handleSubmit: handleSubmitOpAtivo, setValue: setValueOpAtivo } = useForm<IGetOpAtivo>()
+  const { register: registerUnity, handleSubmit: handleSubmitUnity, setValue: setValueUnity } = useForm<IGetUnity>()
 
   //Markers Logic
   const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
@@ -36,7 +36,7 @@ export default function Map() {
   const [sistemas, setSistemas] = useState([])
   const [selectedSistema, setSelectedSistema] = useState('')
 
-  const [tipo, setTipo] = useState([])
+  const [Tipo, setTipo] = useState([])
   const [selectedTipo, setSelectedTipo] = useState('')
 
   const [tipoAtivoOp, setTipoAtivoOp] = useState([])
@@ -120,28 +120,40 @@ export default function Map() {
   }, [refetchAtivoOpPin, refetchUnidadePin])
 
   const handleSistemasChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-  setSelectedSistema(event.target.value)
+    setValueUnity('sistemas', event.target.value)
+    setSelectedSistema(event.target.value)
   }
 
-  const handleTipoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  setSelectedTipo(event.target.value)
+  const handleTipoChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+
+    setValueUnity('tipo', event.target.value)
+    setSelectedTipo(event.target.value)
+
   }
 
   const handleOpStatusChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedStatusOp(event.target.value)
+    setValueOpAtivo('status', event.target.value)
   }
 
 const handleOpEtapaServicoChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedEtapaServicoOp(event.target.value)
+    setValueOpAtivo('etapa_do_servico', event.target.value)
   }
 
 const handleOpTipoAtivoChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTipoAtivoOp(event.target.value)
+    setValueOpAtivo('tipo_ativo', event.target.value)
   }
 
 const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTipoInvestimentoOp(event.target.value)
+    setValueOpAtivo('tipo_investimento', event.target.value)
   }
+
+  const handleCheckboxChange = (value: boolean) => {
+    setValueOpAtivo("doacao", value);
+  };
 
   useEffect(() => {
     if (AtivoOpPin && UnidadePin) {
@@ -155,7 +167,6 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
   }
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
-    console.log('handleMapClick chamado', e.latLng, TipoMarcador)
 
     if (e.latLng && TipoMarcador === 'Ativo') {
       const newMarker: AtivoOp = {
@@ -606,7 +617,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               />
 
                               <Select
-                                {...registerOpAtivo("tipo_ativo")}
+                                
                                 label="Tipo de Ativo"
                                 placeholder="Selecione o Tipo de Ativo"
                                 onChange={handleOpTipoAtivoChange}
@@ -640,7 +651,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               />
 
                               <Select
-                                {...registerOpAtivo("tipo_investimento")}
+                                
                                 label="Tipo de Investimento"
                                 placeholder="Selecione o Tipo de Investimento"
                                 onChange={handleOpTipoInvestimentoChange}
@@ -659,7 +670,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               <p className="text-sm text-default-400">Tipo de investimento selecionado: {selectedTipoInvestimentoOp}</p>
 
                               <Select
-                                {...registerOpAtivo("etapa_do_servico")}
+                                
                                 label="Etapa do Serviço"
                                 placeholder="Selecione a Etapa do Serviço"
                                 onChange={handleOpEtapaServicoChange}
@@ -695,8 +706,9 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
                               <p>Doação?</p>
 
-                              <CheckboxDonation 
-                                  {...registerOpAtivo("doacao")}
+                              <CheckboxDonation
+                                name="doação" 
+                                onChange={handleCheckboxChange}
                               />
 
                               <Input 
@@ -788,7 +800,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               />
 
                               <Select
-                                {...registerOpAtivo("status")}
+                                
                                 label="Status"
                                 placeholder="Selecione o Status"
                                 onChange={handleOpStatusChange}
@@ -872,6 +884,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               onSubmit={handleSubmitUnity((formData: IGetUnity) => {
 
                                 if(selectedAtivoOp.id) {
+                                  console.log(`Dados do Formulário:`, formData)
                                   updateExternalUnity(selectedAtivoOp.id, formData)
                                   .then(() => {
                                     toast.success(`Unidade atualizada com sucesso!`, {
@@ -885,9 +898,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                       duration: 4000,
                                     })
                                   ))
-                                } else {
-
-                                  formData.id = getNewId().toString()
+                                } else {                          
+                                  console.log(`Dados do Formulário de nova unidade:`, formData)
                                   
                                   createExternalUnity(formData)
                                   .then(() => {
@@ -902,6 +914,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                                       duration: 4000,
                                     })
                                   ))
+
                                 }
                               })}
                               className="flex flex-col gap-2"
@@ -920,7 +933,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               />
 
                               <Select
-                                {...registerUnity("sistemas")}
+                                
                                 label='Sistema'
                                 onChange={handleSistemasChange}
                                 placeholder="Selecione o sistema"
@@ -939,14 +952,14 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                               <p className="text-sm text-default-400">Sistema selecionado: {selectedSistema}</p>
 
                               <Select
-                                {...registerUnity("tipo")}
+                                
                                 label='Tipo'
                                 onChange={handleTipoChange}
                                 placeholder="Selecione o tipo"
                                 defaultSelectedKeys={selectedAtivoOp.tipo}
                                 variant="underlined"
                               >
-                                {tipo.map((tipo: {key: string, value: string}) => (
+                                {Tipo.map((tipo: {key: string, value: string}) => (
                                     <SelectItem
                                         key={tipo.key}
                                         value={tipo.key}
