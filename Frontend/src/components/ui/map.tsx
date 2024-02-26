@@ -27,7 +27,8 @@ export default function Map() {
 
   //Markers Logic
   const [selectedAtivoOp, setSelectedAtivoOp] = useState<AtivoUnityData | null>(null)
-  const [ativosOpPin, SetAtivosOpPin] = useState<AtivoOp[]>([])
+  const [ativosOpPin, 
+    SetAtivosOpPin] = useState<AtivoOp[]>([])
   const [unidadesPin, setUnidadesPin] = useState<Unidade[]>([])
   const [TipoMarcador, setTipoMarcador] = useState<'Ativo' | 'Unidade'>('Ativo');
 
@@ -256,22 +257,43 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
   const [polylines, setPolylines] = useState<Tubulação[]>([])
   const [isNewPolyline, setIsNewPolyline] = useState(false)
   const [inputPolyline, setInputPolyline] = useState({
-    itemCode: '',
     diameter: '',
     type: '',
-    creationDate: new Date(),
-    updateDate: new Date(),
   })
 
-  function calculateLength(path: LatLngLiteral[]): number {
+  useEffect (() => {
+    const storedPolylines = async () => {
+      refetchAtivoOpPin().then((result) => {
+        if (result.data) {
+          const tubulações = result.data.map(tubulação => ({
+            ...tubulação,
+            id: tubulação.id,
+            tipoAtivo: 'Enterrado' as const,
+            type: 'agua' as 'agua' | 'esgoto',
+            path: [{ latitude: tubulação.latitude, longitude: tubulação.longitude }],
+            InitialPoint: {
+              lat: tubulação.latitude,
+              lng: tubulação.longitude
+            },
+            length: `0 metros`,
+            diameter: `50 milímetros`,
+          }))
+          setPolylines(tubulações)
+        }
+      })
+    }
+    storedPolylines()
+  }, [refetchAtivoOpPin])
+
+  function calculateLength(path: {latitude: number, longitude: number}[]): number {
     let totalLength = 0
 
     for (let i = 1; i < path.length; i++) {
       const currentPoint = path[i]
       const previousPoint = path[i - 1]
       totalLength += google.maps.geometry.spherical.computeDistanceBetween(
-        new google.maps.LatLng(currentPoint),
-        new google.maps.LatLng(previousPoint)
+        new google.maps.LatLng(currentPoint.latitude, currentPoint.longitude),
+        new google.maps.LatLng(previousPoint.latitude, previousPoint.longitude)
       )
     }
     return totalLength
@@ -279,20 +301,12 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
   const idCounter = useRef(1)
 
-  const createPolyline = (path: LatLngLiteral[]): Tubulação => {
-
-    function getNewId() {
-      return idCounter.current++
-    }
+  const createPolyline = (path: {latitude: number, longitude: number}[]): Tubulação => {
 
     return {
-      id: getNewId().toString(),
       path: path,
       type: nextPolylineType,
       tipoAtivo: 'Enterrado',
-      creationDate: new Date('2000-01-01'),
-      updateDate: new Date('2000-01-01'),
-      itemCode:  `Tubulação ${polylines.length + 1}`,
       length: `${calculateLength(path)} metros`,
       diameter: `50 milímetros`,
       InitialPoint: path[0]
@@ -1040,7 +1054,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                         visible: true,
                       }}
                       onRightClick={() => handlePolylineClick(polyline)}
-                      //onDblClick={() => handlePolylineDoubleClick(polyline.id, polyline.Initial)}
+                      
                     />
                   ))
                   }

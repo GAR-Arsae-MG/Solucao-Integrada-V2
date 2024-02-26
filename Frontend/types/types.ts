@@ -187,15 +187,15 @@ export type Unidade  = IGetUnity & {
   
 export type AtivoUnityData = AtivoOp | Unidade;
 
-export interface Tubulação {
-    id: string,
-    path: LatLngLiteral[]
+export type Tubulação = IGetOpAtivo & {
+
+    path: {latitude: number, longitude: number}[],
     type: 'agua' | 'esgoto',
     tipoAtivo: 'Enterrado',
-    creationDate: Date,
-    updateDate: Date,
-    itemCode: string,
     length: string,
     diameter: string,
-    InitialPoint: LatLngLiteral
+    InitialPoint: {
+        latitude: number,
+        longitude: number
+    },
 }
