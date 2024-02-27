@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useRef, createRef, useEffect } from "react";
+import React, { useState, useMemo, createRef, useEffect } from "react";
 import {
   GoogleMap,
   InfoWindow,
@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
 import unidadePin from '../../assets/unities-pin.svg'
-import { LatLngLiteral, MapOptions, Tubulação, LatLngwithId, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity, AtivoOp, Unidade } from "../../../types/types";
+import { LatLngLiteral, MapOptions, Tubulação, Painel, AtivoUnityData, IGetOpAtivo, IGetUnity, AtivoOp, Unidade } from "../../../types/types";
 import { createExternalAtivoOp, createExternalUnity, getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
 import { useGetAtivosOp, useGetUnits } from "../../../react-query/QueriesAndMutations";
 import CheckboxDonation from "./Checkbox";
@@ -272,8 +272,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
             type: 'agua' as 'agua' | 'esgoto',
             path: [{ latitude: tubulação.latitude, longitude: tubulação.longitude }],
             InitialPoint: {
-              lat: tubulação.latitude,
-              lng: tubulação.longitude
+              latitude: tubulação.latitude,
+              longitude: tubulação.longitude
             },
             length: `0 metros`,
             diameter: `50 milímetros`,
@@ -299,11 +299,10 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     return totalLength
   }
 
-  const idCounter = useRef(1)
-
-  const createPolyline = (path: {latitude: number, longitude: number}[]): Tubulação => {
+  const createPolyline = (path: {latitude: number, longitude: number}[], ativo: IGetOpAtivo): Tubulação => {
 
     return {
+      ...ativo,
       path: path,
       type: nextPolylineType,
       tipoAtivo: 'Enterrado',
@@ -317,10 +316,16 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     setIsNewPolyline(true)
   }
 
+  const [tubulo] = useState<IGetOpAtivo>({} as IGetOpAtivo)
+
   const handleMapRightClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
-      const newPoint: LatLngwithId = {...e.latLng.toJSON(), id: ''}
-      let path = []
+      const newPoint: {latitude: number, longitude: number, id: string} = {
+        latitude: e.latLng.lat(), 
+        longitude: e.latLng.lng(),
+        id: ''
+      }
+      let path: {latitude: number, longitude: number}[] = []
       let newPolyline
 
       if (polylines.length > 0 && !isNewPolyline) {
@@ -332,11 +337,11 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
           newPolyline = lastPolyline
         } else {
           path = [newPoint]
-          newPolyline = createPolyline(path)
+          newPolyline = createPolyline(path, tubulo)
         }
       } else {
         path = [newPoint]
-        newPolyline = createPolyline(path)
+        newPolyline = createPolyline(path, tubulo)
         setIsNewPolyline(false)
       }
       setPolylines([...polylines, newPolyline])
@@ -347,11 +352,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
   const handlePolylineClick = (polyline: Tubulação): void => {
     setSelectedPolyline(polyline)
     setInputPolyline({
-      itemCode: polyline.itemCode,
       diameter: polyline.diameter,
       type: polyline.type,
-      creationDate: polyline.creationDate,
-      updateDate: polyline.updateDate,
     })
   }
 
@@ -1042,26 +1044,33 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                   </InfoWindow>
                 )}
 
-                {polylines.map((polyline) =>
-                  (
-                    <Polyline 
-                      key={polyline.id}
-                      path={polyline.path}
-                      options={{
-                        strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
-                        editable: true,
-                        draggable: true,
-                        visible: true,
-                      }}
-                      onRightClick={() => handlePolylineClick(polyline)}
-                      
-                    />
-                  ))
+                  {polylines.map((polyline) =>
+                    (
+                      <Polyline 
+                        key={polyline.id}
+                        path={polyline.path.map(point => ({
+                          lat: point.latitude,
+                          lng: point.longitude
+                        }))}
+                        options={{
+                          strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
+                          editable: true,
+                          draggable: true,
+                          visible: true,
+                        }}
+                        onRightClick={() => handlePolylineClick(polyline)}
+                      />
+                    ))
                   }
-
+                
                 {selectedPolyline && (
                     <InfoWindow
-                      position={selectedPolyline.InitialPoint}
+                      position={
+                        {
+                          lat: selectedPolyline.InitialPoint.latitude,
+                          lng:  selectedPolyline.InitialPoint.longitude,
+                        }
+                      }
                       onCloseClick={handlePolylineClose}
                     >
                       <div>
@@ -1072,15 +1081,6 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
 
                         <h2>Editar Informações</h2>
 
-                        <Input 
-                          name="itemCode"
-                          label="Nome da Tubulação"
-                          placeholder="Nome da Tubulação"
-                          value={inputPolyline.itemCode}
-                          onChange={handleInputChangePolyline}
-                          type="text"
-                        />
-
                         <Input
                           name="diameter"
                           label="Diâmetro da Tubulação" 
@@ -1088,24 +1088,6 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                           value={inputPolyline.diameter}
                           onChange={handleInputChangePolyline}
                           type="text" 
-                        />
-
-                        <Input 
-                          name="creationDate"
-                          label="Data de Criação"
-                          placeholder="Data de Criação"
-                          value={new Date(inputPolyline.creationDate).toLocaleDateString('pt-BR')}
-                          onChange={handleInputChangePolyline}
-                          type="date"
-                        />
-
-                        <Input 
-                          name="updateDate"
-                          label="Data de Atualização"
-                          placeholder="Data de Atualização"
-                          value={new Date(inputPolyline.updateDate).toLocaleTimeString('pt-BR')}
-                          onChange={handleInputChangePolyline}
-                          type="date"
                         />
 
                       </div>
