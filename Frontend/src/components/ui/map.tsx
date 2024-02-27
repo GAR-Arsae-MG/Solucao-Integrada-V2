@@ -54,7 +54,12 @@ export default function Map() {
 
   const {data: UnidadePin, isLoading: isUnidadePinLoading, isError: isUnidadePinError, refetch: refetchUnidadePin } = useGetUnits({tipo: selectedTipo, sistemas: selectedSistema})
 
-  const {data: AtivoOpPin, isLoading: isAtivoOpPinLoading, isError: isAtivoOpPinError, refetch: refetchAtivoOpPin} = useGetAtivosOp({tipo_ativo: selectedTipoAtivoOp, tipo_investimento: selectedTipoInvestimentoOp, status: selectedStatusOp, etapa_do_servico: selectedEtapaServicoOp})
+  const {data: AtivoOpPin, isLoading: isAtivoOpPinLoading, isError: isAtivoOpPinError, refetch: refetchAtivoOpPin} = useGetAtivosOp({
+    tipo_ativo: selectedTipoAtivoOp, 
+    tipo_investimento: selectedTipoInvestimentoOp, 
+    status: selectedStatusOp, 
+    etapa_do_servico: selectedEtapaServicoOp,
+  })
 
   useEffect(() => {
 
@@ -265,7 +270,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     const storedPolylines = async () => {
       refetchAtivoOpPin().then((result) => {
         if (result.data) {
-          const tubulações = result.data.map(tubulação => ({
+          const filteredData = result.data.filter(ativo => ativo.tipo_ativo === 'Enterrado')
+          const tubulações = filteredData.map(tubulação => ({
             ...tubulação,
             id: tubulação.id,
             tipoAtivo: 'Enterrado' as const,
