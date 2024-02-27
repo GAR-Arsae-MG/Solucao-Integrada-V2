@@ -66,7 +66,8 @@ export default function Map() {
     const fetchMapData = async () => {
       refetchAtivoOpPin().then((result) => {
         if (result.data) {
-          const ativosOp = result.data.map(ativo => ({
+          const filteredData = result.data.filter(ativo => ativo.tipo_ativo === 'V')
+          const ativosOp = filteredData.map(ativo => ({
             ...ativo,
             tipoMarcador: 'Ativo' as const,
             tipoAtivo: 'Visível' as const,
@@ -270,7 +271,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     const storedPolylines = async () => {
       refetchAtivoOpPin().then((result) => {
         if (result.data) {
-          const filteredData = result.data.filter(ativo => ativo.tipo_ativo === 'Enterrado')
+          const filteredData = result.data.filter(ativo => ativo.tipo_ativo === 'E')
           const tubulações = filteredData.map(tubulação => ({
             ...tubulação,
             id: tubulação.id,
