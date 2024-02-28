@@ -1051,24 +1051,24 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                   </InfoWindow>
                 )}
 
-                  {polylines.map((polyline) =>
-                    (
-                      <Polyline 
-                        key={polyline.id}
-                        path={polyline.path.map(point => ({
-                          lat: point.latitude,
-                          lng: point.longitude
-                        }))}
-                        options={{
-                          strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
-                          editable: true,
-                          draggable: true,
-                          visible: true,
-                        }}
-                        onRightClick={() => handlePolylineClick(polyline)}
-                      />
-                    ))
-                  }
+                {polylines.map((polyline) =>
+                  (
+                    <Polyline 
+                      key={polyline.id}
+                      path={polyline.path.map(point => ({
+                        lat: point.latitude,
+                        lng: point.longitude
+                      }))}
+                      options={{
+                        strokeColor: polyline.type === 'agua' ? '#0E5386' : '#3A6324',
+                        editable: true,
+                        draggable: true,
+                        visible: true,
+                      }}
+                      onRightClick={() => handlePolylineClick(polyline)}
+                    />
+                  ))
+                }
                 
                 {selectedPolyline && (
                     <InfoWindow
@@ -1080,24 +1080,333 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                       }
                       onCloseClick={handlePolylineClose}
                     >
-                      <div>
-                        <h2>Informações gerais do Polyline</h2>
-                        <p>ID: {selectedPolyline.id}</p>
-                        <p>Tipo: {selectedPolyline.type}</p>
-                        <p>Tamanho: {selectedPolyline.length}</p>
+                      <>
+                        <form
+                          onSubmit={handleSubmitOpAtivo((data: IGetOpAtivo) => {
+                            if (selectedPolyline.id) {
+                              updateExternalAtivoOp(selectedPolyline.id, data)
+                              .then(() => {
+                                toast.success('Ativo atualizado com sucesso!', {
+                                  position: 'top-left',
+                                  duration: 4000,
+                                })
+                              })
+                              .catch(error => (
+                                toast.error(`Erro Inesperado: ${error.message}`, {
+                                  position: 'top-left',
+                                  duration: 4000,
+                                })
+                              ))
+                            } else {
+                              console.log(data)
 
-                        <h2>Editar Informações</h2>
+                              createExternalAtivoOp(data)
+                              .then(() => {
+                                toast.success('Ativo criado com sucesso!', {
+                                  position: 'top-left',
+                                  duration: 4000,
+                                })
+                              })
+                            }
+                          })}
+                          className="flex flex-col gap-2"
+                        >
+                          <h2>Informações gerais do Polyline</h2>
+                          <p>ID: {selectedPolyline.id}</p>
+                          <p>Tipo: {selectedPolyline.type}</p>
+                          <p>Tamanho: {selectedPolyline.length}</p>
 
-                        <Input
-                          name="diameter"
-                          label="Diâmetro da Tubulação" 
-                          placeholder="Diâmetro da Tubulação"
-                          value={inputPolyline.diameter}
-                          onChange={handleInputChangePolyline}
-                          type="text" 
-                        />
+                          <h2>Editar Informações</h2>
 
-                      </div>
+                          <Input
+                            {...registerOpAtivo("nome_de_campo")} 
+                            placeholder="Nome do ativo"
+                            label="Nome do Ativo"
+                            defaultValue={selectedPolyline ? selectedPolyline.nome_de_campo: ''}
+                            type="text"
+                            variant="underlined"
+                          />
+
+                          <Input
+                            {...registerOpAtivo("codigo")} 
+                            label='Código do Ativo'
+                            placeholder="Código do Ativo"
+                            type="text"
+                            defaultValue={selectedPolyline ? selectedPolyline.codigo: ''}
+                            variant="underlined"
+                          />
+                          
+                          <Select
+                              
+                            label="Tipo de Ativo"
+                            placeholder="Selecione o Tipo de Ativo"
+                            onChange={handleOpTipoAtivoChange}
+                            defaultSelectedKeys={selectedPolyline ? selectedPolyline.tipo_ativo : ''}
+                          >
+                            {tipoAtivoOp.map((tipoAtivoOp: {key: string, value: string}) => (
+                                <SelectItem
+                                    key={tipoAtivoOp.key}
+                                    value={tipoAtivoOp.key}
+                                >
+                                    {tipoAtivoOp.value}
+                                </SelectItem>
+                            ))}
+                          </Select>
+                          <p>Tipo de ativo selecionado: {selectedTipoAtivoOp}</p>
+
+                          <Input 
+                            {...registerOpAtivo("classe")}
+                            label="Classe"
+                            placeholder="Escreva a Classe do ativo"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.classe : ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("fase")}
+                            label="Fase"
+                            placeholder="Escreva a Fase do ativo"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.fase : ''}
+                          />
+
+                          <Select
+                            
+                            label="Tipo de Investimento"
+                            placeholder="Selecione o Tipo de Investimento"
+                            onChange={handleOpTipoInvestimentoChange}
+                            defaultSelectedKeys={selectedPolyline ? selectedPolyline.tipo_investimento : ''}
+                          >
+                            {tipoInvestimentoOp.map((tipoInvestimentoOp: {key: string, value: string}) => (
+                                <SelectItem
+                                    key={tipoInvestimentoOp.key}
+                                    value={tipoInvestimentoOp.key}
+                                >
+                                    {tipoInvestimentoOp.value}
+                                </SelectItem>
+                            ))}
+                          </Select>
+
+                          <p className="text-sm text-default-400">Tipo de investimento selecionado: {selectedTipoInvestimentoOp}</p>
+
+                          <Select
+                                
+                            label="Etapa do Serviço"
+                            placeholder="Selecione a Etapa do Serviço"
+                            onChange={handleOpEtapaServicoChange}
+                            defaultSelectedKeys={selectedPolyline ? selectedPolyline.etapa_do_servico : ''}
+                          >
+                            {etapaServicoOp.map((etapasServicoOp: {key: string, value: string}) => (
+                                <SelectItem
+                                    key={etapasServicoOp.key}
+                                    value={etapasServicoOp.key}
+                                >
+                                    {etapasServicoOp.value}
+                                </SelectItem>
+                            ))}
+                          </Select>
+
+                          <p className="text-sm text-default-400">Etapa do Serviço selecionado: {selectedEtapaServicoOp}</p>
+
+                          <Input 
+                            {...registerOpAtivo("situacao_atual")}
+                            label="Situação Atual"
+                            placeholder="Escreva a Situação Atual"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.situacao_atual : ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("proprietario")}
+                            label="Proprietário"
+                            placeholder="Escreva o Proprietário"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.proprietario : ''}
+                          />
+
+                          <p>Doação?</p>
+
+                          <CheckboxDonation
+                            name="doação" 
+                            onChange={handleCheckboxChange}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("valor_original")}
+                            label="Valor Original"
+                            placeholder="Escreva o Valor Original"
+                            variant="bordered"
+                            type="number"
+                            defaultValue={selectedPolyline?.valor_original?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("vida_util_reg_anos")}
+                            label="Vida Útil (Anos)"
+                            placeholder="Escreva a Vida Útil (Anos)"
+                            variant="bordered"
+                            type="number"
+                            defaultValue={selectedPolyline?.vida_util_reg_anos?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("vida_util_reg_meses")}
+                            label="Vida Útil (Meses)"
+                            placeholder="Escreva a Vida Útil (Meses)"
+                            variant="bordered"
+                            type="number"
+                            defaultValue={selectedPolyline?.vida_util_reg_meses?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("unidade")}
+                            label="Unidade"
+                            placeholder="Escreva a unidade"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.unidade : ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("data_insercao")}
+                            label="Data de inserção"
+                            placeholder="Escreva a Data de Inserção"
+                            variant="bordered"
+                            type="date"
+                            defaultValue={selectedPolyline?.data_insercao?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("data_obra")}
+                            label="Data da Obra"
+                            placeholder="Escreva a Data da Obra"
+                            variant="bordered"
+                            type="date"
+                            defaultValue={selectedPolyline?.data_obra?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("data_operacao")}
+                            label="Data de Operação"
+                            placeholder="Escreva a Data de Operação"
+                            variant="bordered"
+                            type="date"
+                            defaultValue={selectedPolyline?.data_operacao?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("data_projeto")}
+                            label="Data de Inserção"
+                            placeholder="Escreva a Data do Projeto"
+                            variant="bordered"
+                            type="date"
+                            defaultValue={selectedPolyline?.data_projeto?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("criado_por")}
+                            label="Criado Por"
+                            placeholder="Escreva por quem foi criado o ativo"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.criado_por : ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("criado_em")}
+                            label="Criado Em"
+                            placeholder="Escreva quando foi criado o ativo"
+                            variant="bordered"
+                            type="date"
+                            defaultValue={selectedPolyline?.criado_em?.toString() || ''}
+                          />
+
+                          <Select 
+                            label="Status"
+                            placeholder="Selecione o Status"
+                            onChange={handleOpStatusChange}
+                            variant="bordered"
+                            defaultSelectedKeys={selectedPolyline ? selectedPolyline.status: ''}
+                          >
+                            {statusOp.map((status: {key: string, value: string}) => (
+                                <SelectItem 
+                                    key={status.key} 
+                                    value={status.key}
+                                >
+                                    {status.value}
+                                </SelectItem>
+                            ))}
+                          </Select>
+
+                          <p className="text-sm text-default-400">Status: {selectedStatusOp}</p>
+
+                          <Input 
+                            {...registerOpAtivo("codigo")}
+                            label="Código"
+                            placeholder="Escreva o Código do ativo"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.codigo : ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("latitude")}
+                            label="Latitude"
+                            placeholder="Escreva a Latitude"
+                            variant="bordered"
+                            type="number"
+                            defaultValue={selectedPolyline?.latitude?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("longitude")}
+                            label="Longitude"
+                            placeholder="Escreva a Longitude"
+                            variant="bordered"
+                            type="number"
+                            defaultValue={selectedPolyline?.longitude?.toString() || ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("Município")}
+                            label="Município"
+                            placeholder="Escreva o Município"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.Município : ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("localidade")}
+                            label="Localidade"
+                            placeholder="Escreva a Localidade"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.localidade : ''}
+                          />
+
+                          <Input 
+                            {...registerOpAtivo("Endereco")}
+                            label="Endereço"
+                            placeholder="Escreva o Endereço"
+                            variant="bordered"
+                            defaultValue={selectedPolyline ? selectedPolyline.Endereco : ''}
+                          />
+                          
+                          <Input
+                            name="diameter"
+                            label="Diâmetro da Tubulação" 
+                            placeholder="Diâmetro da Tubulação"
+                            value={inputPolyline.diameter}
+                            onChange={handleInputChangePolyline}
+                            type="text" 
+                          />
+
+                          <Button
+                            color="success"
+                            type="submit"
+                            className="w-full"
+                          >
+                            Salvar
+                          </Button> 
+                        </form>
+
+                      </>
                     </InfoWindow>
                 )}
               </GoogleMap>
