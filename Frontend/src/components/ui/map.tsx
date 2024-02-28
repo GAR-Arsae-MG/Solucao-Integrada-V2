@@ -416,7 +416,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
             mapRef.current?.panTo(position)
           }} />
 
-          <div className=" p-10 gap-10 bg-white rounded-lg ">
+          <div className=" p-2 gap-10 bg-white rounded-lg mt-1">
             <RadioGroup
               isRequired
               label='Sistema'
@@ -446,55 +446,60 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
               <Radio value="localidade3">Localidade 3</Radio>
             </RadioGroup>
 
+            <div className="bg-slate-800  max-w-full rounded-lg pr-10">
+              <div className="gap-4 p-2 justify-between flex flex-1 w-fit">
+                <Button 
+                  color="primary"
+                  onClick={() => handleTypeChange('agua')}
+                  isDisabled={nextPolylineType === 'agua'}
+                >
+                  Água
+                </Button>
+                <Button 
+                  color="success"
+                  onClick={() => handleTypeChange('esgoto')}
+                  isDisabled={nextPolylineType === 'esgoto'}
+                >
+                  Esgoto
+                </Button>
+              </div>
+              
+              <div className="gap-4 p-2">
 
-            <div className="gap-4 p-2 justify-between flex">
-              <Button 
-                color="primary"
-                onClick={() => handleTypeChange('agua')}
-              >
-                Água
-              </Button>
-              <Button 
-                color="success"
-                onClick={() => handleTypeChange('esgoto')}
-              >
-                Esgoto
-              </Button>
-            </div>
-            
-            <div className="gap-4 p-2">
+                <Button
+                  color="warning"
+                  onClick={handleCreatePolyline}
+                  className="mb-4"
+                >
+                  Adicionar Polylines
+                </Button>
 
-              <Button
-                color="warning"
-                onClick={handleCreatePolyline}
-                className="mb-4"
-              >
-                Adicionar Polylines
-              </Button>
+                <Button 
+                  color="danger"
+                  //onClick={() => ()}
+                >
+                  Deletar Polylines
+                </Button>
+              </div>
 
-              <Button 
-                color="danger"
-                //onClick={() => ()}
-              >
-                Deletar Polylines
-              </Button>
-            </div>
+              <div className="p-2 gap-4 w-full">
+                <Button
+                  className="w-full mb-4"
+                  color="primary"
+                  onClick={() => setTipoMarcador('Ativo')}
+                  isDisabled={TipoMarcador === 'Ativo'}
+                >
+                  Marcador de Ativos
+                </Button>
 
-            <div className="items-center p-4 gap-4 w-full">
-              <Button
-                className="mb-4"
-                color="primary"
-                onClick={() => setTipoMarcador('Ativo')}
-              >
-                Marcador de Ativos
-              </Button>
-
-              <Button
-                color="secondary"
-                onClick={() => setTipoMarcador('Unidade')}
-              >
-                Marcador de Unidades
-              </Button>
+                <Button
+                  color="secondary"
+                  onClick={() => setTipoMarcador('Unidade')}
+                  isDisabled={TipoMarcador === 'Unidade'}
+                >
+                  Marcador de Unidades
+                </Button>
+              </div>
             </div>
           </div>
         </div>
