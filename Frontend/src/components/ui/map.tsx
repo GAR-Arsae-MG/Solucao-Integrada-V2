@@ -10,7 +10,7 @@ import {
 import toast, { Toaster } from 'react-hot-toast';
 import '../../assets/Map.css'
 import Places from "../places"
-import { Button, Input, Radio, RadioGroup, Select, SelectItem } from "@nextui-org/react";
+import { Accordion, AccordionItem, Button, Input, Radio, RadioGroup, Select, SelectItem } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import defaultMarker from '../../assets/location.png'
 import ativoPin from '../../assets/ativo.png'
@@ -19,6 +19,7 @@ import { LatLngLiteral, MapOptions, Tubulação, Painel, AtivoUnityData, IGetOpA
 import { createExternalAtivoOp, createExternalUnity, getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
 import { useGetAtivosOp, useGetUnits } from "../../../react-query/QueriesAndMutations";
 import CheckboxDonation from "./Checkbox";
+import { FilterIcon } from "lucide-react";
 
 export default function Map() {
 
@@ -417,34 +418,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
           }} />
 
           <div className=" p-2 gap-10 bg-white rounded-lg mt-1">
-            <RadioGroup
-              isRequired
-              label='Sistema'
-              {...register('selectedSistema')}
-            >
-              <Radio value="agua">Água</Radio>
-              <Radio value="esgoto">Esgoto</Radio>
-              <Radio value="outro">Outro</Radio>
-            </RadioGroup>
 
-            <RadioGroup
-              isRequired
-              label="Tipo de Ativo"
-              {...register('selectedTipoAtivo')}
-            >
-              <Radio value="visivel">Visível</Radio>
-              <Radio value="enterrado">Enterrado</Radio>
-            </RadioGroup>
-
-            <RadioGroup
-              isRequired
-              label="Localidade"
-              {...register('selectedLocalidade')}
-            >
-              <Radio value="localidade1">Localidade 1</Radio>
-              <Radio value="localidade2">Localidade 2</Radio>
-              <Radio value="localidade3">Localidade 3</Radio>
-            </RadioGroup>
 
             <div className="bg-slate-800  max-w-full rounded-lg pr-10">
               <div className="gap-4 p-2 justify-between flex flex-1 w-fit">
@@ -500,6 +474,61 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
                   Marcador de Unidades
                 </Button>
               </div>
+
+              <Accordion
+                  variant="shadow"
+                  className="p-2 flex flex-col gap-1 w-full max-w-[300px]"
+                  itemClasses={
+                    {
+                      base: 'py-0 w-full',
+                      title: 'font-normal text-medium',
+                      trigger: "px-2 py-0 data-[hover=true]:bg-default-100 rounded-lg h-14 flex items-center",
+                      indicator: "text-medium",
+                      content: "text-small px-2",
+                    }
+                  }
+                >
+                  <AccordionItem
+                    key="1"
+                    aria-label="Filtros Existentes"
+                    startContent={<FilterIcon className="text-primary-500" />}
+                    subtitle={
+                      <p className="flex">
+                        Filtre seus <p className="text-primary ml-1">ativos agora!</p>
+                      </p>
+                    }
+                    title="Filtros"
+                  >
+                    <RadioGroup
+                      isRequired
+                      label='Sistema'
+                      {...register('selectedSistema')}
+                    >
+                      <Radio value="agua">Água</Radio>
+                      <Radio value="esgoto">Esgoto</Radio>
+                      <Radio value="outro">Outro</Radio>
+                    </RadioGroup>
+
+                    <RadioGroup
+                      isRequired
+                      label="Tipo de Ativo"
+                      {...register('selectedTipoAtivo')}
+                    >
+                      <Radio value="visivel">Visível</Radio>
+                      <Radio value="enterrado">Enterrado</Radio>
+                    </RadioGroup>
+
+                    <RadioGroup
+                      isRequired
+                      label="Localidade"
+                      {...register('selectedLocalidade')}
+                    >
+                      <Radio value="localidade1">Localidade 1</Radio>
+                      <Radio value="localidade2">Localidade 2</Radio>
+                      <Radio value="localidade3">Localidade 3</Radio>
+                    </RadioGroup>
+                  </AccordionItem>
+                </Accordion>
             </div>
           </div>
         </div>
