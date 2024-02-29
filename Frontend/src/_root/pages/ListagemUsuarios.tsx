@@ -144,7 +144,7 @@ function ListagemUsuarios() {
                     </div>
                 );
             default: 
-                return cellValue
+                return <div className='hidden sm:block'>{cellValue}</div>
         }
     }, [])
 
@@ -229,7 +229,10 @@ function ListagemUsuarios() {
                     <Table aria-label='Tabela de usuários Dinâmica'>
                         <TableHeader columns={columns}>
                             {(column) => (
-                                <TableColumn key={column.uid} align={column.uid === 'actions' ? 'center': 'start'}>
+                                <TableColumn 
+                                    key={column.uid} 
+                                    align={column.uid === 'actions' ? 'center': 'start'}
+                                >
                                     {column.name}
                                 </TableColumn>
                             )}
