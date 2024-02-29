@@ -33,8 +33,6 @@ export default function Map() {
   const [unidadesPin, setUnidadesPin] = useState<Unidade[]>([])
   const [TipoMarcador, setTipoMarcador] = useState<'Ativo' | 'Unidade'>('Ativo');
 
-  const [maxId, setMaxId] = useState(0);
-
   const [sistemas, setSistemas] = useState([])
   const [selectedSistema, setSelectedSistema] = useState('')
 
@@ -163,16 +161,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
     setValueOpAtivo("doacao", value);
   };
 
-  useEffect(() => {
-    if (AtivoOpPin && UnidadePin) {
-      const newMaxId = Math.max(...AtivoOpPin.map(ativo => parseInt(ativo.id)), ...UnidadePin.map(unidade => parseInt(unidade.id)));
-      setMaxId(newMaxId);
-    }
-  }, [AtivoOpPin, UnidadePin]);
-
-  function getNewId() {
-    return maxId + 1
-  }
+ 
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
 
