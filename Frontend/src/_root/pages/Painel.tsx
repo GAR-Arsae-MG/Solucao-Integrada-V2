@@ -47,13 +47,15 @@ function Painel() {
                                             Clique no mapa com o botão esquerdo no mapa para criar um ativo.
                                         </p>
 
-                                        <p>Todo ativo será um marcador com um simbolo de um pino. Para editar o nome do marcador, basta clicar em cima do mesmo.</p>
+                                        <p>Todo ativo será um marcador com um simbolo de um pino. Para editar os dados do ativo, basta clicar em cima do mesmo.
+                                            É importante que preencha todos os dados do ativo, para que possa ser salvo corretamente.
+                                        </p>
                                     </AccordionItem>
 
-                                    <AccordionItem title='Localização'>
-                                        <p>
-                                            Ao lado tem um campo de entrada para poder pesquisar uma localidade. Para isso, basta digitar o nome da localidade e apertar Enter, e logo aparecerá um marcador especificado nessa localidade.
-                                        </p>
+                                    <AccordionItem
+                                        title='Unidades'
+                                    >
+                                        <p>As unidades são bem semelhantes aos ativos. Clique no mapa com o botão esquerdo no mapa para criar uma unidade. Clique com o mesmo botão para editar os dados da unidade. Lembre-se de mudar o tipo de marcador na aba lateral antes de clicar no mapa.</p>
                                     </AccordionItem>
 
                                     <AccordionItem title='Tubulação'>
