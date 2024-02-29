@@ -409,8 +409,8 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
   return (
       <>
         <Toaster />
-        <div className="flex h-full">
-          <div className="w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
+        <div className="flex flex-col md:flex-row h-full">
+          <div className="md:w-1/4 p-4 bg-black text-cyan-50 rounded-lg gap-4">
           <h1>Painel - Filtros</h1>
           <Places setOffice={(position) => {
             setOffice(position)
@@ -566,7 +566,7 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
           </div>
         </div>
 
-        <div className="w-4/5 h-full">
+        <div className="w-full md:w-4/5 mt-4 md:mt-0 h-full">
             <LoadScript
               googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
               libraries={["geometry", "places"]}

@@ -10,8 +10,8 @@ function Painel() {
     return (
         <> 
             <Toaster />
-            <div className="flex py-10">
-                <div className="flex justify-between gap-4 p-4 flex-col w-[1200px] h-[1200px] scrollbar-hide ">
+            <div className="flex md:py-10 flex-col md:flex-row">
+                <div className="flex md:gap-4 md:p-4 flex-col w-full md:w-[1200px] h-[1200px] scrollbar-hide ">
                     <Card className="max-w-full">
                         <CardBody className="overflow-auto scrollbar-hide">
                             <section id="map">
@@ -24,7 +24,7 @@ function Painel() {
                     </Card>
                 </div>
 
-                <Card className="max-w-full">
+                <Card className="max-w-full md:max-w-md mt-4 md:mt-0">
                     <CardBody>
                         <Tabs
                             fullWidth
@@ -35,7 +35,9 @@ function Painel() {
                             >
                                 <h1>para uso adequado do mapa, siga as instruções a seguir: </h1>
 
-                                <Accordion variant="shadow">
+                                <Accordion 
+                                    variant="shadow"
+                                >
                                     <AccordionItem title='Zoom'>
                                         <p>
                                             Aperte Control enquanto utiliza a rolagem do mouse para ter o controle de zoom do mapa.
