@@ -19,7 +19,7 @@ import { LatLngLiteral, MapOptions, Tubulação, Painel, AtivoUnityData, IGetOpA
 import { createExternalAtivoOp, createExternalUnity, getOpEtapaServico, getOpStatus, getOpTipoAtivo, getOpTipoInvestimento, getUnitSistemas, getUnitTipos, updateExternalAtivoOp, updateExternalUnity } from "../../../django/api";
 import { useGetAtivosOp, useGetUnits } from "../../../react-query/QueriesAndMutations";
 import CheckboxDonation from "./Checkbox";
-import { FilterIcon } from "lucide-react";
+import { FilterIcon, MapPinIcon, RouteIcon } from "lucide-react";
 
 export default function Map() {
 
@@ -418,117 +418,150 @@ const handleOpTipoInvestimentoChange = async (event: React.ChangeEvent<HTMLSelec
           }} />
 
           <div className=" p-2 gap-10 bg-white rounded-lg mt-1">
-
-
             <div className="bg-slate-800  max-w-full rounded-lg pr-10">
-              <div className="gap-4 p-2 justify-between flex flex-1 w-fit">
-                <Button 
-                  color="primary"
-                  onClick={() => handleTypeChange('agua')}
-                  isDisabled={nextPolylineType === 'agua'}
-                >
-                  Água
-                </Button>
-                <Button 
-                  color="success"
-                  onClick={() => handleTypeChange('esgoto')}
-                  isDisabled={nextPolylineType === 'esgoto'}
-                >
-                  Esgoto
-                </Button>
-              </div>
-              
-              <div className="gap-4 p-2">
-
-                <Button
-                  color="warning"
-                  onClick={handleCreatePolyline}
-                  className="mb-4"
-                >
-                  Adicionar Polylines
-                </Button>
-
-                <Button 
-                  color="danger"
-                  //onClick={() => ()}
-                >
-                  Deletar Polylines
-                </Button>
-              </div>
-
-              <div className="p-2 gap-4 w-full">
-                <Button
-                  className="w-full mb-4"
-                  color="primary"
-                  onClick={() => setTipoMarcador('Ativo')}
-                  isDisabled={TipoMarcador === 'Ativo'}
-                >
-                  Marcador de Ativos
-                </Button>
-
-                <Button
-                  color="secondary"
-                  onClick={() => setTipoMarcador('Unidade')}
-                  isDisabled={TipoMarcador === 'Unidade'}
-                >
-                  Marcador de Unidades
-                </Button>
-              </div>
-
-              <Accordion
+              <div className="w-full items-center text-center align-center flex flex-col gap-1 p-1">
+                <Accordion
                   variant="shadow"
-                  className="p-2 flex flex-col gap-1 w-full max-w-[300px]"
+                  className="p-2 gap-4 items-center ml-4 text-center flex flex-col w-fit align-middle"
+                  itemClasses={
+                      {
+                        base: 'py-2 w-full',
+                        title: 'font-normal text-medium',
+                        trigger: "px-2 py-2 data-[hover=true]:bg-default-100 rounded-lg h-14 flex items-center",
+                        indicator: "text-medium",
+                        content: "text-small px-2",
+                      }
+                    }
+                  >
+                    <AccordionItem
+                      key="1"
+                      aria-label="Filtros Existentes"
+                      startContent={<FilterIcon className="text-primary-500" />}
+                      className="w-full flex flex-1 flex-col text-center align-middle"
+                      subtitle={
+                        <p className="flex text-center w-full">
+                          Filtre seus <p className="text-primary">ativos agora!</p>
+                        </p>
+                      }
+                      title="Filtros"
+                    >
+                      <RadioGroup
+                        isRequired
+                        label='Sistema'
+                        {...register('selectedSistema')}
+                      >
+                        <Radio value="agua">Água</Radio>
+                        <Radio value="esgoto">Esgoto</Radio>
+                        <Radio value="outro">Outro</Radio>
+                      </RadioGroup>
+
+                      <RadioGroup
+                        isRequired
+                        label="Tipo de Ativo"
+                        {...register('selectedTipoAtivo')}
+                      >
+                        <Radio value="visivel">Visível</Radio>
+                        <Radio value="enterrado">Enterrado</Radio>
+                      </RadioGroup>
+
+                      <RadioGroup
+                        isRequired
+                        label="Localidade"
+                        {...register('selectedLocalidade')}
+                      >
+                        <Radio value="localidade1">Localidade 1</Radio>
+                        <Radio value="localidade2">Localidade 2</Radio>
+                        <Radio value="localidade3">Localidade 3</Radio>
+                      </RadioGroup>
+                    </AccordionItem>
+                </Accordion>
+
+                <Accordion
+                  variant="shadow"
+                  className="p-2 gap-4 items-center text-center flex flex-col  align-middle"
                   itemClasses={
                     {
-                      base: 'py-0 w-full',
+                      base: 'py-2 w-[300px] flex flex-1',
                       title: 'font-normal text-medium',
-                      trigger: "px-2 py-0 data-[hover=true]:bg-default-100 rounded-lg h-14 flex items-center",
+                      trigger: "px-2 py-2 data-[hover=true]:bg-default-100 rounded-lg h-14 flex items-center",
                       indicator: "text-medium",
-                      content: "text-small px-2",
+                      content: "text-small px-2 items-center text-center flex flex-1 flex-col",
                     }
                   }
                 >
                   <AccordionItem
                     key="1"
-                    aria-label="Filtros Existentes"
-                    startContent={<FilterIcon className="text-primary-500" />}
+                    aria-label="Funcionalidade das Tubulações"
+                    startContent={<RouteIcon className="text-secondary-500" />}
+                    className="w-full flex flex-1 flex-col text-center align-middle"
                     subtitle={
-                      <p className="flex">
-                        Filtre seus <p className="text-primary ml-1">ativos agora!</p>
+                      <p className="w-full">
+                          Controle Suas <p className="text-primary">tubulações</p>
                       </p>
                     }
-                    title="Filtros"
+                    title="Tubulações"
                   >
-                    <RadioGroup
-                      isRequired
-                      label='Sistema'
-                      {...register('selectedSistema')}
-                    >
-                      <Radio value="agua">Água</Radio>
-                      <Radio value="esgoto">Esgoto</Radio>
-                      <Radio value="outro">Outro</Radio>
-                    </RadioGroup>
+                    <div className="gap-4 p-2 flex-col flex flex-1 items-center w-fit">
+                      <Button 
+                        color="primary"
+                        onClick={() => handleTypeChange('agua')}
+                        isDisabled={nextPolylineType === 'agua'}
+                      >
+                        Água
+                      </Button>
+                      <Button 
+                        color="success"
+                        onClick={() => handleTypeChange('esgoto')}
+                        isDisabled={nextPolylineType === 'esgoto'}
+                      >
+                        Esgoto
+                      </Button>
+                    </div>
+              
+                    <div className="gap-4 p-2 w-fit">
+                      <Button
+                        color="warning"
+                        onClick={handleCreatePolyline}
+                        className="mb-4"
+                      >
+                        Adicionar Polylines
+                      </Button>
+                    </div>
+                  </AccordionItem>
 
-                    <RadioGroup
-                      isRequired
-                      label="Tipo de Ativo"
-                      {...register('selectedTipoAtivo')}
-                    >
-                      <Radio value="visivel">Visível</Radio>
-                      <Radio value="enterrado">Enterrado</Radio>
-                    </RadioGroup>
+                  <AccordionItem
+                    key='2'
+                    aria-label="Funcionalidade dos Marcadores"
+                    startContent={<MapPinIcon className="text-success-500" />}
+                    className="w-full flex flex-1 flex-col text-center align-middle"
+                    subtitle={
+                      <p className="w-full">
+                        Controle seus <p className="text-primary">Ativos</p>
+                      </p>
+                    }
+                    title='Ativos'
+                  >
+                    <div className="p-2 gap-4 w-full">
+                      <Button
+                        className="w-full mb-4"
+                        color="primary"
+                        onClick={() => setTipoMarcador('Ativo')}
+                        isDisabled={TipoMarcador === 'Ativo'}
+                      >
+                        Ativos
+                      </Button>
 
-                    <RadioGroup
-                      isRequired
-                      label="Localidade"
-                      {...register('selectedLocalidade')}
-                    >
-                      <Radio value="localidade1">Localidade 1</Radio>
-                      <Radio value="localidade2">Localidade 2</Radio>
-                      <Radio value="localidade3">Localidade 3</Radio>
-                    </RadioGroup>
+                      <Button
+                        color="secondary"
+                        onClick={() => setTipoMarcador('Unidade')}
+                        isDisabled={TipoMarcador === 'Unidade'}
+                      >
+                         Unidades
+                      </Button>
+                    </div>
                   </AccordionItem>
                 </Accordion>
+              </div>
             </div>
           </div>
         </div>
