@@ -83,9 +83,9 @@ function TopNav() {
     }
 
     return(
-        <Navbar className=" gap-6 bg-slate-900" >
+        <Navbar className="flex flex-col sm:flex-row gap-6 bg-slate-900" >
 
-            <div>
+            <div className="w-full sm:w-auto">
                 <NavbarBrand
                     rel="/"
                 >
@@ -97,7 +97,7 @@ function TopNav() {
             </div>
            
 
-            <NavbarContent className="hidden sm:flex gap-4" justify="center">
+            <NavbarContent className="w-full sm:w-auto flex flex-col sm:flex-row gap-4" justify="center">
                 <Dropdown>
                     <NavbarItem>
                     <DropdownTrigger>
@@ -153,23 +153,48 @@ function TopNav() {
                         Lista de Ativos Administrativos
                     </DropdownItem>
 
+                    <DropdownItem
+                        key="Painel_Principal"
+                        href="/"
+                        description="A página inicial onde permanecem o mapa e seus filtros."
+                        className="sm:hidden"
+                    >
+                        Painel Principal
+                    </DropdownItem>
+
+                    <DropdownItem
+                        key="Users"
+                        href="/listagemUsuarios"
+                        description="A página onde permanecem a listagem dos Usuários e seus filtros."
+                        className="sm:hidden"
+                    >
+                        Usuários
+                    </DropdownItem>
+                    
                     </DropdownMenu>
                 </Dropdown>
 
-                <NavbarItem isActive>
+                <NavbarItem 
+                    isActive
+                    className="hidden sm:block"
+                >
                     <Link href="/" aria-current="page">
                         Painel Principal
                     </Link>
                 </NavbarItem>
 
                 <NavbarItem>
-                    <Link color="success" href="/listagemUsuarios">
+                    <Link 
+                        color="success" 
+                        href="/listagemUsuarios"
+                        className="hidden sm:block"
+                    >
                     Usuários
                     </Link>
                 </NavbarItem>
             </NavbarContent>
 
-            <NavbarContent justify="end">
+            <NavbarContent justify="end" className="w-full sm:w-auto flex flex-col sm:flex-row">
                 <NavbarItem className="lg:flex">
                     <Tooltip
                         closeDelay={5000}
