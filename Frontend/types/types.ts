@@ -114,6 +114,8 @@ export type IGetOpAtivo = {
     Município?: string,
     localidade?: string,
     Endereco?: string,
+    extensao?: number,
+    diametro?: number,
     status_display: {key: string, value: string},
     tipo_ativo_display: {key: string, value: string},
     tipo_investimento_display: {key: string, value: string},

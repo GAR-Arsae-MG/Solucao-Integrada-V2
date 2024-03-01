@@ -153,6 +153,8 @@ class Ativos_Operacionais(models.Model):
     Município = models.CharField(max_length=100, null=True, blank=True)
     localidade = models.CharField("Sede Municipal",  max_length=100, null=True, blank=True, help_text="Distrito/Localidade")
     Endereco = models.CharField(max_length=120, null=True, blank=True)
+    extensao = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    diâmetro = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
      return self.codigo
