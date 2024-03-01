@@ -122,19 +122,11 @@ function TopNav() {
                     >
 
                     <DropdownItem
-                        key="Unities_register"
-                        description="Registro de Unidades"
-                        href="/cadastroUnidades"
-                    >
-                        Cadastro Unidades
-                    </DropdownItem>
-
-                    <DropdownItem
                         key="Ativos_Register"
-                        description="Cadastramento de futuros ativos de saneamento."
+                        description="Cadastramento de Ativos Administrativos."
                         href="/cadastroAtivos"
                     >
-                        Cadastro Ativos
+                        Cadastro Ativos Administrativos
                     </DropdownItem>
 
                     <DropdownItem
