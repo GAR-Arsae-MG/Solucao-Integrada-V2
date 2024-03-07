@@ -61,21 +61,23 @@ class Unidades(models.Model):
     id = models.AutoField(primary_key=True)
     SISTEMAS = (
         ('A', 'Administrativo'),
-        ('O', 'operacional(Unidades de tratamento)'),
+        ('O', 'operacional'),
     )
     nome = models.CharField(max_length=50)
+    código = models.CharField(max_length=8, null=True, blank=True)
     sistemas = models.CharField(choices=SISTEMAS, null=False, blank=False, default='Administrativo')
     TIPO = (
-        ('S', 'Sede'),
-        ('F', 'Filial'),
-        ('TA', 'Tratamento de Água'),
-        ('TE', 'Tratamento de Esgoto'),
-        ('TB', 'Tratamento de Agua e Esgoto'),
+        ('AS', 'Sede Administrativa'),
+        ('AF', 'Filial Administrativa'),
+        ('ETA', 'Estação de Tratamento de Água'),
+        ('ETE', 'Estação de Tratamento de Esgoto'),
+        ('BGE', 'Barragem'),
     )
-    tipo = models.CharField(max_length=2, choices=TIPO, blank=False, null=False, default='Filial')
+    tipo = models.CharField(max_length=3, choices=TIPO, blank=False, null=False, default='Filial')
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
     longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
     Município = models.CharField(max_length=100, null=True, blank=True)
+    data_operacao = models.DateField(help_text='Data de Início da Operação', null=True, blank=True)
     localidade = models.CharField("Sede Municipal",  max_length=100, null=True, blank=True, help_text="Distrito/Localidade")
     Endereco = models.CharField(max_length=120, null=True, blank=True)
     
@@ -92,6 +94,13 @@ class Unidades(models.Model):
 
 class Ativos_Operacionais(models.Model):
     id = models.AutoField(primary_key=True)
+    nome_de_campo = models.CharField(max_length=64)
+    classe = models.CharField(max_length=64)
+    TIPO_ATIVO = (
+        ('V', 'Visivel'),
+        ('E', 'Enterrado'),
+    )
+    tipo_ativo = models.CharField(max_length=1, choices=TIPO_ATIVO, blank=False, null=False, default='V')
     STATUS = (
        ('P/A', 'Projeto em andamento'),
        ('P/P', 'Projeto paralisado'),
@@ -105,13 +114,7 @@ class Ativos_Operacionais(models.Model):
        ('U', 'Ativo fora de uso'),
        ('D', 'Ativo desativado'),
     )
-    nome_de_campo = models.CharField(max_length=64)
-    TIPO_ATIVO = (
-        ('V', 'Visivel'),
-        ('E', 'Enterrado'),
-    )
-    tipo_ativo = models.CharField(max_length=1, choices=TIPO_ATIVO, blank=False, null=False, default='V')
-    classe = models.CharField(max_length=64)
+    status = models.CharField(max_length=3, choices=STATUS, blank=False, null=False, default='P/A')
     fase = models.CharField(max_length=64)
     TIPO_INVESTIMENTO = (
         ('I', 'Implantação'),
@@ -145,7 +148,6 @@ class Ativos_Operacionais(models.Model):
     data_obra = models.DateField()
     data_operacao = models.DateField()
     criado_por = models.CharField(max_length=64)
-    status = models.CharField(max_length=3, choices=STATUS, blank=False, null=False, default='P/A')
     criado_em = models.DateTimeField(auto_now_add=True, editable=False)
     codigo = models.CharField(max_length=10, default="", unique=True)
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
