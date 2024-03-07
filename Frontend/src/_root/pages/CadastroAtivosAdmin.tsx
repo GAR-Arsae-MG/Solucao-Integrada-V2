@@ -226,7 +226,7 @@ const CadastroAtivosAdmin = () => {
                         <button
                             type="button"
                             onClick={() => reset()}
-                            className="bg-red-500 transition ease-in-out delay-150 hover:-translate-y-1  hover:scale-110 duration-300 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                            className="bg-red-500 transition ease-in-out delay-150 hover:-translate-y-1  hover:scale-110 duration-300 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" 
                         >
                             Limpar
                         </button>
