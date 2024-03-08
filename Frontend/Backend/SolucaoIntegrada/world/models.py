@@ -74,6 +74,15 @@ class Unidades(models.Model):
         ('BGE', 'Barragem'),
     )
     tipo = models.CharField(max_length=3, choices=TIPO, blank=False, null=False, default='Filial')
+    ETAPA_SISTEMAS = (
+        ('C', 'Captação'),
+        ('CO', 'Coleta'),
+        ('D', 'Distribuição'),
+        ('R', 'Reservação'),
+        ('T', 'Tratamento'),
+        ('N/A', 'Não se Aplica'),
+    )
+    etapa_sistemas = models.CharField(max_length=3, choices=ETAPA_SISTEMAS, blank=False, null=False, default='N/A')
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
     longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
     Município = models.CharField(max_length=100, null=True, blank=True)
@@ -91,6 +100,10 @@ class Unidades(models.Model):
     def get_sistemas_display(self):
         sistemas_dict = dict(Unidades.SISTEMAS)
         return sistemas_dict.get(self.sistemas)
+    
+    def get_etapa_sistemas_display(self):
+        etapa_sistemas_dict = dict(Unidades.ETAPA_SISTEMAS)
+        return etapa_sistemas_dict.get(self.etapa_sistemas)
 
 class Ativos_Operacionais(models.Model):
     id = models.AutoField(primary_key=True)

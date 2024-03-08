@@ -39,13 +39,16 @@ class UnitiesSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Unidades
-        fields = ['id','nome','sistemas', 'sistemas_display', 'tipo', 'tipo_display','latitude', 'longitude','Município', 'localidade','Endereco']
+        fields = ['id','nome','sistemas', 'sistemas_display', 'tipo', 'tipo_display', 'etapa_sistemas','etapa_sistemas_display','latitude', 'longitude','Município', 'localidade','Endereco']
         
     def get_tipo_display(self, obj):
         return {"key": obj.tipo, "value": obj.get_tipo_display()}
     
     def get_sistemas_display(self, obj):
         return {"key": obj.sistemas,"value": obj.get_sistemas_display()}
+    
+    def get_etapa_sistemas_display(self, obj):
+        return {"key": obj.etapa_sistemas,"value": obj.get_etapa_sistemas_display()}
 
 class AtivosAdminSerializer(serializers.ModelSerializer):
     tipo_ativo_display = serializers.SerializerMethodField()
