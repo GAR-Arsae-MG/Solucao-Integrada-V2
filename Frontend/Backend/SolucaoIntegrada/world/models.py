@@ -59,12 +59,12 @@ class Usuarios(AbstractBaseUser, PermissionsMixin):
 
 class Unidades(models.Model):
     id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=50)
+    código = models.CharField(max_length=8, null=True, blank=True)
     SISTEMAS = (
         ('A', 'Administrativo'),
         ('O', 'operacional'),
     )
-    nome = models.CharField(max_length=50)
-    código = models.CharField(max_length=8, null=True, blank=True)
     sistemas = models.CharField(choices=SISTEMAS, null=False, blank=False, default='Administrativo')
     TIPO = (
         ('AS', 'Sede Administrativa'),
@@ -73,16 +73,12 @@ class Unidades(models.Model):
         ('ETE', 'Estação de Tratamento de Esgoto'),
         ('BGE', 'Barragem'),
     )
-    tipo = models.CharField(max_length=3, choices=TIPO, blank=False, null=False, default='Filial')
-    ETAPA_SISTEMAS = (
-        ('C', 'Captação'),
-        ('CO', 'Coleta'),
-        ('D', 'Distribuição'),
-        ('R', 'Reservação'),
-        ('T', 'Tratamento'),
-        ('N/A', 'Não se Aplica'),
+    tipo = models.CharField(max_length=3, choices=TIPO, blank=False, null=False, default='Filial Administrativa')
+    CLASSE_UNIDADE = (
+        ('E/E/IC', 'Edificação, Estrutura e Instalações Civis'),
+        ('T', 'Terreno'),
     )
-    etapa_sistemas = models.CharField(max_length=3, choices=ETAPA_SISTEMAS, blank=False, null=False, default='N/A')
+    classe_unidade = models.CharField(max_length=6, choices=CLASSE_UNIDADE, blank=False, null=False, default='Edificação, Estrutura e Instalações Civis')
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
     longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
     Município = models.CharField(max_length=100, null=True, blank=True)
@@ -101,19 +97,35 @@ class Unidades(models.Model):
         sistemas_dict = dict(Unidades.SISTEMAS)
         return sistemas_dict.get(self.sistemas)
     
-    def get_etapa_sistemas_display(self):
-        etapa_sistemas_dict = dict(Unidades.ETAPA_SISTEMAS)
-        return etapa_sistemas_dict.get(self.etapa_sistemas)
+    def get_classe_unidade_display(self):
+        classe_unidade_dict = dict(Unidades.CLASSE_UNIDADE)
+        return classe_unidade_dict.get(self.classe_unidade)
 
 class Ativos_Operacionais(models.Model):
     id = models.AutoField(primary_key=True)
     nome_de_campo = models.CharField(max_length=64)
-    classe = models.CharField(max_length=64)
     TIPO_ATIVO = (
         ('V', 'Visivel'),
         ('E', 'Enterrado'),
     )
     tipo_ativo = models.CharField(max_length=1, choices=TIPO_ATIVO, blank=False, null=False, default='V')
+    SUBUNIDADE = (
+        ('C/A', 'Caixa de Areia'),
+        ('C/Q', 'Caixa de Química')
+        ('C', 'Coagulador'),
+        ('D', 'Decantador'),
+        ('DP', 'Depósito')
+        ('F/B', 'Filtro Biológico')
+        ('F/R', 'Filtro Rápido')
+        
+    )
+    CLASSE_ATIVO = (
+        ('BDA', 'Bomba De Agua'),
+        ('E', 'Equipamento'),
+        ('ME', 'Motor Elétrico'),
+        ('O', 'Outros'),
+    )
+    classe_ativo = models.CharField(max_length=3, choices=CLASSE_ATIVO, blank=False, null=False, default='O')
     STATUS = (
        ('P/A', 'Projeto em andamento'),
        ('P/P', 'Projeto paralisado'),
@@ -149,6 +161,18 @@ class Ativos_Operacionais(models.Model):
         ('N', 'NA'),
     )
     etapa_do_servico = models.CharField(max_length=64, choices=ETAPA_DO_SERVICO, blank=False, null=False)
+    ETAPA_SISTEMAS = (
+        ('C', 'Captação'),
+        ('CO', 'Coleta'),
+        ('D', 'Distribuição'),
+        ('R', 'Reservação'),
+        ('T', 'Tratamento'),
+        ('N/A', 'Não se Aplica'),
+    )
+    etapa_sistemas = models.CharField(max_length=3, choices=ETAPA_SISTEMAS, blank=False, null=False, default='N/A')
+    desc_complementar = models.CharField(max_length=100, null=True, blank=True)
+    conj_motobomba = models.CharField(max_length=100, blank=True, null=True)
+    especie = models.CharField(max_length=64, blank=True, null=True)
     situacao_atual = models.CharField(max_length=64)
     proprietario = models.CharField(max_length=64)
     doacao = models.BooleanField()
@@ -189,6 +213,10 @@ class Ativos_Operacionais(models.Model):
     def get_etapa_do_servico_display(self):
         etapa_do_servico_dict = dict(Ativos_Operacionais.ETAPA_DO_SERVICO)
         return etapa_do_servico_dict.get(self.etapa_do_servico)
+    
+    def get_etapa_sistemas_display(self):
+        etapa_sistemas_dict = dict(Ativos_Operacionais.ETAPA_SISTEMAS)
+        return etapa_sistemas_dict.get(self.etapa_sistemas)
  
 class Ativos_Administrativos(models.Model):
     id = models.AutoField(primary_key=True)
