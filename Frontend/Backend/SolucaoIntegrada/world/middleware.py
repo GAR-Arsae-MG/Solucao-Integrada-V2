@@ -1,7 +1,8 @@
+from datetime import datetime
 from urllib import request
 import json
 from django.utils.dateparse import parse_date
-from .models import IPCA
+from world.models import IPCA
 import requests
 class IPCAMiddleware:
     def __init__(self, get_response):
@@ -15,9 +16,11 @@ class IPCAMiddleware:
     def fetchSaveIPCA(self):
         response = requests.get('https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json')
         data = json.loads(response.text)
+        print(data)
 
         for item in data:
-            data_obj = parse_date(item['data'])
+            data_str = datetime.strptime(item['data'], '%d/%m/%Y').strftime('%Y-%m-%d')
+            data_obj = parse_date(data_str)
             variacao = float(item['valor'].replace(',','.'))
 
             ipca, created = IPCA.objects.get_or_create(data=data_obj, defaults={'variacao': variacao})

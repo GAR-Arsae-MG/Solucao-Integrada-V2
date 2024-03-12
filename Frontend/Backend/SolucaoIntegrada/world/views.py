@@ -45,7 +45,7 @@ class UnitiesViewSet(viewsets.ModelViewSet):
     filterset_fields = ['tipo', 'sistemas']
     
 class IPCAViewSet(viewsets.ModelViewSet):
-    queryset = Unidades.objects.all().order_by('id')
+    queryset = IPCA.objects.all().order_by('id')
     serializer_class = IPCASerializer   
 
 class AtivosAdminViewSet(viewsets.ModelViewSet):

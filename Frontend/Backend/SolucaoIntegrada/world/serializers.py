@@ -75,7 +75,7 @@ class AtivosAdminSerializer(serializers.ModelSerializer):
     
 class IPCASerializer(serializers.ModelSerializer):
     class Meta:
-        model: IPCA
+        model = IPCA
         fields = [f.name for f in IPCA._meta.get_fields()]
 
 class AtivosOperacionaisSerializer(serializers.ModelSerializer):
