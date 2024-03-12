@@ -69,6 +69,8 @@ class Unidades(models.Model):
     TIPO = (
         ('AS', 'Sede Administrativa'),
         ('AF', 'Filial Administrativa'),
+        ('EAB', 'Estação Elevatória de Água Bruta'),
+        ('EEE', 'Estação Elevatória de Esgoto'),
         ('ETA', 'Estação de Tratamento de Água'),
         ('ETE', 'Estação de Tratamento de Esgoto'),
         ('BGE', 'Barragem'),
@@ -78,7 +80,17 @@ class Unidades(models.Model):
         ('E/E/IC', 'Edificação, Estrutura e Instalações Civis'),
         ('T', 'Terreno'),
     )
-    classe_unidade = models.CharField(max_length=6, choices=CLASSE_UNIDADE, blank=False, null=False, default='Edificação, Estrutura e Instalações Civis')
+    classe_unidade = models.CharField(max_length=10, choices=CLASSE_UNIDADE, blank=False, null=False, default='E/E/IC')
+    ETAPA_SISTEMAS = (
+        ('C', 'Captação'),
+        ('CO', 'Coleta'),
+        ('D', 'Distribuição'),
+        ('R', 'Reservação'),
+        ('T', 'Tratamento'),
+        ('N/A', 'Não se Aplica'),
+    )
+    etapa_sistemas = models.CharField(max_length=3, choices=ETAPA_SISTEMAS, blank=False, null=False, default='N/A')
+    capacidade_volume = models.IntegerField(null=True, blank=True, help_text='Capacidade de Volumes (m3)')
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
     longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
     Município = models.CharField(max_length=100, null=True, blank=True)
@@ -100,10 +112,24 @@ class Unidades(models.Model):
     def get_classe_unidade_display(self):
         classe_unidade_dict = dict(Unidades.CLASSE_UNIDADE)
         return classe_unidade_dict.get(self.classe_unidade)
+    
+     
+    def get_etapa_sistemas_display(self):
+        etapa_sistemas_dict = dict(Unidades.ETAPA_SISTEMAS)
+        return etapa_sistemas_dict.get(self.etapa_sistemas)
 
 class Ativos_Operacionais(models.Model):
     id = models.AutoField(primary_key=True)
-    nome_de_campo = models.CharField(max_length=64)
+    nome_de_campo = models.CharField(max_length=64, help_text='Nome das partes')
+    codigo = models.CharField(max_length=10, default="", unique=True)
+    data_insercao = models.DateField()
+    data_projeto = models.DateField()
+    data_obra = models.DateField()
+    data_operacao = models.DateField()
+    desc_complementar = models.CharField(max_length=100, null=True, blank=True)
+    especie = models.CharField(max_length=64, blank=True, null=True)
+    classificacao_regulatoria = models.CharField(max_length=64, blank=True, null=True)
+    indenizavel = models.CharField(max_length=10, blank=True, null=True)
     TIPO_ATIVO = (
         ('V', 'Visivel'),
         ('E', 'Enterrado'),
@@ -111,18 +137,27 @@ class Ativos_Operacionais(models.Model):
     tipo_ativo = models.CharField(max_length=1, choices=TIPO_ATIVO, blank=False, null=False, default='V')
     SUBUNIDADE = (
         ('C/A', 'Caixa de Areia'),
-        ('C/Q', 'Caixa de Química')
+        ('C/Q', 'Caixa de Química'),
         ('C', 'Coagulador'),
         ('D', 'Decantador'),
-        ('DP', 'Depósito')
-        ('F/B', 'Filtro Biológico')
-        ('F/R', 'Filtro Rápido')
-        
+        ('DP', 'Depósito'),
+        ('F/B', 'Filtro Biológico'),
+        ('F/R', 'Filtro Rápido'),
+        ('G', 'Grade'),
+        ('L', 'Laboratório'),
+        ('L/S', 'Leito de secagem'),
+        ('M/V', 'Medidor de Vazão'),
+        ('RU', 'Reator UASB'),
+        ('T/C', 'Tanque de Contato'),
+        ("N/A", 'Não se aplica'),
     )
+    subunidade = models.CharField(max_length=3, choices=SUBUNIDADE, blank=False, null=False, default='N/A')
     CLASSE_ATIVO = (
         ('BDA', 'Bomba De Agua'),
         ('E', 'Equipamento'),
         ('ME', 'Motor Elétrico'),
+        ('RDA', 'Rede de distribuição de Água'),
+        ('RDE', 'Rede Coletora de Esgoto'),
         ('O', 'Outros'),
     )
     classe_ativo = models.CharField(max_length=3, choices=CLASSE_ATIVO, blank=False, null=False, default='O')
@@ -148,7 +183,7 @@ class Ativos_Operacionais(models.Model):
         ('M', 'Melhorias'),
         ('R', 'Reposição de Ativos'),
     )
-    tipo_investimento = models.CharField(max_length=3, choices=TIPO_INVESTIMENTO, blank=False, null=False)
+    tipo_investimento = models.CharField(max_length=3, choices=TIPO_INVESTIMENTO, blank=False, null=False, default='I')
     ETAPA_DO_SERVICO = (
         ('M', 'Manancial'),
         ('C', 'Captação'),
@@ -160,33 +195,49 @@ class Ativos_Operacionais(models.Model):
         ('R', 'Recalque'),
         ('N', 'NA'),
     )
-    etapa_do_servico = models.CharField(max_length=64, choices=ETAPA_DO_SERVICO, blank=False, null=False)
-    ETAPA_SISTEMAS = (
-        ('C', 'Captação'),
-        ('CO', 'Coleta'),
-        ('D', 'Distribuição'),
-        ('R', 'Reservação'),
-        ('T', 'Tratamento'),
+    etapa_do_servico = models.CharField(max_length=1, choices=ETAPA_DO_SERVICO, blank=False, null=False, default='T')
+    conj_motobomba = models.CharField(max_length=100, blank=True, null=True)
+    capacidade_potencia = models.DecimalField("Capacidade de Potência(cv)",max_digits=4, decimal_places=2, null=True, blank=True, help_text='Apenas para conjunto motobomba')
+    capacidade_vazao = models.DecimalField("Capacidade de vazão(l/s)", max_digits=4 , decimal_places=2, null=True, blank=True, help_text='Apenas para conjunto motobomba')
+    MATERIAL = (
+        ('A', 'Aço'),
+        ('C/C', 'Cerâmica e Cimento'),
+        ('CO', 'Concreto'),
+        ('D', 'Defofo'),
+        ('F', 'Ferro'),
+        ('FFU', 'Ferro Fundido'),
+        ('F/P', 'Ferro/PVC'),
+        ('FB', 'Fibra'),
+        ('MC', 'Malha Cerâmica'),
+        ('O', 'Ocre'),
+        ('P', 'PBA'),
         ('N/A', 'Não se Aplica'),
     )
-    etapa_sistemas = models.CharField(max_length=3, choices=ETAPA_SISTEMAS, blank=False, null=False, default='N/A')
-    desc_complementar = models.CharField(max_length=100, null=True, blank=True)
-    conj_motobomba = models.CharField(max_length=100, blank=True, null=True)
-    especie = models.CharField(max_length=64, blank=True, null=True)
+    material = models.CharField(max_length=3, choices=MATERIAL, blank=False, null=False, default='N/A')
+    ESTADO_CONSERVACAO = (
+        ('N', 'Novo'),
+        ('B', 'Bom'),
+        ('R', 'Regular'),
+        ('N/R', 'Necessita de Reparos'),
+        ('D', 'Desgastado'),
+        ('I', 'Inutilizável'),
+        ('N/A', 'Não se Aplica'),
+    )
+    estado_conservacao = models.CharField(max_length=3, choices=ESTADO_CONSERVACAO, blank=False, null=False, default='N/A')
     situacao_atual = models.CharField(max_length=64)
+    ORIGEM = (
+        ('P', 'Próprio'),
+        ('T', 'Terceiro(s)'),
+        ('D', 'Doação'),
+    )
+    origem = models.CharField(max_length=1, choices=ORIGEM, blank=False, null=False, default='P')
     proprietario = models.CharField(max_length=64)
-    doacao = models.BooleanField()
     valor_original = models.DecimalField(max_digits=10, decimal_places=2)
     vida_util_reg_anos = models.IntegerField()
     vida_util_reg_meses = models.IntegerField()
     unidade = models.ForeignKey(Unidades, on_delete=models.CASCADE, blank=False, null=False)
-    data_insercao = models.DateField()
-    data_projeto = models.DateField()
-    data_obra = models.DateField()
-    data_operacao = models.DateField()
     criado_por = models.CharField(max_length=64)
-    criado_em = models.DateTimeField(auto_now_add=True, editable=False)
-    codigo = models.CharField(max_length=10, default="", unique=True)
+    criado_em = models.DateTimeField(auto_now_add=True, editable=True)
     latitude = models.FloatField("Outlet Latitude", default=0.0, blank=False, help_text="Latitude")
     longitude = models.FloatField("Outlet Longitude", default=0.0, blank=False, help_text="Longitude")
     Município = models.CharField(max_length=100, null=True, blank=True)
@@ -194,6 +245,12 @@ class Ativos_Operacionais(models.Model):
     Endereco = models.CharField(max_length=120, null=True, blank=True)
     extensao = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     diâmetro = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
+# Campos com cálculos numéricos
+
+
+
+#funções de formatação de selects
 
     def __str__(self):
      return self.codigo
@@ -213,10 +270,6 @@ class Ativos_Operacionais(models.Model):
     def get_etapa_do_servico_display(self):
         etapa_do_servico_dict = dict(Ativos_Operacionais.ETAPA_DO_SERVICO)
         return etapa_do_servico_dict.get(self.etapa_do_servico)
-    
-    def get_etapa_sistemas_display(self):
-        etapa_sistemas_dict = dict(Ativos_Operacionais.ETAPA_SISTEMAS)
-        return etapa_sistemas_dict.get(self.etapa_sistemas)
  
 class Ativos_Administrativos(models.Model):
     id = models.AutoField(primary_key=True)
@@ -233,11 +286,13 @@ class Ativos_Administrativos(models.Model):
         ('P', 'Pessoal'),
         ('C', 'Computador'),
         ('I', 'Impressora'),
-        ('V', 'Veículo'),
-        ('E', 'Eletrodomestico'),
-        ('G', 'Geral')
+        ('VM', 'Veículo Motorizado'),
+        ('VP', 'Veículo Manual'),
+        ('E', 'Eletrodoméstico'),
+        ('G', 'Geral'),
+        ('N/A', 'Não se aplica')
     )
-    classe_ativo = models.CharField(max_length=1, choices=CLASSE_ATIVO, blank=False, null=False, default='G')
+    classe_ativo = models.CharField(max_length=3, choices=CLASSE_ATIVO, blank=False, null=False, default='G')
     proprietario = models.CharField(max_length=64, blank=False, null=False)
     doacao = models.BooleanField()
     valor_original = models.DecimalField(max_digits=10, decimal_places=2)
@@ -253,8 +308,8 @@ class Ativos_Administrativos(models.Model):
         ('U', 'Ativo Fora de Uso')
     )
     status = models.CharField(max_length=3, choices=STATUS, blank=False, null=False, default='F')
-    data_insercao = models.DateField()
-    previsao_substituicao = models.DateField()
+    data_insercao = models.DateField(help_text='Data de Cadastro do Item', blank=True, null=True) 
+    data_operacao = models.DateField(help_text='Data de Entrada em Uso do Item', blank=True, null=True)
     unidade = models.ForeignKey(Unidades, on_delete=models.CASCADE, blank=False, null=False)
     criado_por = models.CharField(max_length=64)
     adquirido_por = models.CharField(max_length=64)

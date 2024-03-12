@@ -37,10 +37,11 @@ class UnitiesSerializer(serializers.ModelSerializer):
     tipo_display = serializers.SerializerMethodField()
     sistemas_display = serializers.SerializerMethodField()
     classe_unidade_display = serializers.SerializerMethodField()
+    etapa_sistemas_display = serializers.SerializerMethodField()
     
     class Meta:
         model = Unidades
-        fields = ['id','nome','sistemas', 'sistemas_display', 'tipo', 'tipo_display','latitude', 'longitude','Município', 'localidade','Endereco', 'classe_unidade', 'classe_unidade_display']
+        fields = ['id','nome','sistemas', 'sistemas_display', 'tipo', 'tipo_display','latitude', 'longitude','Município', 'localidade','Endereco', 'classe_unidade', 'classe_unidade_display' , 'etapa_sistemas_display']
         
     def get_tipo_display(self, obj):
         return {"key": obj.tipo, "value": obj.get_tipo_display()}
@@ -50,6 +51,10 @@ class UnitiesSerializer(serializers.ModelSerializer):
     
     def get_classe_unidade_display(self, obj):
         return {"key": obj.classe_unidade, "value": obj.get_classe_unidade_display()}
+    
+    def get_etapa_sistemas_display(self, obj):
+        return {"key": obj.etapa_sistemas,"value": obj.get_etapa_sistemas_display()}
+    
 class AtivosAdminSerializer(serializers.ModelSerializer):
     tipo_ativo_display = serializers.SerializerMethodField()
     classe_ativo_display = serializers.SerializerMethodField()
@@ -73,11 +78,11 @@ class AtivosOperacionaisSerializer(serializers.ModelSerializer):
     tipo_ativo_display = serializers.SerializerMethodField()
     tipo_investimento_display = serializers.SerializerMethodField()
     etapa_do_servico_display = serializers.SerializerMethodField()
-    etapa_sistemas_display = serializers.SerializerMethodField()
+   
     
     class Meta:
         model = Ativos_Operacionais
-        fields = [f.name for f in Ativos_Operacionais._meta.get_fields()] + ['status_display', 'tipo_ativo_display', 'tipo_investimento_display', 'etapa_do_servico_display'], 'etapa_sistemas_display'
+        fields = [f.name for f in Ativos_Operacionais._meta.get_fields()] + ['status_display', 'tipo_ativo_display', 'tipo_investimento_display', 'etapa_do_servico_display']
         
     def get_status_display(self, obj):
         return {"key": obj.status, "value": obj.get_status_display()}
@@ -91,6 +96,5 @@ class AtivosOperacionaisSerializer(serializers.ModelSerializer):
     def get_etapa_do_servico_display(self, obj):
         return {"key": obj.etapa_do_servico, "value": obj.get_etapa_do_servico_display()}
     
-    def get_etapa_sistemas_display(self, obj):
-        return {"key": obj.etapa_sistemas,"value": obj.get_etapa_sistemas_display()}
+   
 
