@@ -1,4 +1,4 @@
-import json
+
 from django.http import JsonResponse
 from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
@@ -18,11 +18,13 @@ from rest_framework.views import APIView
 from rest_framework.generics import UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 
+from django.utils.dateparse import parse_date
+
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
-from world.models import Ativos_Administrativos, Ativos_Operacionais, Unidades, Usuarios
+from world.models import IPCA, Ativos_Administrativos, Ativos_Operacionais, Unidades, Usuarios
 
 # Create your views here.
 
@@ -166,6 +168,10 @@ class UpdateCurrentUserView(UpdateAPIView):
         else:
             print('Nenhum usuário autenticado.')
             return Response({'detail': 'Nenhum usuário autenticado.'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+# Views específicas para a lógica do IPCA
+
 
 # Views para retornar valores específicos dos models.
 
