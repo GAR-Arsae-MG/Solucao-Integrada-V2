@@ -4,7 +4,7 @@ from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.models import Group
-from world.serializers import UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer, UserUpdateSerializer
+from world.serializers import IPCASerializer, UserSerializer, GroupSerializer, AtivosAdminSerializer, AtivosOperacionaisSerializer, UnitiesSerializer, UserUpdateSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets, status
@@ -42,6 +42,9 @@ class UnitiesViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['tipo', 'sistemas']
     
+class IPCAViewSet(viewsets.ModelViewSet):
+    queryset = Unidades.objects.all().order_by('id')
+    serializer_class = IPCASerializer   
 
 class AtivosAdminViewSet(viewsets.ModelViewSet):
     queryset = Ativos_Administrativos.objects.all().order_by('id')

@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Group
-from world.models import Usuarios, Unidades, Ativos_Administrativos, Ativos_Operacionais
+from world.models import IPCA, Usuarios, Unidades, Ativos_Administrativos, Ativos_Operacionais
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -72,6 +72,11 @@ class AtivosAdminSerializer(serializers.ModelSerializer):
     
     def get_status_display(self, obj):
         return obj.get_status_display()
+    
+class IPCASerializer(serializers.ModelSerializer):
+    class Meta:
+        model: IPCA
+        fields = [f.name for f in IPCA._meta.get_fields()]
 
 class AtivosOperacionaisSerializer(serializers.ModelSerializer):
     status_display = serializers.SerializerMethodField()

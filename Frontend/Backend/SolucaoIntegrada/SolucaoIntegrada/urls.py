@@ -21,12 +21,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 
-from world.views import AtivosAdmClasseAtivoView, AtivosAdmStatusView, AtivosAdmTipoAtivoView, AtivosOpEtapaServicoView, AtivosOpStatusView, AtivosOpTipoAtivoView, AtivosOpTipoInvestimentoView, FuncoesView, StaffView, UnitiesSistemasView, UnitiesTypesView, UpdateCurrentUserView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
+from world.views import AtivosAdmClasseAtivoView, AtivosAdmStatusView, AtivosAdmTipoAtivoView, AtivosOpEtapaServicoView, AtivosOpStatusView, AtivosOpTipoAtivoView, AtivosOpTipoInvestimentoView, FuncoesView, IPCAViewSet, StaffView, UnitiesSistemasView, UnitiesTypesView, UpdateCurrentUserView, UserViewSet, GroupViewSet, register, CustomAuthToken, logout_view, revalidatePassword, get_user_info, AtivosAdminViewSet, AtivosOperationalViewSet, UnitiesViewSet                                
 from SolucaoIntegrada.settings import STATIC_URL
 
 router = routers.DefaultRouter()
 router.register('usuarios', UserViewSet)
 router.register('grupos', GroupViewSet)
+router.register('IPCA', IPCAViewSet)
 router.register('ativos-operacionais', AtivosOperationalViewSet)
 router.register('ativos-administrativos', AtivosAdminViewSet)
 router.register('unidades', UnitiesViewSet)
