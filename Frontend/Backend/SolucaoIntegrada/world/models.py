@@ -126,7 +126,6 @@ class IPCA(models.Model):
     variacao = models.DecimalField(max_digits=5, decimal_places=2)
     variacao_centesimal = models.DecimalField(max_digits=6, decimal_places=5, blank=True, null=True)
     num_indice_IBGE = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    porcentagem_variacao = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     variacao_retroativa = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     num_indice_calculado = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
