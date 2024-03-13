@@ -1,5 +1,4 @@
 from datetime import datetime
-from urllib import request
 import json
 from django.utils.dateparse import parse_date
 from world.models import IPCA
