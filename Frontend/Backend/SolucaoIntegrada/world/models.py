@@ -130,15 +130,10 @@ class IPCA(models.Model):
     num_indice_calculado = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
     def save(self, *args, **kwargs):
-        self.variacao_centesimal = self.variacao / 100
+        if self.variacao is not None:
+            self.variacao_centesimal = self.variacao / 100
+            
         primeiro_indice = IPCA.objects.order_by('data').first()
-        
-        if primeiro_indice is None or self.id == primeiro_indice.id:
-            self.num_indice_IBGE = 100 * Decimal(1 + self.variacao_centesimal)
-        else:
-            ultimo_indice = IPCA.objects.order_by('-data').last()
-            self.num_indice_IBGE = ultimo_indice.num_indice_IBGE * Decimal(1 + self.variacao_centesimal)
-        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.variacao
