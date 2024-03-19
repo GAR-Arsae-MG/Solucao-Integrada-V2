@@ -5,7 +5,7 @@ import { redirect } from 'react-router-dom'
 import { IGetAdminAtivo, IGetOpAtivo, IGetUnity, IGetUser, INewUser, IUpdateUser } from '../types/types'
 
 export const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/',
+    baseURL: 'http://127.0.0.1:8001/',
     withCredentials: true
 })
 
