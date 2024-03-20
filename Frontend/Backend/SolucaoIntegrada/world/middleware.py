@@ -21,9 +21,9 @@ class IPCAMiddleware:
             'http':'http://x23367972:Abd12345@proxycamg.prodemge.gov.br:8080/',
         }
         try:
-            response = requests.get(url, timeout=100)
+            response = requests.get(url=url)
         except RequestException:
-            response = requests.get(url, proxies=proxies, timeout=100)
+            response = requests.get(url=url, proxies=proxies)
         
         
         if response.status_code == 200:  
