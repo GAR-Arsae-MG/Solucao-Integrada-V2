@@ -3,6 +3,7 @@ import json
 from django.utils.dateparse import parse_date
 from world.models import IPCA
 import requests
+from requests.exceptions import RequestException
 class IPCAMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -15,7 +16,16 @@ class IPCAMiddleware:
     # https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json
 
     def fetchSaveIPCA(self):
-        response = requests.get('https://servicodados.ibge.gov.br/api/v3/agregados/1737/periodos/-59999/variaveis/2266%7C63?localidades=N1[all]')
+        url = 'https://servicodados.ibge.gov.br/api/v3/agregados/1737/periodos/-59999/variaveis/2266%7C63?localidades=N1[all]'
+        proxies = {
+            'http':'http://x23367972:Abd12345@proxycamg.prodemge.gov.br:8080/',
+        }
+        try:
+            response = requests.get(url, timeout=100)
+        except RequestException:
+            response = requests.get(url, proxies=proxies, timeout=100)
+        
+        
         if response.status_code == 200:  
             data = json.loads(response.text)
             print('Dados obtidos com sucesso!')
