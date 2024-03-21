@@ -123,7 +123,7 @@ class Unidades(models.Model):
 class IPCA(models.Model):
     id = models.AutoField(primary_key=True)
     data = models.DateField()
-    variacao = models.DecimalField(max_digits=5, decimal_places=2)
+    variacao = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     variacao_centesimal = models.DecimalField(max_digits=6, decimal_places=5, blank=True, null=True)
     num_indice_IBGE = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     variacao_retroativa = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -132,8 +132,7 @@ class IPCA(models.Model):
     def save(self, *args, **kwargs):
         if self.variacao is not None:
             self.variacao_centesimal = self.variacao / 100
-            
-        primeiro_indice = IPCA.objects.order_by('data').first()
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.variacao
