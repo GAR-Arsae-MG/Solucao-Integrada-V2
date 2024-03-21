@@ -12,13 +12,27 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
     
-# GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal307.dll"
+GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal307.dll"
 
-GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal308.dll"
+# GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal308.dll"
+
+# Configurações do Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_BEAT_SCHEDULE = {
+    'fetch_save_ipca_every_week': {
+        'task': 'world.tasks.fetch_save_ipca_task',
+        'schedule': crontab(day_of_week=1, hour=12, minute=0),  # Executa a meia-noite de todo domingo
+    },
+}
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
