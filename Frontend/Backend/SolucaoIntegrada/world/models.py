@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.utils import timezone
 from decimal import Decimal
 from dateutil.relativedelta import relativedelta
+import logging
+logger = logging.getLogger(__name__)
 
 
 # Create your models here.
@@ -129,8 +131,6 @@ class IPCA(models.Model):
     variacao = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     variacao_centesimal = models.DecimalField(max_digits=6, decimal_places=5, blank=True, null=True)
     num_indice_IBGE = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    variacao_retroativa = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    num_indice_calculado = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     mes_atual = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     porcentagem_final = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
@@ -138,52 +138,42 @@ class IPCA(models.Model):
         if self.variacao is not None:
             self.variacao_centesimal = Decimal(self.variacao) / Decimal(100)
 
-    def _calculate_variacao_retroativa(self):
-        data_obj = self.data
-        if isinstance(self.data, str):
-            # Se self.data for uma string, converter para datetime
-            data_obj = datetime.strptime(self.data, "%Y-%m-%d").date()
-
-        proximo_mes = data_obj + relativedelta(months=+1)
-        proximo_registro = IPCA.objects.filter(data__year=proximo_mes.year, data__month=proximo_mes.month).first()
-
-        if proximo_registro and proximo_registro.variacao_retroativa is not None and self.variacao is not None:
-            self.variacao_retroativa = (
-                (1 + Decimal(proximo_registro.variacao_retroativa)/Decimal(100)) * (1 + Decimal(self.variacao)/Decimal(100)) - 1
-            )
-
-    def _calculate_num_indice_calculado(self):
-        data_obj = self.data
-        if isinstance(self.data, str):
-            # Se self.data for uma string, converter para datetime
-            data_obj = datetime.strptime(self.data, "%Y-%m-%d").date()
-
-        mes_anterior = data_obj + relativedelta(months=-1)
-        registro_anterior = IPCA.objects.filter(data__year=mes_anterior.year, data__month=mes_anterior.month).first()
-
-        if registro_anterior and registro_anterior.num_indice_calculado is not None and self.variacao_centesimal is not None:
-            self.num_indice_calculado = (
-                registro_anterior.num_indice_calculado * (1 + self.variacao_centesimal)
-            )
-
     def _calculate_mes_atual_and_porcentagem_final(self):
-        self.mes_atual = self.num_indice_IBGE
-        ultimo_mes_atual = IPCA.objects.exclude(id=self.id).order_by('-data').first()
 
-        if ultimo_mes_atual and ultimo_mes_atual.mes_atual is not None and self.num_indice_IBGE is not None:
-            # Convertendo self.num_indice_IBGE para Decimal, se for um float
-            num_indice_IBGE_as_decimal = Decimal(self.num_indice_IBGE)
-            self.porcentagem_final = (ultimo_mes_atual.mes_atual / num_indice_IBGE_as_decimal) - Decimal(1)
+        # Assume-se que num_indice_IBGE do registro atual é o índice mais recente
+        indice_atual = Decimal(self.num_indice_IBGE)
+
+        # Obtém o último índice IBGE, excluindo o registro atual
+        ultimo_indice = IPCA.objects.exclude(id=self.id).last()
+        ultimo_indice_IBGE = ultimo_indice.num_indice_IBGE if ultimo_indice else None
+
+        # Se o último índice IBGE for válido
+        if ultimo_indice_IBGE is not None and Decimal(ultimo_indice_IBGE) != 0:
+
+            # Calcula o mes_atual como sendo o índice atual
+            self.mes_atual = indice_atual
+
+            # Obtém o índice IBGE do mesmo mês do ano anterior
+            ano_anterior = self.data.year - 1
+            mes_anterior = self.data.month
+            indice_ano_anterior = IPCA.objects.filter(data__year=ano_anterior, data__month=mes_anterior).first().num_indice_IBGE
+
+            # Calcula a porcentagem final
+            self.porcentagem_final = (indice_atual / Decimal(indice_ano_anterior)) * Decimal(100)
+
+        else:
+
+            # Se não houver um último índice válido, define mes_atual e porcentagem_final como None
+            self.mes_atual = None
+            self.porcentagem_final = None
             
     def save(self, *args, **kwargs):
         self._calculate_variacao()
-        self._calculate_variacao_retroativa()
-        self._calculate_num_indice_calculado()
         self._calculate_mes_atual_and_porcentagem_final()
         super().save(*args, **kwargs)
         
     def __str__(self):
-        return str(self.variacao)
+        return f"{self.data}: Variação = {self.variacao}, Índice IBGE = {self.num_indice_IBGE}, porcentagem final = {self.porcentagem_final}"
 
 class Ativos_Operacionais(models.Model):
     id = models.AutoField(primary_key=True)
