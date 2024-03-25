@@ -1,7 +1,10 @@
+from datetime import datetime, timedelta
 from django.contrib.gis.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
 from django.utils import timezone
 from decimal import Decimal
+from dateutil.relativedelta import relativedelta
+
 
 # Create your models here.
 
@@ -128,14 +131,59 @@ class IPCA(models.Model):
     num_indice_IBGE = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     variacao_retroativa = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     num_indice_calculado = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    mes_atual = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    porcentagem_final = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     
-    def save(self, *args, **kwargs):
+    def _calculate_variacao(self):
         if self.variacao is not None:
-            self.variacao_centesimal = self.variacao / 100
+            self.variacao_centesimal = Decimal(self.variacao) / Decimal(100)
+
+    def _calculate_variacao_retroativa(self):
+        data_obj = self.data
+        if isinstance(self.data, str):
+            # Se self.data for uma string, converter para datetime
+            data_obj = datetime.strptime(self.data, "%Y-%m-%d").date()
+
+        proximo_mes = data_obj + relativedelta(months=+1)
+        proximo_registro = IPCA.objects.filter(data__year=proximo_mes.year, data__month=proximo_mes.month).first()
+
+        if proximo_registro and proximo_registro.variacao_retroativa is not None and self.variacao is not None:
+            self.variacao_retroativa = (
+                (1 + Decimal(proximo_registro.variacao_retroativa)/Decimal(100)) * (1 + Decimal(self.variacao)/Decimal(100)) - 1
+            )
+
+    def _calculate_num_indice_calculado(self):
+        data_obj = self.data
+        if isinstance(self.data, str):
+            # Se self.data for uma string, converter para datetime
+            data_obj = datetime.strptime(self.data, "%Y-%m-%d").date()
+
+        mes_anterior = data_obj + relativedelta(months=-1)
+        registro_anterior = IPCA.objects.filter(data__year=mes_anterior.year, data__month=mes_anterior.month).first()
+
+        if registro_anterior and registro_anterior.num_indice_calculado is not None and self.variacao_centesimal is not None:
+            self.num_indice_calculado = (
+                registro_anterior.num_indice_calculado * (1 + self.variacao_centesimal)
+            )
+
+    def _calculate_mes_atual_and_porcentagem_final(self):
+        self.mes_atual = self.num_indice_IBGE
+        ultimo_mes_atual = IPCA.objects.exclude(id=self.id).order_by('-data').first()
+
+        if ultimo_mes_atual and ultimo_mes_atual.mes_atual is not None and self.num_indice_IBGE is not None:
+            # Convertendo self.num_indice_IBGE para Decimal, se for um float
+            num_indice_IBGE_as_decimal = Decimal(self.num_indice_IBGE)
+            self.porcentagem_final = (ultimo_mes_atual.mes_atual / num_indice_IBGE_as_decimal) - Decimal(1)
+            
+    def save(self, *args, **kwargs):
+        self._calculate_variacao()
+        self._calculate_variacao_retroativa()
+        self._calculate_num_indice_calculado()
+        self._calculate_mes_atual_and_porcentagem_final()
         super().save(*args, **kwargs)
-    
+        
     def __str__(self):
-        return self.variacao
+        return str(self.variacao)
 
 class Ativos_Operacionais(models.Model):
     id = models.AutoField(primary_key=True)
