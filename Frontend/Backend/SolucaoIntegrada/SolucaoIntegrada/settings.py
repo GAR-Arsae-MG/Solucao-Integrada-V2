@@ -17,9 +17,9 @@ from celery.schedules import crontab
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
     
-GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal307.dll"
+# GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal307.dll"
 
-# GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal308.dll"
+GDAL_LIBRARY_PATH = "C:/OSGeo4W/bin/gdal308.dll"
 
 # Configurações do Celery
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
