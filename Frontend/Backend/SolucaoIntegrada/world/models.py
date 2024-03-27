@@ -154,12 +154,11 @@ class IPCA(models.Model):
             self.mes_atual = indice_atual
 
             # Obtém o índice IBGE do mesmo mês do ano anterior
-            ano_anterior = self.data.year - 1
             mes_anterior = self.data.month
-            indice_ano_anterior = IPCA.objects.filter(data__year=ano_anterior, data__month=mes_anterior).first().num_indice_IBGE
+            indice_ano_anterior = IPCA.objects.filter(data__month=mes_anterior).first().num_indice_IBGE
 
             # Calcula a porcentagem final
-            self.porcentagem_final = (indice_atual / Decimal(indice_ano_anterior)) * Decimal(100)
+            self.porcentagem_final = (self.mes_atual / Decimal(indice_ano_anterior)) * Decimal(100)
 
         else:
 
